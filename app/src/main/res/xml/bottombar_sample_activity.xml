@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        icon="@drawable/my_tab_icon1"
+        id="@+id/home_page"
+        title="相册动态" />
+    <tab
+        icon="@drawable/my_tab_icon2"
+        id="@+id/shopping_cart"
+        title="关注" />
+    <tab
+        icon="@drawable/my_tab_icon3"
+        id="@+id/msg"
+        title="粉丝" />
+    <tab
+        icon="@drawable/my_tab_icon4"
+        id="@+id/mine"
+        title="我的" />
+</tabs>
