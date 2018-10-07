@@ -20,6 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+
 
 public class BaseAdapterHelper extends RecyclerView.ViewHolder {
 
@@ -29,7 +31,6 @@ public class BaseAdapterHelper extends RecyclerView.ViewHolder {
         super(itemView);
         this.views = new SparseArray<View>();
     }
-
 
 
     @SuppressWarnings("unchecked")
@@ -83,6 +84,18 @@ public class BaseAdapterHelper extends RecyclerView.ViewHolder {
     public BaseAdapterHelper setImageResource(int viewId, int imageResId) {
         ImageView view = retrieveView(viewId);
         view.setImageResource(imageResId);
+        return this;
+    }
+
+    /**
+     * Will set the image of an ImageView from a resource id.
+     *
+     * @param viewId     The view id.
+     * @return The BaseAdapterHelper for chaining.
+     */
+    public BaseAdapterHelper setFrescoImageResource(int viewId, String url) {
+        SimpleDraweeView view = retrieveView(viewId);
+        view.setImageURI(url);
         return this;
     }
 
@@ -189,7 +202,6 @@ public class BaseAdapterHelper extends RecyclerView.ViewHolder {
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
         return this;
     }
-
 
 
     public void setImageByUrl(int id, String url) {
@@ -397,14 +409,16 @@ public class BaseAdapterHelper extends RecyclerView.ViewHolder {
         view.setAdapter(adapter);
         return this;
     }
-    public  void setTextSize(String s,TextView textView,int limit){
-        if (!TextUtils.isEmpty(s)){
-            if (s.length() > limit){
-                textView.setTextSize(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM,textView.getTextSize()-4);
+
+    public void setTextSize(String s, TextView textView, int limit) {
+        if (!TextUtils.isEmpty(s)) {
+            if (s.length() > limit) {
+                textView.setTextSize(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM, textView.getTextSize() - 4);
             }
             textView.setText(s);
         }
     }
+
     /**
      * Retrieve the convertView
      */

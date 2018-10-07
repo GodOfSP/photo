@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.index.HomeFragment;
 import com.fnhelper.photo.interfaces.Constants;
+import com.fnhelper.photo.myfans.MyFansFrafment;
+import com.fnhelper.photo.myinterst.MyInterstFrafment;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 import com.tencent.mm.opensdk.modelmsg.GetMessageFromWX;
@@ -94,9 +96,9 @@ public class MainActivity extends BaseActivity {
     private void initViewPager() {
         fragments = new ArrayList<>();
         fragments.add(HomeFragment.newInstance("", ""));
-        fragments.add(HomeFragment.newInstance("", ""));
-        fragments.add(HomeFragment.newInstance("", ""));
-        fragments.add(HomeFragment.newInstance("", ""));
+        fragments.add(MyInterstFrafment.newInstance("", ""));
+        fragments.add(MyFansFrafment.newInstance("", ""));
+        fragments.add(MineFragment.newInstance("", ""));
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -139,6 +141,9 @@ public class MainActivity extends BaseActivity {
      * 初始化BottomBar
      */
     private void initBottomBar() {
+
+        tvComBack.setVisibility(View.GONE);
+
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(int tabId) {
@@ -149,11 +154,11 @@ public class MainActivity extends BaseActivity {
                         break;
                     case R.id.shopping_cart:
                         viewPager.setCurrentItem(1, false);
-                        comTitle.setText("关注");
+                        comTitle.setText("我的关注");
                         break;
                     case R.id.msg:
                         viewPager.setCurrentItem(2, false);
-                        comTitle.setText("粉丝");
+                        comTitle.setText("我的粉丝");
                         break;
                     case R.id.mine:
                         viewPager.setCurrentItem(3, false);

@@ -45,10 +45,12 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <activity android:name=".AddNewPhotoWordActivity" />
+        <activity android:name=".AddNewPhotoWordActivity"
+            android:screenOrientation="portrait"
+            />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".TelLoginActivity"></activity>
+        <activity android:name=".TelLoginActivity" />
+        <activity android:name=".BindSetNewPassWordActivity"></activity>
     </application>
 
 </manifest>

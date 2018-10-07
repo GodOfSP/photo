@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--
+        <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
+            android:id="@+id/refresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:layout_marginTop="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/share_my_pics">
+    -->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="134dp"
+            android:background="@drawable/mine_bg"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/head_pic"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="12dp"
+                app:actualImageScaleType="centerCrop"
+                app:failureImage="@drawable/bg_blue_full_r_top"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:roundAsCircle="true" />
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="12dp"
+                android:text="user_name"
+                android:textColor="@color/text_black"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toRightOf="@+id/head_pic"
+                app:layout_constraintTop_toTopOf="@+id/head_pic" />
+
+
+            <ImageView
+                android:id="@+id/vip_type"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="30dp"
+                android:src="@drawable/half_year_small"
+                app:layout_constraintBottom_toBottomOf="@+id/head_pic"
+                app:layout_constraintLeft_toRightOf="@+id/head_pic" />
+
+            <TextView
+                android:id="@+id/expiry_date_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="10dp"
+                android:text="会员有效期:"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/head_pic"
+                app:layout_constraintLeft_toRightOf="@+id/vip_type" />
+
+            <TextView
+                android:id="@+id/expiry_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="2019-29-23"
+                android:textColor="@color/text_gray_dark"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/expiry_date_title"
+                app:layout_constraintLeft_toRightOf="@+id/expiry_date_title"
+                app:layout_constraintTop_toTopOf="@+id/expiry_date_title" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/next_white_btn"
+                app:layout_constraintRight_toRightOf="@id/more_detail"
+                app:layout_constraintTop_toTopOf="@id/user_name"
+                app:layout_constraintBottom_toBottomOf="@id/user_name"
+                />
+
+            <TextView
+                android:id="@+id/more_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/bg_full_green_white_r4"
+                android:paddingBottom="2dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:paddingTop="2dp"
+                android:text="详情"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/expiry_date"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/expiry_date"
+
+                />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorInactive" />
+
+
+        <RelativeLayout
+            android:id="@+id/presentAndMaid"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@drawable/selector_full_white_r0"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/cash_pic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginStart="48dp"
+                android:text="提现与返佣" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/next_btn" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorInactive" />
+
+
+        <RelativeLayout
+            android:id="@+id/bindPhone"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@drawable/selector_full_white_r0"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/mobile_pic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginStart="48dp"
+                android:text="绑定手机号" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/next_btn" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorInactive" />
+
+
+        <RelativeLayout
+            android:id="@+id/my2Code"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@drawable/selector_full_white_r0"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/code_pic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginStart="48dp"
+                android:text="我的相册二维码" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/next_btn" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorInactive" />
+
+
+        <RelativeLayout
+            android:id="@+id/question"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@drawable/selector_full_white_r0"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/question_pic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginStart="48dp"
+                android:text="问题反馈" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/next_btn" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorInactive" />
+
+
+        <RelativeLayout
+            android:id="@+id/about_app"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@drawable/selector_full_white_r0"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/about_pic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginStart="48dp"
+                android:text="关于蜂鸟微商相册" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/next_btn" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorInactive" />
+
+
+        <RelativeLayout
+            android:id="@+id/system_notice"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@drawable/selector_full_white_r0"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/notice_pic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginStart="48dp"
+                android:text="系统通知" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/next_btn" />
+
+        </RelativeLayout>
+       <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+           android:layout_marginTop="20dp"
+            android:background="@color/colorInactive" />
+
+
+        <RelativeLayout
+            android:id="@+id/system_setting"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@drawable/selector_full_white_r0"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/setting_pic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="48dp"
+                android:layout_marginStart="48dp"
+                android:text="系统设置" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="22dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:src="@drawable/next_btn" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</ScrollView>
+
+    <!--
+        </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
+    -->
+

@@ -12,6 +12,7 @@ import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.LoginBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.wxapi.AccessBean;
 import com.fnhelper.photo.wxapi.WeiXin;
 import com.fnhelper.photo.wxapi.WxUserInfoBean;
@@ -74,6 +75,15 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
             @Override
             public void onClick(View v) {
                 openActivity(TelLoginActivity.class);
+
+                //未绑定手机号提示
+                DialogUtils.showLoginTips(LoginActivity.this, new DialogUtils.OnCommitListener() {
+                    @Override
+                    public void onCommit() {
+                        //去绑定
+                       openActivity(BindSetNewPassWordActivity.class);
+                    }
+                });
             }
         });
 
