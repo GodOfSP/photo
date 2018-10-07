@@ -117,7 +117,7 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
             WeiXin weiXin = new WeiXin(2, resp.errCode, "");
             EventBus.getDefault().post(weiXin);
         } else if (resp.getType() == ConstantsAPI.COMMAND_SENDAUTH) {//登陆
-            Log.i("ansen", "微信登录操作.....");
+            Log.i("ansen", "微信登录操作....");
             SendAuth.Resp authResp = (SendAuth.Resp) resp;
             WeiXin weiXin = new WeiXin(1, resp.errCode, authResp.code);
             EventBus.getDefault().post(weiXin);
