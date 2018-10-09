@@ -1,6 +1,7 @@
-package com.fnhelper.photo;
+package com.fnhelper.photo.mine;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.fnhelper.photo.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -129,6 +131,14 @@ public class MineFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.bindPhone:
+                //去绑定
+                Intent i = new Intent(getContext(),BindInputTelActivity.class);
+                i.putExtra("which",1);
+                startActivity(i);
+                break;
+        }
 
     }
 

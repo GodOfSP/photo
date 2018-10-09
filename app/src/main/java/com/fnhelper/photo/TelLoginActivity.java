@@ -1,6 +1,5 @@
 package com.fnhelper.photo;
 
-import android.content.Intent;
 import android.graphics.Paint;
 import android.text.InputType;
 import android.view.View;
@@ -11,6 +10,8 @@ import android.widget.TextView;
 
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.diyviews.ClearEditText;
+import com.fnhelper.photo.mine.BindInputTelActivity;
+import com.fnhelper.photo.utils.DialogUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +58,13 @@ public class TelLoginActivity extends BaseActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TelLoginActivity.this,MainActivity.class));
+                DialogUtils.showLoginTips(TelLoginActivity.this, new DialogUtils.OnCommitListener() {
+                    @Override
+                    public void onCommit() {
+                        //去绑定
+                        openActivity(BindInputTelActivity.class);
+                    }
+                });
             }
         });
 

@@ -1,5 +1,7 @@
 package com.fnhelper.photo.interfaces;
 
+import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
 
 import retrofit2.Call;
@@ -20,7 +22,7 @@ public interface MyApi {
     Call<NormalApiResponse<String>> downloadQRCodeUrl(@Query("mainCode") String mainCode);
 
 
-    //传参
+    //登陆
     @FormUrlEncoded
     @POST("Client/Login")
     Call<LoginBean> login(@Field("sNickName") String sNickName,
@@ -36,7 +38,15 @@ public interface MyApi {
      * @return
      */
     @GET("Client/GetMobileCode")
-    Call<NormalApiResponse<String>> GetMobileCode(@Query("sPhone") String sPhone, @Query("iType") int Type);
+    Call<GetCodeBean> GetMobileCode(@Query("sPhone") String sPhone, @Query("iType") int Type);
+
+    /**
+     * 绑定绑定手机号  ?ID="+Constants.ID+"&sToken="+Constants.sToken
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Client/GetMobileCode")
+    Call<CheckCodeBean> checkCode(@Field("sPhone") String sPhone, @Field("sPassword") String sPassword);
 
 
 }

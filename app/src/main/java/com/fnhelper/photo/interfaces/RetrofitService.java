@@ -1,8 +1,12 @@
 package com.fnhelper.photo.interfaces;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import com.tencent.mm.opensdk.utils.Log;
+
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -58,7 +62,13 @@ public class RetrofitService {
         if (myApi == null) {
             synchronized (RetrofitService.class) {
                 if (myApi == null) {
-                    mOkHttpClient = new OkHttpClient();
+                    initInterceptor();
+
+                    mOkHttpClient = new OkHttpClient.Builder().addInterceptor(loggingInterceptor)
+                            .addInterceptor(commonInterceptor)
+                            .connectTimeout(mTimeOut, TimeUnit.SECONDS)
+                            .readTimeout(mTimeOut, TimeUnit.SECONDS)
+                            .writeTimeout(mTimeOut, TimeUnit.SECONDS).build();
                     myApi = new Retrofit.Builder()
                             .client(mOkHttpClient)
                             //以构建的类型来选择host环境
@@ -74,13 +84,38 @@ public class RetrofitService {
     }
 
 
+    private static HttpLoggingInterceptor loggingInterceptor;
+    private static CommonInterceptor commonInterceptor;
 
+    private static void initInterceptor() {
+
+         commonInterceptor = new CommonInterceptor();
+
+     loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override
+            public void log(String message) {
+                //打印retrofit日志
+                Log.i("loggingInterceptor", message);
+            }
+        });
+
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+    }
+
+    private static final int mTimeOut = 60;
     private volatile static WXLoginApi wxLoginApi = null;
+
     public static WXLoginApi createWXAPI() {
         if (wxLoginApi == null) {
             synchronized (RetrofitService.class) {
+
                 if (wxLoginApi == null) {
-                    mOkHttpClient = new OkHttpClient();
+                    initInterceptor();
+                    mOkHttpClient = new OkHttpClient.Builder().addInterceptor(loggingInterceptor)
+                            .connectTimeout(mTimeOut, TimeUnit.SECONDS)
+                            .readTimeout(mTimeOut, TimeUnit.SECONDS)
+                            .writeTimeout(mTimeOut, TimeUnit.SECONDS).build();
+
                     wxLoginApi = new Retrofit.Builder()
                             .client(mOkHttpClient)
                             //以构建的类型来选择host环境

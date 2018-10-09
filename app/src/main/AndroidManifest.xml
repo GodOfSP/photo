@@ -50,7 +50,9 @@
             />
         <activity android:name=".LoginActivity" />
         <activity android:name=".TelLoginActivity" />
-        <activity android:name=".BindSetNewPassWordActivity"></activity>
+        <activity android:name=".mine.BindSetNewPassWordActivity"></activity>
+
+        <activity android:name=".mine.BindInputTelActivity"/>
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.LoginBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.mine.BindInputTelActivity;
 import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.wxapi.AccessBean;
 import com.fnhelper.photo.wxapi.WeiXin;
@@ -26,7 +28,6 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.mm.opensdk.utils.Log;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,15 +76,6 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
             @Override
             public void onClick(View v) {
                 openActivity(TelLoginActivity.class);
-
-                //未绑定手机号提示
-                DialogUtils.showLoginTips(LoginActivity.this, new DialogUtils.OnCommitListener() {
-                    @Override
-                    public void onCommit() {
-                        //去绑定
-                       openActivity(BindSetNewPassWordActivity.class);
-                    }
-                });
             }
         });
 
@@ -126,35 +118,6 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
     }
 
 
-    /**
-     * 这里用到的了EventBus框架
-     *
-     * @param weiXin
-     */
-    @Subscribe
-    public void onEventMainThread(WeiXin weiXin) {
-        Log.i("ansen", "收到eventbus请求 type:" + weiXin.getType());
-        if (weiXin.getType() == 1) {//登录
-            //    getAccessToken(weiXin.getCode());
-        } else if (weiXin.getType() == 2) {//分享
-            switch (weiXin.getErrCode()) {
-                case BaseResp.ErrCode.ERR_OK:
-                    Log.i("ansen", "微信分享成功.....");
-                    break;
-                case BaseResp.ErrCode.ERR_USER_CANCEL://分享取消
-                    Log.i("ansen", "微信分享取消.....");
-                    break;
-                case BaseResp.ErrCode.ERR_AUTH_DENIED://分享被拒绝
-                    Log.i("ansen", "微信分享被拒绝.....");
-                    break;
-            }
-        } else if (weiXin.getType() == 3) {//微信支付
-            if (weiXin.getErrCode() == BaseResp.ErrCode.ERR_OK) {//成功
-                Log.i("ansen", "微信支付成功.....");
-            }
-        }
-    }
-
     public void getAccessToken() {
 
         loadingDialog.show();
@@ -180,14 +143,14 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
             public void onResponse(retrofit2.Call<AccessBean> call, retrofit2.Response<AccessBean> response) {
 
                 if (response != null && response.body() != null && response.body().getErrmsg() == null) {
-                    //获取userInfo
+                    //access_token获取成功 再获取userInfo
                     retrofit2.Call<WxUserInfoBean> call1 = RetrofitService.createWXAPI().getUserInfo(response.body().getAccess_token(), response.body().getOpenid());
                     call1.enqueue(new retrofit2.Callback<WxUserInfoBean>() {
                         @Override
                         public void onResponse(retrofit2.Call<WxUserInfoBean> call, retrofit2.Response<WxUserInfoBean> response) {
 
                             if (response != null && response.body() != null && response.body().getErrmsg() == null) {
-                                //登陆
+                                //自己登陆接口
                                 retrofit2.Call<LoginBean> call2 = RetrofitService.createMyAPI().login(response.body().getNickname(), response.body().getUnionid(), response.body().getHeadimgurl(), response.body().getOpenid());
                                 call2.enqueue(new retrofit2.Callback<LoginBean>() {
                                     @Override
@@ -197,7 +160,26 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                             if (response.body().getCode() == 500) {
                                                 showBottom(LoginActivity.this, response.body().getInfo());
                                             } else if (response.body().getCode() == 100) {
-                                                openActivityAndCloseThis(MainActivity.class);
+
+                                                 Constants.ID = response.body().getData().getID();
+                                                 Constants.sToken = response.body().getData().getSToken();
+
+                                                if (TextUtils.isEmpty(response.body().getData().getSPhone())){
+                                                    //如果绑定手机号返回为空 说明未绑定  -- 弹出提示框
+                                                    //未绑定手机号提示
+                                                    DialogUtils.showLoginTips(LoginActivity.this, new DialogUtils.OnCommitListener() {
+                                                        @Override
+                                                        public void onCommit() {
+                                                            //去绑定
+                                                            Intent i = new Intent(LoginActivity.this,BindInputTelActivity.class);
+                                                            i.putExtra("which",1);
+                                                            startActivity(i);
+                                                            finish();
+                                                        }
+                                                    });
+                                                }else {
+                                                    openActivityAndCloseThis(MainActivity.class);
+                                                }
                                             }
                                         }
 
@@ -235,9 +217,8 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
     class ReceiveBroadCast extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            //授权成功 获取token
             getAccessToken();
-          /*  Intent intent1 = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent1);*/
         }
     }
 

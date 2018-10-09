@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.index.HomeFragment;
 import com.fnhelper.photo.interfaces.Constants;
+import com.fnhelper.photo.mine.MineFragment;
 import com.fnhelper.photo.myfans.MyFansFrafment;
 import com.fnhelper.photo.myinterst.MyInterstFrafment;
 import com.roughike.bottombar.BottomBar;

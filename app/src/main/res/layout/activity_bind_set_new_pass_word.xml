@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fnhelper.photo.BindSetNewPassWordActivity">
+    tools:context="com.fnhelper.photo.mine.BindSetNewPassWordActivity">
 
 
     <RelativeLayout
@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
         android:gravity="center"
-        android:text="手机号 : 1323425234234"
         android:textColor="@color/text_black"
         android:textSize="16sp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -39,6 +38,8 @@
         android:drawableLeft="@drawable/pwd_pic"
         android:drawablePadding="12dp"
         android:hint="请输入新密码"
+        android:gravity="center"
+        android:maxEms="16"
         android:imeOptions="actionNext"
         android:inputType="textPassword"
         android:maxLines="1"
@@ -73,6 +74,8 @@
         android:imeOptions="actionNext"
         android:inputType="textPassword"
         android:maxLines="1"
+        android:gravity="center"
+        android:maxLength="16"
         android:paddingLeft="22dp"
         android:paddingRight="82dp"
         android:singleLine="true"

@@ -43,9 +43,8 @@ public class MyApplication extends MultiDexApplication {
                 .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())
                 .build();
         Fresco.initialize(this, config);
-        //初始化EventBus
-      //  EventBus.getDefault().register(this);//注册
 
+        //初始化微信sdk
         IWXAPI wxAPI = WXAPIFactory.createWXAPI(this, Constants.WECHAT_APPID, true);
         wxAPI.registerApp(Constants.WECHAT_APPID);
 
