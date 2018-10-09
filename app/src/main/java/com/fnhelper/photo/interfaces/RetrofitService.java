@@ -65,7 +65,7 @@ public class RetrofitService {
                     initInterceptor();
 
                     mOkHttpClient = new OkHttpClient.Builder().addInterceptor(loggingInterceptor)
-                            .addInterceptor(commonInterceptor)
+                          .addInterceptor(commonInterceptor)
                             .connectTimeout(mTimeOut, TimeUnit.SECONDS)
                             .readTimeout(mTimeOut, TimeUnit.SECONDS)
                             .writeTimeout(mTimeOut, TimeUnit.SECONDS).build();

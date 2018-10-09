@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fnhelper.photo.mine.AlbumInfoActivity">
+
+
+    <RelativeLayout
+        android:id="@+id/head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include layout="@layout/com_toolbar" />
+
+    </RelativeLayout>
+
+
+    <View
+        android:id="@+id/head_bg"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/head" />
+
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/head_pic"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:actualImageScaleType="centerCrop"
+        app:failureImage="@drawable/bg_blue_full_r_top"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/head_bg"
+        app:roundAsCircle="true" />
+
+    <ImageView
+        android:id="@+id/vip_type"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginRight="2dp"
+        android:src="@drawable/half_year_small"
+        app:layout_constraintBottom_toBottomOf="@+id/head_pic"
+        app:layout_constraintRight_toRightOf="@+id/head_pic" />
+
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="user_name"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/head_bg"
+        app:layout_constraintLeft_toLeftOf="@+id/head_pic"
+        app:layout_constraintRight_toRightOf="@id/head_pic"
+        app:layout_constraintTop_toBottomOf="@+id/head_pic" />
+
+
+    <View
+        android:id="@+id/div_top"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorInactive"
+        app:layout_constraintTop_toBottomOf="@id/head_bg"
+
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/album_name_rl"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@drawable/selector_full_white_r0"
+        android:gravity="center_vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/div_top">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:text="相册名" />
+
+        <TextView
+            android:id="@+id/album_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="28dp"
+            android:layout_marginRight="30dp"
+            android:text="album_name"
+            android:textColor="@color/text_black" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/next_btn" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/div_1"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorInactive"
+        app:layout_constraintTop_toBottomOf="@id/album_name_rl"
+
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/connect_tel_rl"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@drawable/selector_full_white_r0"
+        android:gravity="center_vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/div_1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:text="联系电话" />
+
+        <TextView
+            android:id="@+id/connect_tel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="28dp"
+            android:layout_marginRight="30dp"
+            android:textColor="@color/text_black" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/next_btn" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/div_2"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorInactive"
+        app:layout_constraintTop_toBottomOf="@id/connect_tel_rl"
+
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/wx_num_rl"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:background="@drawable/selector_full_white_r0"
+        android:gravity="center_vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/div_2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:text="微信号" />
+
+        <TextView
+            android:id="@+id/wx_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="28dp"
+            android:layout_marginRight="30dp"
+            android:textColor="@color/text_black" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/next_btn" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/div_3"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorInactive"
+        app:layout_constraintTop_toBottomOf="@id/wx_num_rl"
+
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/album_introduce_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_full_white_r0"
+        android:gravity="center_vertical"
+        android:minHeight="46dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/div_3">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="28dp"
+            android:text="相册介绍" />
+
+        <TextView
+            android:id="@+id/album_introduce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="98dp"
+            android:layout_marginRight="30dp"
+            android:maxHeight="130dp"
+            android:textColor="@color/text_black" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/next_btn" />
+
+    </RelativeLayout>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -5,6 +5,13 @@ package com.fnhelper.photo.interfaces;
  */
 public class Constants {
 
+    //请求马  100-成功，200-失败，300登录过期，400-帐号冻结，500--服务异常
+    public static int CODE_SERIVCE_LOSE = 500;
+    public static int CODE_SUCCESS = 100;
+    public static int CODE_ERROR = 200;
+    public static int CODE_FREEZING = 400;
+    public static int CODE_TOKEN = 300;
+    //微信
     public static String WECHAT_APPID="wx04ff3ceebc3fc690";
     public static String WECHAT_SECRET="661c716beceb8f6fd9cde7cff3b456d9";
     // 服务器根地址
@@ -16,5 +23,8 @@ public class Constants {
     //用户信息
     public  static String ID ="";
     public  static String sToken ="";
+    public  static String sTsNickNameoken ="";
+    public  static String sPhone ="";
+    public  static String sHeadImg ="";
 
 }

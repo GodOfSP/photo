@@ -14,6 +14,7 @@ import com.fnhelper.photo.beans.LoginBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.BindInputTelActivity;
+import com.fnhelper.photo.mine.BindSetNewPassWordActivity;
 import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.wxapi.AccessBean;
 import com.fnhelper.photo.wxapi.WeiXin;
@@ -32,6 +33,11 @@ import org.greenrobot.eventbus.EventBus;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
+
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
 
 public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
 
@@ -157,12 +163,13 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                     public void onResponse(retrofit2.Call<LoginBean> call, retrofit2.Response<LoginBean> response) {
 
                                         if (response != null && response.body() != null) {
-                                            if (response.body().getCode() == 500) {
-                                                showBottom(LoginActivity.this, response.body().getInfo());
-                                            } else if (response.body().getCode() == 100) {
-
-                                                 Constants.ID = response.body().getData().getID();
-                                                 Constants.sToken = response.body().getData().getSToken();
+                                            if (response.body().getCode() == CODE_SUCCESS) {
+                                                //成功
+                                                Constants.ID = response.body().getData().getID();
+                                                Constants.sToken = response.body().getData().getSToken();
+                                                Constants.sHeadImg = response.body().getData().getSHeadImg();
+                                                Constants.sPhone = response.body().getData().getSPhone();
+                                                Constants.sTsNickNameoken = response.body().getData().getSNickName();
 
                                                 if (TextUtils.isEmpty(response.body().getData().getSPhone())){
                                                     //如果绑定手机号返回为空 说明未绑定  -- 弹出提示框
@@ -180,6 +187,19 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                                 }else {
                                                     openActivityAndCloseThis(MainActivity.class);
                                                 }
+                                                finish();
+                                            } else if (response.body().getCode() == CODE_ERROR) {
+                                                //失败
+                                                showBottom(LoginActivity.this, response.body().getInfo());
+                                            } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                                                //服务错误
+                                                showBottom(LoginActivity.this, response.body().getInfo());
+                                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                                //登录过期
+                                                showBottom(LoginActivity.this, response.body().getInfo());
+                                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                                //账号冻结
+                                                showBottom(LoginActivity.this, response.body().getInfo());
                                             }
                                         }
 

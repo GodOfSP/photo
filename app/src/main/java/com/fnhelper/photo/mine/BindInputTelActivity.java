@@ -20,6 +20,11 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+
 /**
  * 绑定 -- 输入手机号
  */
@@ -110,13 +115,22 @@ public class BindInputTelActivity extends BaseActivity {
             @Override
             public void onResponse(Call<GetCodeBean> call, Response<GetCodeBean> response) {
                 if (response != null && response.body() != null) {
-                    if (response.body().getCode() == 500) {
+                    if (response.body().getCode() == CODE_SUCCESS) {
+                        //成功
+                        showBottom(BindInputTelActivity.this, "发送成功");
+                        getCode = response.body().getData();
+                    } else if (response.body().getCode() == CODE_ERROR) {
                         //失败
                         showBottom(BindInputTelActivity.this, response.body().getInfo());
-                    } else if (response.body().getCode() == 100) {
-                        //成功
-                        showBottom(BindInputTelActivity.this,"发送成功");
-                        getCode = response.body().getData();
+                    } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                        //服务错误
+                        showBottom(BindInputTelActivity.this, response.body().getInfo());
+                    } else if (response.body().getCode() == CODE_TOKEN) {
+                        //登录过期
+                        showBottom(BindInputTelActivity.this, response.body().getInfo());
+                    } else if (response.body().getCode() == CODE_TOKEN) {
+                        //账号冻结
+                        showBottom(BindInputTelActivity.this, response.body().getInfo());
                     }
                 }
             }
@@ -138,17 +152,17 @@ public class BindInputTelActivity extends BaseActivity {
 
         String code = codeEt.getText().toString().trim();
 
-        if (!TextUtils.isEmpty(code)){
-           if (code.equals(getCode)){
-               Bundle bundle =  new Bundle();
-               bundle.putString("sPhone",sPhone);
-               bundle.putString("sCode",getCode);
-               openActivityAndCloseThis(BindSetNewPassWordActivity.class,bundle);
-           }else {
-               showCenter(BindInputTelActivity.this,"验证码不对哦");
-           }
-        }else {
-            showCenter(BindInputTelActivity.this,"请输入验证码");
+        if (!TextUtils.isEmpty(code)) {
+            if (code.equals(getCode)) {
+                Bundle bundle = new Bundle();
+                bundle.putString("sPhone", sPhone);
+                bundle.putString("sCode", getCode);
+                openActivityAndCloseThis(BindSetNewPassWordActivity.class, bundle);
+            } else {
+                showCenter(BindInputTelActivity.this, "验证码不对哦");
+            }
+        } else {
+            showCenter(BindInputTelActivity.this, "请输入验证码");
         }
     }
 

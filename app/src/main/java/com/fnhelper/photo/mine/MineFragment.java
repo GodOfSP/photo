@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
+import com.fnhelper.photo.interfaces.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,8 +23,7 @@ import butterknife.Unbinder;
 /**
  * 我的粉丝
  */
-public class MineFragment extends Fragment implements View.OnClickListener{
-
+public class MineFragment extends Fragment implements View.OnClickListener {
 
 
     @BindView(R.id.head_pic)
@@ -58,6 +58,8 @@ public class MineFragment extends Fragment implements View.OnClickListener{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    @BindView(R.id.goto_album_info)
+    View gotoAlbumInfo;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -94,12 +96,17 @@ public class MineFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_mine, container, false);
         unbinder = ButterKnife.bind(this, view);
         // initTklRefreshLayout();
+        initUi();
         initClick();
         return view;
     }
 
+    private void initUi() {
+        headPic.setImageURI(Constants.sHeadImg);
+        userName.setText(Constants.sTsNickNameoken);
+    }
 
-    private void initClick(){
+    private void initClick() {
 
         presentAndMaid.setOnClickListener(this);
         bindPhone.setOnClickListener(this);
@@ -108,6 +115,8 @@ public class MineFragment extends Fragment implements View.OnClickListener{
         aboutApp.setOnClickListener(this);
         systemNotice.setOnClickListener(this);
         systemSetting.setOnClickListener(this);
+        gotoAlbumInfo.setOnClickListener(this);
+
 
     }
 
@@ -131,12 +140,16 @@ public class MineFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.bindPhone:
                 //去绑定
-                Intent i = new Intent(getContext(),BindInputTelActivity.class);
-                i.putExtra("which",1);
+                Intent i = new Intent(getContext(), BindInputTelActivity.class);
+                i.putExtra("which", 1);
                 startActivity(i);
+                break;
+            case R.id.goto_album_info:
+                //相册信息
+                startActivity(new Intent(getContext(), AlbumInfoActivity.class));
                 break;
         }
 

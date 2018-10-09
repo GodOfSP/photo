@@ -11,6 +11,7 @@ import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
+import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 
 import java.util.regex.Matcher;
@@ -21,6 +22,11 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
 
 /**
  * 设置新密码
@@ -130,11 +136,22 @@ public class BindSetNewPassWordActivity extends BaseActivity {
 
                 if (response!=null){
                     if (response.body()!=null){
-                        if (response.body().getCode() == 500){
-                            showBottom(BindSetNewPassWordActivity.this,response.body().getInfo());
-                        }else if (response.body().getCode() == 100){
-                            showBottom(BindSetNewPassWordActivity.this,response.body().getInfo());
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(BindSetNewPassWordActivity.this,  response.body().getInfo());
                             finish();
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
                         }
                     }
                 }

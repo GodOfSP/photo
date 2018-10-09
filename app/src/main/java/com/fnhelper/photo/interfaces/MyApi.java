@@ -3,6 +3,7 @@ package com.fnhelper.photo.interfaces;
 import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
+import com.fnhelper.photo.beans.PhoneLoginBean;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -45,8 +46,17 @@ public interface MyApi {
      * @return
      */
     @FormUrlEncoded
-    @POST("Client/GetMobileCode")
+    @POST("Client/BingMobile")
     Call<CheckCodeBean> checkCode(@Field("sPhone") String sPhone, @Field("sPassword") String sPassword);
+
+
+    /**
+     * 手机号码登录  LoginByPhone
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Client/LoginByPhone")
+    Call<PhoneLoginBean> LoginByPhone(@Field("sPhone") String sPhone, @Field("sPassword") String sPassword);
 
 
 }
