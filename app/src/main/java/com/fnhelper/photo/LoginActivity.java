@@ -170,6 +170,9 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                                 Constants.sHeadImg = response.body().getData().getSHeadImg();
                                                 Constants.sPhone = response.body().getData().getSPhone();
                                                 Constants.sTsNickNameoken = response.body().getData().getSNickName();
+                                                Constants.wx_num = response.body().getData().getSWeiXinNo();
+                                                Constants.album_introduce = response.body().getData().getSIntroduce();
+                                                Constants.album_name = response.body().getData().getSPhotoName();
 
                                                 if (TextUtils.isEmpty(response.body().getData().getSPhone())){
                                                     //如果绑定手机号返回为空 说明未绑定  -- 弹出提示框

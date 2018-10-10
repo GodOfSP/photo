@@ -106,7 +106,7 @@ public class LoginBean{
             this.sWeiXinNo = sWeiXinNo;
         }
 
-        public Object getSPhotoName() {
+        public String getSPhotoName() {
             return sPhotoName;
         }
 
@@ -114,7 +114,7 @@ public class LoginBean{
             this.sPhotoName = sPhotoName;
         }
 
-        public Object getSIntroduce() {
+        public String getSIntroduce() {
             return sIntroduce;
         }
 

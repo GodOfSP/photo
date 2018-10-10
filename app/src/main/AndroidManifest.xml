@@ -24,7 +24,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.ybveg.wholesale.FileProvider"
+            android:authorities="com.fnhelper.photo.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -52,7 +52,14 @@
         <activity android:name=".TelLoginActivity" />
         <activity android:name=".mine.BindSetNewPassWordActivity" />
         <activity android:name=".mine.BindInputTelActivity" />
-        <activity android:name=".mine.AlbumInfoActivity"></activity>
+
+        <activity android:name=".mine.AlbumInfoActivity" />
+
+        <activity
+            android:name=".mine.ModifyAlbumInfoAc"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

@@ -59,4 +59,16 @@ public interface MyApi {
     Call<PhoneLoginBean> LoginByPhone(@Field("sPhone") String sPhone, @Field("sPassword") String sPassword);
 
 
+    /**
+     * 修改用户信息  UpdatePersonalInfo
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Client/UpdatePersonalInfo")
+    Call<CheckCodeBean> UpdatePersonalInfo(@Field("sPhotoName") String sPhotoName,
+                                            @Field("sWeiXinNo") String sWeiXinNo,
+                                            @Field("sPhone") String sPhone,
+                                            @Field("sIntroduce") String sIntroduce);
+
+
 }

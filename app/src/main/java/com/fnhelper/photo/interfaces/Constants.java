@@ -26,5 +26,8 @@ public class Constants {
     public  static String sTsNickNameoken ="";
     public  static String sPhone ="";
     public  static String sHeadImg ="";
+    public  static String wx_num ="";
+    public  static String album_introduce ="";
+    public  static String album_name ="";
 
 }

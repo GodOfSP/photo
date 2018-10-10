@@ -101,6 +101,9 @@ public class TelLoginActivity extends BaseActivity {
                             Constants.sHeadImg = response.body().getData().getsHeadImg();
                             Constants.sPhone = response.body().getData().getsPhone();
                             Constants.sTsNickNameoken = response.body().getData().getsNickName();
+                            Constants.wx_num = response.body().getData().getsWeiXinNo();
+                            Constants.album_introduce = response.body().getData().getsIntroduce();
+                            Constants.album_name = response.body().getData().getsPhotoName();
                             openActivityAndCloseThis(MainActivity.class);
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
