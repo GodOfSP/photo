@@ -1,22 +1,17 @@
 package com.fnhelper.photo.mine;
 
-import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.fnhelper.photo.MainActivity;
 import com.fnhelper.photo.R;
-import com.fnhelper.photo.TelLoginActivity;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.DensityUtil;
@@ -47,7 +42,7 @@ public class ModifyAlbumInfoAc extends BaseActivity {
     @BindView(R.id.title)
     TextView title;
     @BindView(R.id.content)
-    EditText content;
+    ClearEditText content;
     @BindView(R.id.word_num)
     TextView wordNum;
     @BindView(R.id.cl)
@@ -75,8 +70,6 @@ public class ModifyAlbumInfoAc extends BaseActivity {
 
         comRight.setText("保存");
 
-        content.setFocusable(true);
-        content.requestFocus();
         content.selectAll();
 
         switch (getIntent().getIntExtra("which", 1)) {

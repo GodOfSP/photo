@@ -1,5 +1,6 @@
 package com.fnhelper.photo;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -14,7 +15,7 @@ import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
-import com.fnhelper.photo.mine.BindSetNewPassWordActivity;
+import com.fnhelper.photo.mine.BindInputTelActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +79,18 @@ public class TelLoginActivity extends BaseActivity {
                     doLogin();
                 }
 
+            }
+        });
+
+
+        //忘记密码
+        forgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //去绑定
+                Intent i = new Intent(TelLoginActivity.this,BindInputTelActivity.class);
+                i.putExtra("which",2);
+                startActivity(i);
             }
         });
 

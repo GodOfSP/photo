@@ -1,5 +1,6 @@
 package com.fnhelper.photo.mine;
 
+import android.content.Intent;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +12,6 @@ import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
-import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 
 import java.util.regex.Matcher;
@@ -54,6 +54,8 @@ public class BindSetNewPassWordActivity extends BaseActivity {
     Button loginBtn;
 
     private String sPhone = "";
+    private String sCode = "";
+    private int which = 2;
 
     @Override
     public void setContentView() {
@@ -73,6 +75,8 @@ public class BindSetNewPassWordActivity extends BaseActivity {
             }
         });
         sPhone = getIntent().getExtras().getString("sPhone");
+        sCode = getIntent().getExtras().getString("sCode");
+        which = getIntent().getExtras().getInt("which");
         phoneNum.setText("手机号 : "+sPhone);
 
     }
@@ -129,40 +133,87 @@ public class BindSetNewPassWordActivity extends BaseActivity {
      * 绑定
      */
     private void checkCode(){
-        Call<CheckCodeBean> call = RetrofitService.createMyAPI().checkCode(sPhone,newPassword.getText().toString().trim());
-        call.enqueue(new Callback<CheckCodeBean>() {
-            @Override
-            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+        //2 代表忘记密码
+        if (which == 2){
 
-                if (response!=null){
-                    if (response.body()!=null){
-                        if (response.body().getCode() == CODE_SUCCESS) {
-                            //成功
-                            showBottom(BindSetNewPassWordActivity.this,  response.body().getInfo());
-                            finish();
-                        } else if (response.body().getCode() == CODE_ERROR) {
-                            //失败
-                            showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
-                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
-                            //服务错误
-                            showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
-                        } else if (response.body().getCode() == CODE_TOKEN) {
-                            //登录过期
-                            showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
-                        } else if (response.body().getCode() == CODE_TOKEN) {
-                            //账号冻结
-                            showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+            Call<CheckCodeBean> call = RetrofitService.createMyAPI().UpdatePassword(sPhone,newPassword.getText().toString().trim(),sCode);
+            call.enqueue(new Callback<CheckCodeBean>() {
+                @Override
+                public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+
+                    if (response!=null){
+                        if (response.body()!=null){
+                            if (response.body().getCode() == CODE_SUCCESS) {
+                                //成功
+                                Intent intent = new Intent(BindSetNewPassWordActivity.this,CheckSuccessAc.class);
+                                intent.putExtra("tel",sPhone);
+                                startActivity(intent);
+                                showBottom(BindSetNewPassWordActivity.this,  response.body().getInfo());
+                                finish();
+                            } else if (response.body().getCode() == CODE_ERROR) {
+                                //失败
+                                showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                                //服务错误
+                                showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                //登录过期
+                                showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                //账号冻结
+                                showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                            }
                         }
                     }
+
                 }
 
-            }
+                @Override
+                public void onFailure(Call<CheckCodeBean> call, Throwable t) {
 
-            @Override
-            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                }
+            });
 
-            }
-        });
+        }else if (which == 1){
+            //1 代表绑定手机
+            Call<CheckCodeBean> call = RetrofitService.createMyAPI().checkCode(sPhone,newPassword.getText().toString().trim());
+            call.enqueue(new Callback<CheckCodeBean>() {
+                @Override
+                public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+
+                    if (response!=null){
+                        if (response.body()!=null){
+                            if (response.body().getCode() == CODE_SUCCESS) {
+                                //成功
+                                Intent intent = new Intent(BindSetNewPassWordActivity.this,CheckSuccessAc.class);
+                                intent.putExtra("tel",sPhone);
+                                startActivity(intent);
+                                showBottom(BindSetNewPassWordActivity.this,  response.body().getInfo());
+                                finish();
+                            } else if (response.body().getCode() == CODE_ERROR) {
+                                //失败
+                                showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                                //服务错误
+                                showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                //登录过期
+                                showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                //账号冻结
+                                showBottom(BindSetNewPassWordActivity.this, response.body().getInfo());
+                            }
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+
+                }
+            });
+        }
     }
 
     /**

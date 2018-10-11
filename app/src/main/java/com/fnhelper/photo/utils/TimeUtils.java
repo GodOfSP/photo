@@ -33,6 +33,11 @@ import java.util.TimerTask;
 
 
 
+    public void cancel(){
+        time = -100;
+        handler.sendEmptyMessage(1);
+    }
+
     public void runTimer(){
         timer=new Timer();
         TimerTask task=new TimerTask() {

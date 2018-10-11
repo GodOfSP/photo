@@ -52,14 +52,12 @@
         <activity android:name=".TelLoginActivity" />
         <activity android:name=".mine.BindSetNewPassWordActivity" />
         <activity android:name=".mine.BindInputTelActivity" />
-
         <activity android:name=".mine.AlbumInfoActivity" />
-
         <activity
             android:name=".mine.ModifyAlbumInfoAc"
-            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
-            />
+            android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
+        <activity android:name=".mine.CheckSuccessAc"></activity>
     </application>
 
 </manifest>

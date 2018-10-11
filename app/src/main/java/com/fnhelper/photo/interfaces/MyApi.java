@@ -42,7 +42,16 @@ public interface MyApi {
     Call<GetCodeBean> GetMobileCode(@Query("sPhone") String sPhone, @Query("iType") int Type);
 
     /**
+     * 分页获取我的关注
+     *
+     * @return
+     */
+    @GET("Concern/GetConcernListByPage")
+    Call<CheckCodeBean> GetConcernListByPage(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
+
+    /**
      * 绑定绑定手机号  ?ID="+Constants.ID+"&sToken="+Constants.sToken
+     *
      * @return
      */
     @FormUrlEncoded
@@ -52,6 +61,7 @@ public interface MyApi {
 
     /**
      * 手机号码登录  LoginByPhone
+     *
      * @return
      */
     @FormUrlEncoded
@@ -61,14 +71,25 @@ public interface MyApi {
 
     /**
      * 修改用户信息  UpdatePersonalInfo
+     *
      * @return
      */
     @FormUrlEncoded
     @POST("Client/UpdatePersonalInfo")
     Call<CheckCodeBean> UpdatePersonalInfo(@Field("sPhotoName") String sPhotoName,
-                                            @Field("sWeiXinNo") String sWeiXinNo,
-                                            @Field("sPhone") String sPhone,
-                                            @Field("sIntroduce") String sIntroduce);
+                                           @Field("sWeiXinNo") String sWeiXinNo,
+                                           @Field("sPhone") String sPhone,
+                                           @Field("sIntroduce") String sIntroduce);
+
+    /**
+     * 更新用户密码  UpdatePassword
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Client/UpdatePassword")
+    Call<CheckCodeBean> UpdatePassword(@Field("sPhone") String sPhone,
+                                       @Field("sPassword") String sPassword, @Field("sCode") String sCode);
 
 
 }

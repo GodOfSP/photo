@@ -85,10 +85,11 @@
             android:textColor="@color/text_gray_dark"
             />
 
-        <EditText
+        <com.fnhelper.photo.diyviews.ClearEditText
             android:id="@+id/content"
             android:layout_width="0dp"
-            android:gravity="end"
+            android:gravity="center"
+            android:paddingRight="10dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/title"
@@ -96,6 +97,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
+            android:focusable="true"
+            android:selectAllOnFocus="true"
             android:textColor="@color/text_black"
             android:background="@null"
             />

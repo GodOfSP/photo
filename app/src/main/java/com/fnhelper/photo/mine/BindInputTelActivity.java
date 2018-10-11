@@ -104,11 +104,14 @@ public class BindInputTelActivity extends BaseActivity {
 
     }
 
+    private TimeUtils mTimeUtils = null;
+
     private void sendCode() {
 
         sPhone = phoneEt.getText().toString().trim();
 
-        new TimeUtils(btnSendCode, "发送验证码").runTimer();
+        mTimeUtils = new TimeUtils(btnSendCode, "发送验证码");
+        mTimeUtils.runTimer();
         retrofit2.Call<GetCodeBean> call2 = RetrofitService.createMyAPI().GetMobileCode(phoneEt.getText().toString().trim(), getIntent().getIntExtra("which", 1));
         call2.enqueue(new retrofit2.Callback<GetCodeBean>() {
 
@@ -121,15 +124,19 @@ public class BindInputTelActivity extends BaseActivity {
                         getCode = response.body().getData();
                     } else if (response.body().getCode() == CODE_ERROR) {
                         //失败
+                        mTimeUtils.cancel();
                         showBottom(BindInputTelActivity.this, response.body().getInfo());
                     } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
                         //服务错误
+                        mTimeUtils.cancel();
                         showBottom(BindInputTelActivity.this, response.body().getInfo());
                     } else if (response.body().getCode() == CODE_TOKEN) {
                         //登录过期
+                        mTimeUtils.cancel();
                         showBottom(BindInputTelActivity.this, response.body().getInfo());
                     } else if (response.body().getCode() == CODE_TOKEN) {
                         //账号冻结
+                        mTimeUtils.cancel();
                         showBottom(BindInputTelActivity.this, response.body().getInfo());
                     }
                 }
@@ -157,6 +164,7 @@ public class BindInputTelActivity extends BaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString("sPhone", sPhone);
                 bundle.putString("sCode", getCode);
+                bundle.putInt("which", getIntent().getIntExtra("which", 2));
                 openActivityAndCloseThis(BindSetNewPassWordActivity.class, bundle);
             } else {
                 showCenter(BindInputTelActivity.this, "验证码不对哦");
