@@ -40,5 +40,15 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/com_code"
+        android:layout_width="38dp"
+        android:layout_height="wrap_content"
+        android:paddingRight="12dp"
+        android:src="@drawable/code_pic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </android.support.constraint.ConstraintLayout>

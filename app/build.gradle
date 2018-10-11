@@ -84,6 +84,8 @@ dependencies {
     implementation 'com.github.zyyoona7:EasyPopup:1.1.2'
     //baseAdapter
     implementation 'com.zhy:base-rvadapter:3.0.3'
-    //
+    //左滑删除
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+    //zxing二维码
+    implementation 'cn.yipianfengye.android:zxing-library:2.2'
 }

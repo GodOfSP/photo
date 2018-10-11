@@ -10,6 +10,7 @@ import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 import com.fnhelper.photo.interfaces.Constants;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -47,6 +48,9 @@ public class MyApplication extends MultiDexApplication {
         //初始化微信sdk
         IWXAPI wxAPI = WXAPIFactory.createWXAPI(this, Constants.WECHAT_APPID, true);
         wxAPI.registerApp(Constants.WECHAT_APPID);
+
+        //初始化zxing
+        ZXingLibrary.initDisplayOpinion(this);
 
     }
 
