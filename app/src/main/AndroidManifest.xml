@@ -57,7 +57,9 @@
             android:name=".mine.ModifyAlbumInfoAc"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
-        <activity android:name=".mine.CheckSuccessAc"></activity>
+        <activity android:name=".mine.CheckSuccessAc" />
+        <activity android:name=".mine.ScanCodeAc" />
+        <activity android:name=".mine.MyCodeAc"></activity>
     </application>
 
 </manifest>

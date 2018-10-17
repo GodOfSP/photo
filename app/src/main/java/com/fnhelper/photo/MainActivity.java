@@ -12,6 +12,7 @@ import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.index.HomeFragment;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.mine.MineFragment;
+import com.fnhelper.photo.mine.ScanCodeAc;
 import com.fnhelper.photo.myfans.MyFansFrafment;
 import com.fnhelper.photo.myinterst.MyInterstFrafment;
 import com.roughike.bottombar.BottomBar;
@@ -36,6 +37,8 @@ public class MainActivity extends BaseActivity {
     TextView comTitle;
     @BindView(R.id.com_right)
     ImageView comRight;
+    @BindView(R.id.com_code)
+    ImageView comCode;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
     @BindView(R.id.bottomBar)
@@ -67,6 +70,14 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,AddNewPhotoWordActivity.class));
+            }
+        });
+
+        comCode.setVisibility(View.VISIBLE);
+        comCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, ScanCodeAc.class));
             }
         });
     }
