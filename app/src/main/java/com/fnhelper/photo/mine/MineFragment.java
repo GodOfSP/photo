@@ -141,6 +141,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.presentAndMaid:
+                //提现返佣
+                startActivity( new Intent(getContext(), ToPresentPresentMaidAc.class));
+                break;
             case R.id.bindPhone:
                 //去绑定
                 Intent i = new Intent(getContext(), BindInputTelActivity.class);

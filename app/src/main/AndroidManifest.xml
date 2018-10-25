@@ -59,7 +59,8 @@
             android:windowSoftInputMode="stateAlwaysVisible|adjustPan" />
         <activity android:name=".mine.CheckSuccessAc" />
         <activity android:name=".mine.ScanCodeAc" />
-        <activity android:name=".mine.MyCodeAc"></activity>
+        <activity android:name=".mine.MyCodeAc" />
+        <activity android:name=".mine.ToPresentPresentMaidAc"></activity>
     </application>
 
 </manifest>
