@@ -7,6 +7,9 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/share_my_pics"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -45,6 +48,19 @@
             app:layout_constraintTop_toTopOf="@+id/code" />
 
 
+
+    </android.support.constraint.ConstraintLayout>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/search_cl"
+        android:layout_width="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/share_my_pics"
+        android:layout_height="wrap_content">
+
+
         <com.fnhelper.photo.diyviews.ClearEditText
             android:id="@+id/search_et"
             android:layout_width="0dp"
@@ -63,7 +79,7 @@
             android:textSize="14sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/search_btn"
-            app:layout_constraintTop_toBottomOf="@+id/code" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/search_btn"
@@ -81,7 +97,6 @@
 
     </android.support.constraint.ConstraintLayout>
 
-
     <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout
         android:id="@+id/refresh"
         android:layout_width="match_parent"
@@ -91,7 +106,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/share_my_pics">
+        app:layout_constraintTop_toBottomOf="@+id/search_cl">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

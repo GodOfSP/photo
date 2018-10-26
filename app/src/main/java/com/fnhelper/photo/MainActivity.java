@@ -10,19 +10,12 @@ import android.widget.TextView;
 
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.index.HomeFragment;
-import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.mine.MineFragment;
 import com.fnhelper.photo.mine.ScanCodeAc;
 import com.fnhelper.photo.myfans.MyFansFrafment;
 import com.fnhelper.photo.myinterst.MyInterstFrafment;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
-import com.tencent.mm.opensdk.modelmsg.GetMessageFromWX;
-import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.opensdk.modelmsg.WXTextObject;
-import com.tencent.mm.opensdk.openapi.IWXAPI;
-import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import java.util.ArrayList;
 
@@ -82,25 +75,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void share() {
-        //初始化微信
 
-        IWXAPI wxAPI = WXAPIFactory.createWXAPI(this, Constants.WECHAT_APPID, true);
-        wxAPI.registerApp(Constants.WECHAT_APPID);
-
-        WXTextObject wxTextObject = new WXTextObject();
-        wxTextObject.text = "test";
-        WXMediaMessage wxMediaMessage = new WXMediaMessage();
-        wxMediaMessage.description = "heheh";
-        wxMediaMessage.mediaObject = wxTextObject;
-
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = new GetMessageFromWX.Req().transaction;
-        req.message = wxMediaMessage;
-        req.scene = SendMessageToWX.Req.WXSceneTimeline;
-        //  req.scene =  SendMessageToWX.Req.WXSceneSession;
-        wxAPI.sendReq(req);
-    }
 
     /**
      * 初始化ViewPager
