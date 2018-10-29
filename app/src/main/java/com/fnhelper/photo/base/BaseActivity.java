@@ -122,6 +122,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mToast.setGravity(Gravity.BOTTOM,0,300);
             mToast.show();
     }
+
     /**
      * 初始化dialog
      */
@@ -133,6 +134,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .setHintTextSize(16) // 设置字体大小 dp
                 .setHintTextColor(getResources().getColor(R.color.text_gray));  // 设置字体颜色
     }
+
     protected void setShowExitTips(boolean showExitTips) {
         this.isShowExitTips = showExitTips;
     }

@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".mine.PersonalCenterAc">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBar"
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="141dp"
+        android:layout_height="250dp"
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar_layout"
+            android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="@color/transparent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:statusBarScrim="@android:color/transparent">
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:statusBarScrim="@android:color/transparent"
+            app:titleEnabled="false">
+
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/head_ConstraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="44dp">
+                android:layout_marginTop="48dp">
 
                 <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/store_mainPic"
-                    android:layout_width="58dp"
-                    android:layout_height="58dp"
-                    android:layout_marginLeft="9dp"
+                    android:id="@+id/head_pic"
+                    android:layout_width="78dp"
+                    android:layout_height="78dp"
+                    android:layout_marginLeft="12dp"
                     android:layout_marginTop="18dp"
                     app:actualImageScaleType="fitXY"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -40,147 +42,163 @@
                     app:roundedCornerRadius="5dp" />
 
                 <TextView
-                    android:id="@+id/store_name"
+                    android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
+                    android:drawableLeft="@drawable/wechawt_pic"
+                    android:drawablePadding="12dp"
                     android:ellipsize="end"
                     android:maxEms="10"
                     android:maxLines="1"
-                    android:text=""
-                    app:layout_constraintLeft_toRightOf="@+id/store_mainPic"
-                    app:layout_constraintTop_toTopOf="@+id/store_mainPic" />
-
-                <ImageView
-                    android:id="@+id/store_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toLeftOf="@+id/store_name"
-                    app:layout_constraintTop_toBottomOf="@+id/store_name" />
+                    android:text="好疯狂的石头好疯狂的石头"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toRightOf="@+id/head_pic"
+                    app:layout_constraintTop_toTopOf="@+id/head_pic" />
 
                 <TextView
-                    android:id="@+id/store_address"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/phone"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="6dp"
+                    android:layout_marginRight="12dp"
+                    android:drawableLeft="@drawable/tel_pic"
+                    android:drawablePadding="12dp"
                     android:ellipsize="end"
-                    android:maxEms="14"
+                    android:maxEms="11"
                     android:maxLines="1"
-                    android:text=""
-                    app:layout_constraintLeft_toRightOf="@+id/store_location"
-                    app:layout_constraintTop_toTopOf="@+id/store_location" />
+                    android:text="12345678911"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@id/name"
+                    app:layout_constraintLeft_toRightOf="@+id/name"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/name" />
 
                 <TextView
-                    android:id="@+id/store_evaluate_tv"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="店铺评价："
-                    app:layout_constraintLeft_toLeftOf="@+id/store_name"
-                    app:layout_constraintTop_toBottomOf="@+id/store_location" />
-
-
-                <LinearLayout
-                    android:id="@+id/evaluate_ratingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="@+id/store_evaluate_tv"
-                    app:layout_constraintLeft_toRightOf="@+id/store_evaluate_tv"
-                    app:layout_constraintTop_toTopOf="@+id/store_evaluate_tv" />
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="24dp"
+                    android:drawableLeft="@drawable/intro_pic"
+                    android:drawablePadding="12dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="接口地址: /Concern/GetConcernListByPage
+请求方法: GET数据类型: X-WWW-FORM-URLENCODED接口地址: /Concern/GetConcernListByPage
+请求方法: GET数据类型: X-WWW-FORM-URLENCODED"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toRightOf="@+id/head_pic"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/name" />
 
 
                 <ImageView
                     android:id="@+id/store_collection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/half_year_small"
-                    app:layout_constraintBottom_toBottomOf="@+id/store_mainPic"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/store_mainPic" />
+                    app:layout_constraintBottom_toBottomOf="@+id/head_pic"
+                    app:layout_constraintRight_toRightOf="@+id/head_pic" />
 
             </android.support.constraint.ConstraintLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@color/transparent"
-                app:contentInsetStart="0.0dp"
+                android:layout_height="96dp"
+                android:gravity="top"
+                android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:theme="@style/ImageTranslucentTheme"
-                app:title="">
+                app:title=" "
+                app:titleMarginTop="15dp">
+
+                <android.support.constraint.ConstraintLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp">
+
+                    <ImageView
+                        android:id="@+id/tv_com_back"
+                        android:layout_width="38dp"
+                        android:layout_height="wrap_content"
+                        android:foreground="@color/transparent"
+                        android:src="@drawable/return_btn"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
-                <ImageView
-                    android:id="@+id/store_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginRight="15dp"
-                    android:src="@drawable/tel_pic" />
+                    <TextView
+                        android:id="@+id/com_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
+                    <ImageView
+                        android:id="@+id/com_right"
+                        android:layout_width="38dp"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="12dp"
+                        android:src="@drawable/more_btn"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/com_code"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/com_code"
+                        android:layout_width="38dp"
+                        android:layout_height="wrap_content"
+                        android:paddingRight="12dp"
+                        android:src="@drawable/code_pic"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </android.support.constraint.ConstraintLayout>
 
             </android.support.v7.widget.Toolbar>
 
-
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tablayout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom"
+                android:background="@color/white" />
         </android.support.design.widget.CollapsingToolbarLayout>
-
     </android.support.design.widget.AppBarLayout>
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBar">
-
-        <android.support.constraint.ConstraintLayout
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:background="@color/text_gray_dark"
-            >
-
-            <FrameLayout
-                android:id="@+id/tab_layout_f"
-                android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:background="@color/white"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                >
-
-                <android.support.design.widget.TabLayout
-                    android:id="@+id/tab_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="38dp"
-                    app:tabContentStart="9dp"
-                    app:tabIndicatorColor="@color/colorPrimary"
-                    app:tabIndicatorHeight="2dp"
-                    app:tabMode="scrollable"
-                    app:tabSelectedTextColor="@color/colorPrimary"
-                    app:tabTextColor="@color/text_gray_dark" />
-            </FrameLayout>
-
-
+            android:layout_height="wrap_content">
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"
-                app:layout_constraintTop_toBottomOf="@+id/tab_layout_f"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                />
+                android:background="@color/Yellow"
+                android:layout_height="300dp"/>
+        </RelativeLayout>
 
 
-        </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
-</android.support.constraint.ConstraintLayout>
+
+</android.support.design.widget.CoordinatorLayout>

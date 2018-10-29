@@ -149,21 +149,23 @@ public class MyInterstFrafment extends Fragment {
                 helper.setText(R.id.expiry_date_title, "关注时间:");
                 helper.setText(R.id.expiry_date, item.getDConcernTime());
                 helper.setText(R.id.num, item.getNumber() + "");
-                helper.setVisible(R.id.vip_logo,item.isBIsVip());
-                if (item.getSRemarkName()!=null){
-                    helper.setText(R.id.user_name, item.getSNickName()+"("+item.getSRemarkName()+")");
-                }else {
+                helper.setVisible(R.id.vip_logo, item.isBIsVip());
+                if (item.getSRemarkName() != null) {
+                    helper.setText(R.id.user_name, item.getSNickName() + "(" + item.getSRemarkName() + ")");
+                } else {
                     helper.setText(R.id.user_name, item.getSNickName());
                 }
 
-                /**
+
+                 /*
                  * 跳转到个人信息
                  */
+
                 helper.getConvertView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getContext(), PersonalCenterAc.class);
-                        intent.putExtra("concernId",item.getSConcernId());
+                        intent.putExtra("concernId", item.getSConcernId());
                         startActivity(intent);
                     }
                 });
@@ -171,6 +173,7 @@ public class MyInterstFrafment extends Fragment {
         };
 
         recyclerView.setAdapter(adapter);
+
 
     }
 
