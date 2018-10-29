@@ -1,6 +1,7 @@
 package com.fnhelper.photo.interfaces;
 
 import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.beans.FollowListBean;
 import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
@@ -41,13 +42,6 @@ public interface MyApi {
     @GET("Client/GetMobileCode")
     Call<GetCodeBean> GetMobileCode(@Query("sPhone") String sPhone, @Query("iType") int Type);
 
-    /**
-     * 分页获取我的关注
-     *
-     * @return
-     */
-    @GET("Concern/GetConcernListByPage")
-    Call<CheckCodeBean> GetConcernListByPage(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
 
     /**
      * 绑定绑定手机号  ?ID="+Constants.ID+"&sToken="+Constants.sToken
@@ -91,5 +85,39 @@ public interface MyApi {
     Call<CheckCodeBean> UpdatePassword(@Field("sPhone") String sPhone,
                                        @Field("sPassword") String sPassword, @Field("sCode") String sCode);
 
+    /**
+     * 关注  /Concren/Follow
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Concern/Follow")
+    Call<CheckCodeBean> Follow(@Field("sConcrenId") String sConcrenId);
+
+    /**
+     * 取消关注  /Concern/Cancel
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Concern/Cancel")
+    Call<CheckCodeBean> CancelFollow(@Field("sConcrenId") String sConcrenId);
+
+    /**
+     * 设置备注名  /Concern/SetConcrenRemark
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Concern/SetConcrenRemark")
+    Call<CheckCodeBean> SetConcrenRemark(@Field("sConcrenId") String sConcrenId,@Field("sRemarkName") String sRemarkName);
+
+    /**
+     * 分页获取我的关注
+     *
+     * @return
+     */
+    @GET("Concern/GetConcernListByPage")
+    Call<FollowListBean> GetConcernListByPage(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
 
 }

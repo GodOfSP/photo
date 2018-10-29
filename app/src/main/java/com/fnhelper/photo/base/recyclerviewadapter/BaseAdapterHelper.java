@@ -91,6 +91,19 @@ public class BaseAdapterHelper extends RecyclerView.ViewHolder {
      * Will set the image of an ImageView from a resource id.
      *
      * @param viewId     The view id.
+     * @param imageResId The image resource id.
+     * @return The BaseAdapterHelper for chaining.
+     */
+    public BaseAdapterHelper setFrescoImageResource(int viewId, int imageResId) {
+        ImageView view = retrieveView(viewId);
+        view.setImageResource(imageResId);
+        return this;
+    }
+
+    /**
+     * Will set the image of an ImageView from a resource id.
+     *
+     * @param viewId The view id.
      * @return The BaseAdapterHelper for chaining.
      */
     public BaseAdapterHelper setFrescoImageResource(int viewId, String url) {

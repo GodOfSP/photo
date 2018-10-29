@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
+import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.interfaces.RetrofitService;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
@@ -24,6 +26,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 扫描二维码
@@ -49,8 +54,9 @@ public class ScanCodeAc extends BaseActivity {
     FrameLayout activitySecond;
 
 
-    private static final  int REQUEST_IMAGE = 100;
-    private static final  int INPUT_CODE = 200;
+    private static final int REQUEST_IMAGE = 100;
+    private static final int INPUT_CODE = 200;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +76,7 @@ public class ScanCodeAc extends BaseActivity {
                     initSaoma(getSupportFragmentManager());
                 } else {
                     Toast.makeText(ScanCodeAc.this,
-                         "请先打开摄像头权限", Toast.LENGTH_SHORT).show();
+                            "请先打开摄像头权限", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -97,7 +103,7 @@ public class ScanCodeAc extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        follow();
     }
 
     @Override
@@ -189,8 +195,30 @@ public class ScanCodeAc extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-       if (requestCode == INPUT_CODE && resultCode == INPUT_CODE) {
+        if (requestCode == INPUT_CODE && resultCode == INPUT_CODE) {
 
         }
     }
+
+    /**
+     * 关注
+     */
+    private void follow() {
+
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Follow("E3112B1193664750835C2BBAEEBEAF9C");
+        call.enqueue(new Callback<CheckCodeBean>() {
+            @Override
+            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+
 }

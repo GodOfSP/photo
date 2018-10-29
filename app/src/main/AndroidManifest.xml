@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- android 8.0 安装 -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
@@ -62,9 +62,11 @@
         <activity android:name=".mine.CheckSuccessAc" />
         <activity android:name=".mine.ScanCodeAc" />
         <activity android:name=".mine.MyCodeAc" />
-        <activity android:name=".mine.ToPresentPresentMaidAc"/>
+        <activity android:name=".mine.ToPresentPresentMaidAc" />
 
-        <receiver android:name=".AppRegister"/>
+        <receiver android:name=".AppRegister" />
+
+        <activity android:name=".mine.PersonalCenterAc"></activity>
     </application>
 
 </manifest>
