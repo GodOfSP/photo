@@ -66,7 +66,11 @@
 
         <receiver android:name=".AppRegister" />
 
-        <activity android:name=".mine.PersonalCenterAc"></activity>
+        <activity android:name=".mine.PersonalCenterAc" />
+        <activity android:name=".mine.PresentRecordAc" />
+        <activity android:name=".mine.MaidRecordAc" />
+        <activity android:name=".myfans.SetRemarkNameAc" />
+        <activity android:name=".myfans.SetFansPermissionsAc"></activity>
     </application>
 
 </manifest>

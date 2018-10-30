@@ -62,8 +62,8 @@ public class MyInterstFrafment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
 
-    private boolean canLoadMore = false;
     private QuickAdapter<FollowListBean.DataBean.RowsBean> adapter;
+    private boolean canLoadMore = false;
     private int pageNum = 1;
     private int pageSize = 20;
     private EasyPopup mCirclePop;

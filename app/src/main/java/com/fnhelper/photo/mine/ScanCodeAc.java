@@ -205,7 +205,7 @@ public class ScanCodeAc extends BaseActivity {
      */
     private void follow() {
 
-        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Follow("E3112B1193664750835C2BBAEEBEAF9C");
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Follow("EC5AD1D4674E4EB7AA68DD5939BC5BD6");
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
             public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {

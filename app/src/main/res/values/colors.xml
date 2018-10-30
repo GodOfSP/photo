@@ -5,6 +5,7 @@
     <color name="colorPrimaryDarkMore">#507816</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorWindowBackground">#f0edee</color>
+    <color name="colorWindowBackgroundDark">#dddadb</color>
     <color name="colorInactive">#d5ced0</color>
     <color name="text_gray">#7A7A7A</color>
     <color name="text_gray_dark">#8b353131</color>

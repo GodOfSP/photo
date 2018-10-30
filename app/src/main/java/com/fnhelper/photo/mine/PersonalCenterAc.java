@@ -1,24 +1,20 @@
 package com.fnhelper.photo.mine;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
+import com.fnhelper.photo.diyviews.CustomViewPager;
 import com.fnhelper.photo.myfans.MyFansFrafment;
 import com.fnhelper.photo.myinterst.MyInterstFrafment;
 
@@ -36,6 +32,16 @@ import butterknife.ButterKnife;
 public class PersonalCenterAc extends BaseActivity {
 
 
+    @BindView(R.id.tv_com_back)
+    ImageView tvComBack;
+    @BindView(R.id.com_title)
+    TextView comTitle;
+    @BindView(R.id.com_right)
+    ImageView comRight;
+    @BindView(R.id.com_code)
+    ImageView comCode;
+    @BindView(R.id.head_view)
+    RelativeLayout headView;
     @BindView(R.id.head_pic)
     SimpleDraweeView headPic;
     @BindView(R.id.name)
@@ -48,24 +54,10 @@ public class PersonalCenterAc extends BaseActivity {
     ImageView storeCollection;
     @BindView(R.id.head_ConstraintLayout)
     ConstraintLayout headConstraintLayout;
-    @BindView(R.id.tv_com_back)
-    ImageView tvComBack;
-    @BindView(R.id.com_title)
-    TextView comTitle;
-    @BindView(R.id.com_right)
-    ImageView comRight;
-    @BindView(R.id.com_code)
-    ImageView comCode;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.tablayout)
     TabLayout tablayout;
-    @BindView(R.id.toolbar_layout)
-    CollapsingToolbarLayout toolbarLayout;
-    @BindView(R.id.app_bar)
-    AppBarLayout appBar;
     @BindView(R.id.viewPager)
-    ViewPager viewPager;
+    CustomViewPager viewPager;
 
 
     private String mConcernId = "";
@@ -80,6 +72,8 @@ public class PersonalCenterAc extends BaseActivity {
 
     @Override
     protected void initUI() {
+
+        comRight.setImageResource(R.drawable.more_btn);
 
     }
 

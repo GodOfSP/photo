@@ -21,7 +21,7 @@ import butterknife.Unbinder;
 
 
 /**
- * 我的粉丝
+ * 我的
  */
 public class MineFragment extends Fragment implements View.OnClickListener {
 

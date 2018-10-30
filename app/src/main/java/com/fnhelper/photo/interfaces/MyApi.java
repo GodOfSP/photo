@@ -1,6 +1,7 @@
 package com.fnhelper.photo.interfaces;
 
 import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.beans.FansListBean;
 import com.fnhelper.photo.beans.FollowListBean;
 import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
@@ -92,7 +93,7 @@ public interface MyApi {
      */
     @FormUrlEncoded
     @POST("Concern/Follow")
-    Call<CheckCodeBean> Follow(@Field("sConcrenId") String sConcrenId);
+    Call<CheckCodeBean> Follow(@Field("sConcernId") String sConcernId);
 
     /**
      * 取消关注  /Concern/Cancel
@@ -101,16 +102,34 @@ public interface MyApi {
      */
     @FormUrlEncoded
     @POST("Concern/Cancel")
-    Call<CheckCodeBean> CancelFollow(@Field("sConcrenId") String sConcrenId);
+    Call<CheckCodeBean> CancelFollow(@Field("sConcernId") String sConcernId);
 
     /**
-     * 设置备注名  /Concern/SetConcrenRemark
+     * 设置关注的人备注名  /Concern/SetConcrenRemark
      *
      * @return
      */
     @FormUrlEncoded
-    @POST("Concern/SetConcrenRemark")
-    Call<CheckCodeBean> SetConcrenRemark(@Field("sConcrenId") String sConcrenId,@Field("sRemarkName") String sRemarkName);
+    @POST("Concern/SetConcernRemark")
+    Call<CheckCodeBean> SetConcrenRemark(@Field("sConcernId") String sConcernId, @Field("sRemarkName") String sRemarkName);
+
+    /**
+     * 设置粉丝的备注名  /Concern/SetFansRemark
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Concern/SetFansRemark")
+    Call<CheckCodeBean> SetFansRemark(@Field("clientId") String clientId, @Field("sRemarkName") String sRemarkName);
+
+    /**
+     * 设置粉丝的权限  /Client/SetFansPermissions
+     * 0 看  1 不看
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Concern/SetFansPermissions")
+    Call<CheckCodeBean> SetFansPermissions(@Field("clientId") String clientId, @Field("bIsNotSeen") String bIsNotSeen);
 
     /**
      * 分页获取我的关注
@@ -119,5 +138,13 @@ public interface MyApi {
      */
     @GET("Concern/GetConcernListByPage")
     Call<FollowListBean> GetConcernListByPage(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
+
+    /**
+     * 分页获取我的粉丝  /Concern/GetFansListByPage
+     *
+     * @return
+     */
+    @GET("Concern/GetFansListByPage")
+    Call<FansListBean> GetFansListByPage(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
 
 }

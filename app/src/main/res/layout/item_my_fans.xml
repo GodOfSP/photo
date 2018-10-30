@@ -18,6 +18,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:roundAsCircle="true" />
 
+    <ImageView
+        android:id="@+id/vip_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginRight="6dp"
+        android:src="@drawable/year_small"
+        app:layout_constraintBottom_toBottomOf="@id/head_pic"
+        app:layout_constraintRight_toRightOf="@id/head_pic" />
+
+
     <TextView
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
