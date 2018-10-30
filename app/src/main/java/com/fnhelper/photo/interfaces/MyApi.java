@@ -125,6 +125,7 @@ public interface MyApi {
     /**
      * 设置粉丝的权限  /Client/SetFansPermissions
      * 0 看  1 不看
+     *
      * @return
      */
     @FormUrlEncoded
@@ -146,5 +147,14 @@ public interface MyApi {
      */
     @GET("Concern/GetFansListByPage")
     Call<FansListBean> GetFansListByPage(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
+
+    /**
+     *  分页获取提现记录  //DrawRecord/GetPageList
+     *
+     * @return
+     */
+    @GET("DrawRecord/GetPageList")
+    Call<CheckCodeBean> GetPageList(@Query("rows") int rows, @Query("page") int page);
+
 
 }

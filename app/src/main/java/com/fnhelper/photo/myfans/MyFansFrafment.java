@@ -284,34 +284,24 @@ public class MyFansFrafment extends Fragment {
                                 }
                             }
 
-                            refresh.finishRefreshing();
-                            refresh.finishLoadmore();
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
-                            refresh.finishRefreshing();
-                            refresh.finishLoadmore();
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
                             //服务错误
-                            refresh.finishRefreshing();
-                            refresh.finishLoadmore();
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
-                            refresh.finishRefreshing();
-                            refresh.finishLoadmore();
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
-                            refresh.finishRefreshing();
-                            refresh.finishLoadmore();
                             showBottom(getContext(), response.body().getInfo());
                         }
-                    } else {
+                    }
                         refresh.finishRefreshing();
                         refresh.finishLoadmore();
-                        showBottom(getContext(), "网络异常！");
-                    }
+
+
                 }
             }
 
@@ -319,6 +309,7 @@ public class MyFansFrafment extends Fragment {
             public void onFailure(Call<FansListBean> call, Throwable t) {
                 refresh.finishRefreshing();
                 refresh.finishLoadmore();
+                showBottom(getContext(), "网络异常！");
             }
         });
     }
