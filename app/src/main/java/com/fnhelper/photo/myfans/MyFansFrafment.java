@@ -276,7 +276,7 @@ public class MyFansFrafment extends Fragment {
                                     } else {
                                         adapter.replaceAll(response.body().getData().getRows());
                                     }
-                                    if (response.body().getData().getPage() > pageNum) {
+                                    if (response.body().getData().getTotal() > adapter.getData().size()) {
                                         canLoadMore = true;
                                     } else {
                                         canLoadMore = false;

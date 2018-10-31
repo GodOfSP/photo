@@ -5,7 +5,9 @@ import com.fnhelper.photo.beans.FansListBean;
 import com.fnhelper.photo.beans.FollowListBean;
 import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
+import com.fnhelper.photo.beans.MadiRecordBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
+import com.fnhelper.photo.beans.PresentRecordBean;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -154,7 +156,15 @@ public interface MyApi {
      * @return
      */
     @GET("DrawRecord/GetPageList")
-    Call<CheckCodeBean> GetPageList(@Query("rows") int rows, @Query("page") int page);
+    Call<PresentRecordBean> GetPageList(@Query("rows") int rows, @Query("page") int page);
+
+    /**
+     *  分页获取返佣记录 /VipPackage/GetCommisionRecord
+     *
+     * @return
+     */
+    @GET("VipPackage/GetCommisionRecord")
+    Call<MadiRecordBean> GetCommisionRecord(@Query("rows") int rows, @Query("page") int page);
 
 
 }

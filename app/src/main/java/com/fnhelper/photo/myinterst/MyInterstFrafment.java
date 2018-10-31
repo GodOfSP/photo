@@ -145,11 +145,11 @@ public class MyInterstFrafment extends Fragment {
             protected void convert(BaseAdapterHelper helper, final FollowListBean.DataBean.RowsBean item, int position) {
 
                 helper.setFrescoImageResource(R.id.head_pic, item.getSHeadImg());
+                helper.setVisible(R.id.vip_logo, item.isBIsVip());
 
                 helper.setText(R.id.expiry_date_title, "关注时间:");
                 helper.setText(R.id.expiry_date, item.getDConcernTime());
                 helper.setText(R.id.num, item.getNumber() + "");
-                helper.setVisible(R.id.vip_logo, item.isBIsVip());
                 if (item.getSRemarkName() != null) {
                     helper.setText(R.id.user_name, item.getSNickName() + "(" + item.getSRemarkName() + ")");
                 } else {
@@ -223,7 +223,7 @@ public class MyInterstFrafment extends Fragment {
                                     } else {
                                         adapter.replaceAll(response.body().getData().getRows());
                                     }
-                                    if (response.body().getData().getPage() > pageNum) {
+                                    if (response.body().getData().getTotal() > adapter.getData().size()) {
                                         canLoadMore = true;
                                     } else {
                                         canLoadMore = false;

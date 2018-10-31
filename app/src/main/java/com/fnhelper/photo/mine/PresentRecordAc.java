@@ -1,7 +1,5 @@
 package com.fnhelper.photo.mine;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,8 +12,7 @@ import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
-import com.fnhelper.photo.beans.CheckCodeBean;
-import com.fnhelper.photo.beans.FansListBean;
+import com.fnhelper.photo.beans.PresentRecordBean;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
@@ -55,7 +52,7 @@ public class PresentRecordAc extends BaseActivity {
     TwinklingRefreshLayout refresh;
 
 
-    private QuickAdapter<CheckCodeBean> adapter = null;
+    private QuickAdapter<PresentRecordBean.DataBean.RowsBean> adapter = null;
     private boolean canLoadMore = false;
     private int pageNum = 1;
     private int pageSize = 20;
@@ -80,7 +77,6 @@ public class PresentRecordAc extends BaseActivity {
         initRecyclerView();
         initTklRefreshLayout();
 
-
     }
 
     @Override
@@ -91,9 +87,7 @@ public class PresentRecordAc extends BaseActivity {
                 finish();
             }
         });
-
     }
-
 
     @Override
     protected void onStart() {
@@ -107,20 +101,16 @@ public class PresentRecordAc extends BaseActivity {
         recycler.setLayoutManager(new LinearLayoutManager(PresentRecordAc.this, LinearLayoutManager.VERTICAL, false));
 
 
-        adapter = new QuickAdapter<CheckCodeBean>(PresentRecordAc.this, R.layout.item_present_record) {
+        adapter = new QuickAdapter<PresentRecordBean.DataBean.RowsBean>(PresentRecordAc.this, R.layout.item_present_record) {
             @Override
-            protected void convert(BaseAdapterHelper helper, final CheckCodeBean item, int position) {
-
-
+            protected void convert(BaseAdapterHelper helper, final PresentRecordBean.DataBean.RowsBean item, int position) {
+                helper.setText(R.id.money,item.getDDrawMoney());
+                helper.setText(R.id.time,item.getDInsertTime());
             }
         };
 
         recycler.setAdapter(adapter);
 
-        adapter.add(new CheckCodeBean());
-        adapter.add(new CheckCodeBean());
-        adapter.add(new CheckCodeBean());
-        adapter.add(new CheckCodeBean());
 
     }
     
@@ -153,17 +143,28 @@ public class PresentRecordAc extends BaseActivity {
     }
     
 
-    private void getListData(boolean isLoadMore) {
-        Call<CheckCodeBean> call = RetrofitService.createMyAPI().GetPageList(pageSize, pageNum);
-        call.enqueue(new Callback<CheckCodeBean>() {
+    private void getListData(final boolean isLoadMore) {
+        Call<PresentRecordBean> call = RetrofitService.createMyAPI().GetPageList(pageSize, pageNum);
+        call.enqueue(new Callback<PresentRecordBean>() {
             @Override
-            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+            public void onResponse(Call<PresentRecordBean> call, Response<PresentRecordBean> response) {
                 if (response != null) {
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
                             if (response.body().getData() != null) {
-
+                                if (response.body().getData().getRows()!= null && response.body().getData().getRows().size() != 0) {
+                                    if (isLoadMore) {
+                                        adapter.addAll(response.body().getData().getRows());
+                                    } else {
+                                        adapter.replaceAll(response.body().getData().getRows());
+                                    }
+                                    if (response.body().getData().getTotal() > adapter.getData().size()) {
+                                        canLoadMore = true;
+                                    } else {
+                                        canLoadMore = false;
+                                    }
+                                }
                             }
 
                         } else if (response.body().getCode() == CODE_ERROR) {
@@ -187,7 +188,7 @@ public class PresentRecordAc extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+            public void onFailure(Call<PresentRecordBean> call, Throwable t) {
                 refresh.finishRefreshing();
                 refresh.finishLoadmore();
                 showBottom(PresentRecordAc.this, "网络异常！");
