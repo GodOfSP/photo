@@ -11,7 +11,6 @@ import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
-import com.fnhelper.photo.beans.MadiRecordBean;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
@@ -65,7 +64,7 @@ public class MaidRecordAc extends BaseActivity {
 
     @Override
     protected void initData() {
-        initRecyclerView();
+     initRecyclerView();
         initTklRefreshLayout();
     }
 

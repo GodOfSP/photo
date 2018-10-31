@@ -5,7 +5,6 @@ import com.fnhelper.photo.beans.FansListBean;
 import com.fnhelper.photo.beans.FollowListBean;
 import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
-import com.fnhelper.photo.beans.MadiRecordBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
 
@@ -165,6 +164,14 @@ public interface MyApi {
      */
     @GET("VipPackage/GetCommisionRecord")
     Call<MadiRecordBean> GetCommisionRecord(@Query("rows") int rows, @Query("page") int page);
+
+    /**
+     *   获取会员Vip的信息 /Client/GetVipInfo
+     *
+     * @return
+     */
+    @GET("Client/GetVipInfo")
+    Call<CheckCodeBean> GetCommisionRecord();
 
 
 }
