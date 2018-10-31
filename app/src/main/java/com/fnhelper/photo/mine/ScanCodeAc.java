@@ -30,6 +30,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+
 /**
  * 扫描二维码
  */
@@ -56,7 +61,6 @@ public class ScanCodeAc extends BaseActivity {
 
     private static final int REQUEST_IMAGE = 100;
     private static final int INPUT_CODE = 200;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +107,6 @@ public class ScanCodeAc extends BaseActivity {
 
     @Override
     protected void initData() {
-        follow();
     }
 
     @Override
@@ -122,30 +125,19 @@ public class ScanCodeAc extends BaseActivity {
         captureFragment.setAnalyzeCallback(new CodeUtils.AnalyzeCallback() {
             @Override
             public void onAnalyzeSuccess(Bitmap mBitmap, String result) {
-                Intent resultIntent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_SUCCESS);
-                bundle.putString(CodeUtils.RESULT_STRING, result);
-                resultIntent.putExtras(bundle);
-                setResult(RESULT_OK, resultIntent);
                 // 扫码成功拿到字符串截取出 bizId  跳转到店铺页面
-             /*   Intent i = new Intent(ScanActivity.this, StoreActivity.class);
-                String[] results = result.split("/");
-                i.putExtra(StoreActivity.BIZID, results[results.length - 1]);
-                startActivity(i);
-                finish();*/
+              if (result.length()!=32){
+                  showBottom(ScanCodeAc.this, "不能用该二维码进行关注操作！"); 
+              }else {
+                  loadingDialog.setHintText("处理中");
+                  loadingDialog.show();
+                  follow(result);
+              }
             }
 
             @Override
             public void onAnalyzeFailed() {
-                Intent resultIntent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_FAILED);
-                bundle.putString(CodeUtils.RESULT_STRING, "");
-                resultIntent.putExtras(bundle);
-                setResult(RESULT_OK, resultIntent);
                 showBottom(ScanCodeAc.this, "未识别");
-                finish();
             }
         });
 
@@ -203,18 +195,39 @@ public class ScanCodeAc extends BaseActivity {
     /**
      * 关注
      */
-    private void follow() {
+    private void follow(String code) {
 
-        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Follow("EC5AD1D4674E4EB7AA68DD5939BC5BD6");
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Follow(code);
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
             public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
-
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(ScanCodeAc.this,response.body().getInfo());
+                            finish();
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(ScanCodeAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(ScanCodeAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            showBottom(ScanCodeAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(ScanCodeAc.this, response.body().getInfo());
+                        }
+                    }
+                }
+                loadingDialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<CheckCodeBean> call, Throwable t) {
-
+                loadingDialog.dismiss();
             }
         });
     }

@@ -199,7 +199,7 @@ public class MyCodeAc extends BaseActivity {
                         if (aBoolean) {
                             //初始化微信
                             if (wxAPI == null) {
-                                wxAPI = WXAPIFactory.createWXAPI(getApplicationContext(), Constants.WECHAT_APPID, false);
+                                wxAPI = WXAPIFactory.createWXAPI(MyCodeAc.this, Constants.WECHAT_APPID, true);
                             }
                             if (!wxAPI.isWXAppInstalled()) {//检查是否安装了微信
                                 showBottom(MyCodeAc.this, "没有安装微信");
@@ -207,12 +207,15 @@ public class MyCodeAc extends BaseActivity {
                             }
                             wxAPI.registerApp(Constants.WECHAT_APPID);
 
+                            Bitmap mCodeBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.year_big);
+
                             WXImageObject imgObj = new WXImageObject(mCodeBitmap);
                             WXMediaMessage msg = new WXMediaMessage();
                             msg.mediaObject = imgObj;
 
                             //设置缩略图
                             Bitmap thumbBmp = Bitmap.createScaledBitmap(mCodeBitmap, THUMB_SIZE, THUMB_SIZE, true);
+                            mCodeBitmap.recycle();
                             msg.thumbData = bmpToByteArray(thumbBmp, true);  // 设置所图；
 
 
@@ -230,7 +233,7 @@ public class MyCodeAc extends BaseActivity {
 
     public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
+        bmp.compress(Bitmap.CompressFormat.PNG, 50, output);
         if (needRecycle) {
             bmp.recycle();
         }

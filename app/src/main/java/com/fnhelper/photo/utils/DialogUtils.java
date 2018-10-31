@@ -107,7 +107,9 @@ public class DialogUtils {
     public static void showLoginTips(Context context, final OnCommitListener onCommitListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogU);
         final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        if (alertDialog.getWindow()!=null){
+            alertDialog.show();
+        }
         Window window = alertDialog.getWindow();
         if (window != null) {
             window.setContentView(R.layout.dialog_login_tips);

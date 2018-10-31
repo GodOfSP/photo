@@ -14,7 +14,6 @@ import com.fnhelper.photo.beans.LoginBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.BindInputTelActivity;
-import com.fnhelper.photo.mine.BindSetNewPassWordActivity;
 import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.wxapi.AccessBean;
 import com.fnhelper.photo.wxapi.WeiXin;
@@ -90,7 +89,7 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
 
     private void loginWithWeChat() {
         if (wxAPI == null) {
-            wxAPI = WXAPIFactory.createWXAPI(getApplicationContext(), Constants.WECHAT_APPID, false);
+            wxAPI = WXAPIFactory.createWXAPI(getApplicationContext(), Constants.WECHAT_APPID, true);
         }
         if (!wxAPI.isWXAppInstalled()) {//检查是否安装了微信
             showBottom(LoginActivity.this, "没有安装微信");
@@ -174,7 +173,7 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                                 Constants.album_introduce = response.body().getData().getSIntroduce();
                                                 Constants.album_name = response.body().getData().getSPhotoName();
 
-                                                if (TextUtils.isEmpty(response.body().getData().getSPhone())){
+                                                if (response.body().getData().getSPhone()==null || TextUtils.isEmpty(response.body().getData().getSPhone())){
                                                     //如果绑定手机号返回为空 说明未绑定  -- 弹出提示框
                                                     //未绑定手机号提示
                                                     DialogUtils.showLoginTips(LoginActivity.this, new DialogUtils.OnCommitListener() {
@@ -190,7 +189,6 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                                 }else {
                                                     openActivityAndCloseThis(MainActivity.class);
                                                 }
-                                                finish();
                                             } else if (response.body().getCode() == CODE_ERROR) {
                                                 //失败
                                                 showBottom(LoginActivity.this, response.body().getInfo());
@@ -258,5 +256,10 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiveBroadCast);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }
