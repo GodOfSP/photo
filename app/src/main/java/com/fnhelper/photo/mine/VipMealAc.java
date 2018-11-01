@@ -1,0 +1,120 @@
+package com.fnhelper.photo.mine;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.fnhelper.photo.R;
+import com.fnhelper.photo.base.BaseActivity;
+import com.fnhelper.photo.beans.MyVipInfoBean;
+import com.fnhelper.photo.interfaces.Constants;
+import com.fnhelper.photo.interfaces.RetrofitService;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+
+public class VipMealAc extends BaseActivity {
+
+    @BindView(R.id.tv_com_back)
+    ImageView tvComBack;
+    @BindView(R.id.com_title)
+    TextView comTitle;
+    @BindView(R.id.com_right)
+    ImageView comRight;
+    @BindView(R.id.com_code)
+    ImageView comCode;
+    @BindView(R.id.head_view)
+    RelativeLayout headView;
+    @BindView(R.id.head_pic)
+    SimpleDraweeView headPic;
+    @BindView(R.id.vip_type)
+    ImageView vipType;
+    @BindView(R.id.user_name)
+    TextView userName;
+    @BindView(R.id.expiry_date_title)
+    TextView expiryDateTitle;
+    @BindView(R.id.expiry_date)
+    TextView expiryDate;
+    @BindView(R.id.recycler)
+    RecyclerView recycler;
+    @BindView(R.id.vip_tv)
+    TextView vipTv;
+    @BindView(R.id.presentAndMaid_tv)
+    TextView presentAndMaidTv;
+
+    @Override
+    public void setContentView() {
+        setContentView(R.layout.activity_vip_meal);
+        ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void initUI() {
+        comTitle.setText("会员套餐信息");
+        comRight.setVisibility(View.GONE);
+        headPic.setImageURI(Constants.sHeadImg);
+        userName.setText(Constants.sTsNickNameoken);
+        if (Constants.isVIP){
+
+            expiryDate.setText(Constants.vip_exi_time);
+        }else {
+            expiryDateTitle.setText("不是会员");
+            expiryDate.setVisibility(View.GONE);
+            vipType.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    protected void initData() {
+        getVipMealList();
+    }
+
+    @Override
+    protected void initListener() {
+
+    }
+
+    private void getVipMealList(){
+        retrofit2.Call<MyVipInfoBean> call = RetrofitService.createMyAPI().GetVipPackageList();
+        call.enqueue(new Callback<MyVipInfoBean>() {
+            @Override
+            public void onResponse(Call<MyVipInfoBean> call, Response<MyVipInfoBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+
+
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MyVipInfoBean> call, Throwable t) {
+                showBottom(VipMealAc.this, "网络异常！");
+            }
+        });
+    }
+}

@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,7 @@ public class MyFansFrafment extends Fragment {
     private int pageSize = 20;
     private EasyPopup mCirclePop;
     private String nowId = "";
+    private String keyWord = "";
 
 
     // TODO: Rename and change types of parameters
@@ -107,6 +109,7 @@ public class MyFansFrafment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         initTklRefreshLayout();
         initRecyclerView();
+        initSearch();
         initPop();
         return view;
     }
@@ -131,6 +134,27 @@ public class MyFansFrafment extends Fragment {
 
     }
 
+
+    private void initSearch(){
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                keyWord = searchEt.getText().toString().trim();
+                if (!TextUtils.isEmpty(keyWord)){
+                    getList(false);
+                }
+            }
+        });
+
+
+
+    }
+
+
+    /**
+     * 初始化弹框
+     */
     private void initPop() {
         mCirclePop = EasyPopup.create()
                 .setContentView(getContext(), R.layout.auth_pop)
@@ -261,7 +285,7 @@ public class MyFansFrafment extends Fragment {
     private void getList(final boolean isLoadMore) {
 
 
-        Call<FansListBean> call = RetrofitService.createMyAPI().GetFansListByPage("", pageSize, pageNum);
+        Call<FansListBean> call = RetrofitService.createMyAPI().GetFansListByPage(keyWord, pageSize, pageNum);
         call.enqueue(new Callback<FansListBean>() {
             @Override
             public void onResponse(Call<FansListBean> call, Response<FansListBean> response) {

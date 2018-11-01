@@ -33,8 +33,7 @@
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginLeft="12dp"
         android:textColor="@color/text_black"
         android:textSize="14sp"
         android:text="asdh"
@@ -48,11 +47,10 @@
         android:id="@+id/vip_money_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="12dp"
         android:textColor="@color/text_gray"
         android:textSize="14sp"
         android:text="会员费 | ¥"
-        android:layout_marginBottom="12dp"
         app:layout_constraintLeft_toRightOf="@+id/head_pic"
         app:layout_constraintBottom_toBottomOf="@+id/head_pic" />
 
@@ -64,7 +62,6 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         android:text="222"
-        android:layout_marginBottom="12dp"
         app:layout_constraintLeft_toRightOf="@+id/vip_money_logo"
         app:layout_constraintBottom_toBottomOf="@+id/head_pic" />
 

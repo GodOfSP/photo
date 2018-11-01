@@ -81,7 +81,7 @@ public class ModifyAlbumInfoAc extends BaseActivity {
             case M_CONNECT_TEL:
                 comTitle.setText("更改联系电话");
                 title.setText("联系电话");
-                content.setText(Constants.sPhone);
+                content.setText(Constants.sLinkPhone);
                 break;
             case M_WX_NUM:
                 comTitle.setText("更改微信号");
@@ -157,31 +157,17 @@ public class ModifyAlbumInfoAc extends BaseActivity {
     private void save(){
 
 
-
-
         switch (getIntent().getIntExtra("which", 1)) {
             case M_ALBUM_NAME:
                 s1 = content.getText().toString().trim();
-                s2 = Constants.wx_num;
-                s3 = Constants.sPhone;
-                s4 = Constants.album_introduce;
                 break;
             case M_CONNECT_TEL:
-                s1 = Constants.album_name;
-                s2 = Constants.wx_num;
                 s3 = content.getText().toString().trim();
-                s4 = Constants.album_introduce;
                 break;
             case M_WX_NUM:
-                s1 = Constants.album_name;
                 s2 = content.getText().toString().trim();
-                s3 = Constants.sPhone;
-                s4 = Constants.album_introduce;
                 break;
             case M_ALBUM_INTRODUCE:
-                s1 = Constants.album_name;
-                s2 = Constants.wx_num;
-                s3 = Constants.sPhone;
                 s4 = content.getText().toString().trim();
                 break;
         }
@@ -196,10 +182,21 @@ public class ModifyAlbumInfoAc extends BaseActivity {
                     if (response.body()!=null){
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                           Constants.sPhone = s3;
-                            Constants.wx_num = s2;
-                            Constants.album_introduce = s4;
-                            Constants.album_name = s1;
+
+                            switch (getIntent().getIntExtra("which", 1)) {
+                                case M_ALBUM_NAME:
+                                    Constants.album_name = s1;
+                                    break;
+                                case M_CONNECT_TEL:
+                                    Constants.sLinkPhone = s3;
+                                    break;
+                                case M_WX_NUM:
+                                    Constants.wx_num = s2;
+                                    break;
+                                case M_ALBUM_INTRODUCE:
+                                    Constants.album_introduce = s4;
+                                    break;
+                            }
                             showBottom(ModifyAlbumInfoAc.this, response.body().getInfo());
                             finish();
                         } else if (response.body().getCode() == CODE_ERROR) {

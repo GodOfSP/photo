@@ -53,6 +53,7 @@ public class LoginBean{
         private String sToken;
         private String sNickName;
         private String sPhone;
+        private String sLinkPhone;
         private String sHeadImg;
         private String sWeiXinNo;
         private String sPhotoName;
@@ -84,6 +85,14 @@ public class LoginBean{
 
         public String getSPhone() {
             return sPhone;
+        }
+
+        public String getsLinkPhone() {
+            return sLinkPhone;
+        }
+
+        public void setsLinkPhone(String sLinkPhone) {
+            this.sLinkPhone = sLinkPhone;
         }
 
         public void setSPhone(String sPhone) {

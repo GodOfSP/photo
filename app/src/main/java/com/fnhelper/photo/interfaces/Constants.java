@@ -25,9 +25,12 @@ public class Constants {
     public  static String sToken ="";
     public  static String sTsNickNameoken ="";
     public  static String sPhone ="";
+    public  static String sLinkPhone ="";
     public  static String sHeadImg ="";
     public  static String wx_num ="";
     public  static String album_introduce ="";
     public  static String album_name ="";
+    public  static String vip_exi_time ="";
+    public  static boolean isVIP =false;
 
 }

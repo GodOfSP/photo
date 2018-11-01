@@ -1,7 +1,6 @@
 package com.fnhelper.photo.mine;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -65,7 +64,9 @@ public class AlbumInfoActivity extends BaseActivity {
         comRight.setVisibility(View.GONE);
         headPic.setImageURI(Constants.sHeadImg);
         userName.setText(Constants.sTsNickNameoken);
-
+        if (!Constants.isVIP){
+            vipType.setVisibility(View.GONE);
+        }
 
     }
 
@@ -73,7 +74,7 @@ public class AlbumInfoActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         albumName.setText(Constants.album_name);
-        connectTel.setText(Constants.sPhone);
+        connectTel.setText(Constants.sLinkPhone);
         wxNum.setText(Constants.wx_num);
         albumIntroduce.setText(Constants.album_introduce);
     }

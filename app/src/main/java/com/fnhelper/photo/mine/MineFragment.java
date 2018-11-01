@@ -13,10 +13,9 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
-import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.beans.MyVipInfoBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
-import com.fnhelper.photo.myfans.SetFansPermissionsAc;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -120,6 +119,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
     private void initClick() {
 
+        moreDetail.setOnClickListener(this);
         presentAndMaid.setOnClickListener(this);
         bindPhone.setOnClickListener(this);
         my2Code.setOnClickListener(this);
@@ -168,6 +168,10 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 //相册信息
                 startActivity(new Intent(getContext(), AlbumInfoActivity.class));
                 break;
+            case R.id.more_detail:
+                //会员套餐
+                startActivity(new Intent(getContext(),VipMealAc.class));
+                break;
         }
 
     }
@@ -192,14 +196,31 @@ public class MineFragment extends Fragment implements View.OnClickListener {
 
 
 
-       retrofit2.Call<CheckCodeBean> call = RetrofitService.createMyAPI().GetCommisionRecord();
-       call.enqueue(new Callback<CheckCodeBean>() {
+       retrofit2.Call<MyVipInfoBean> call = RetrofitService.createMyAPI().GetCommisionRecord();
+       call.enqueue(new Callback<MyVipInfoBean>() {
            @Override
-           public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+           public void onResponse(Call<MyVipInfoBean> call, Response<MyVipInfoBean> response) {
                if (response != null) {
                    if (response.body() != null) {
                        if (response.body().getCode() == CODE_SUCCESS) {
                            //成功
+                           Constants.isVIP = response.body().getData().isBIsVip();
+                           if (response.body().getData().isBIsVip()){
+                               Constants.vip_exi_time = response.body().getData().getDExpireTime();
+                               expiryDate.setText(response.body().getData().getDExpireTime());
+                               expiryDate.setVisibility(View.VISIBLE);
+                               expiryDateTitle.setVisibility(View.VISIBLE);
+                               moreDetail.setVisibility(View.VISIBLE);
+                               vipType.setVisibility(View.VISIBLE);
+                           }else {
+                               expiryDate.setText("非会员");
+                               moreDetail.setText("开通会员");
+                               moreDetail.setVisibility(View.GONE);
+                               expiryDate.setVisibility(View.GONE);
+                               expiryDateTitle.setVisibility(View.GONE);
+                               vipType.setVisibility(View.GONE);
+                           }
+
                        } else if (response.body().getCode() == CODE_ERROR) {
                            //失败
                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
@@ -215,7 +236,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
            }
 
            @Override
-           public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+           public void onFailure(Call<MyVipInfoBean> call, Throwable t) {
                showBottom(getContext(), "网络异常！");
            }
        });

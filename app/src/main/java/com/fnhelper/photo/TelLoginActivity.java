@@ -115,6 +115,7 @@ public class TelLoginActivity extends BaseActivity {
                             Constants.sToken =response.body().getData().getsToken();
                             Constants.sHeadImg = response.body().getData().getsHeadImg();
                             Constants.sPhone = response.body().getData().getsPhone();
+                            Constants.sLinkPhone = response.body().getData().getsLinkPhone();
                             Constants.sTsNickNameoken = response.body().getData().getsNickName();
                             Constants.wx_num = response.body().getData().getsWeiXinNo();
                             Constants.album_introduce = response.body().getData().getsIntroduce();

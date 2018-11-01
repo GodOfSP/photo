@@ -7,6 +7,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,7 @@ public class MyInterstFrafment extends Fragment {
     private int pageNum = 1;
     private int pageSize = 20;
     private EasyPopup mCirclePop;
+    private String keyWord = "";
 
 
     // TODO: Rename and change types of parameters
@@ -131,7 +133,15 @@ public class MyInterstFrafment extends Fragment {
 
 
     private void initSearch() {
-
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                keyWord = searchEt.getText().toString().trim();
+                if (!TextUtils.isEmpty(keyWord)){
+                    getList(false);
+                }
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -208,7 +218,7 @@ public class MyInterstFrafment extends Fragment {
     private void getList(final boolean isLoadMore) {
 
 
-        Call<FollowListBean> call = RetrofitService.createMyAPI().GetConcernListByPage("", pageSize, pageNum);
+        Call<FollowListBean> call = RetrofitService.createMyAPI().GetConcernListByPage(keyWord, pageSize, pageNum);
         call.enqueue(new Callback<FollowListBean>() {
             @Override
             public void onResponse(Call<FollowListBean> call, Response<FollowListBean> response) {

@@ -168,6 +168,7 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                                 Constants.sToken = response.body().getData().getSToken();
                                                 Constants.sHeadImg = response.body().getData().getSHeadImg();
                                                 Constants.sPhone = response.body().getData().getSPhone();
+                                                Constants.sLinkPhone = response.body().getData().getsLinkPhone();
                                                 Constants.sTsNickNameoken = response.body().getData().getSNickName();
                                                 Constants.wx_num = response.body().getData().getSWeiXinNo();
                                                 Constants.album_introduce = response.body().getData().getSIntroduce();

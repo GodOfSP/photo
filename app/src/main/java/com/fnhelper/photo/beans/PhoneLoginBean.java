@@ -40,12 +40,21 @@ public class PhoneLoginBean {
     private String sToken;
     private String sNickName;
     private String sPhone;
+    private String sLinkPhone;
     private String sHeadImg;
     private String sWeiXinNo;
     private String sPhotoName;
     private String sIntroduce;
 
-    public String getID() {
+        public String getsLinkPhone() {
+            return sLinkPhone;
+        }
+
+        public void setsLinkPhone(String sLinkPhone) {
+            this.sLinkPhone = sLinkPhone;
+        }
+
+        public String getID() {
         return ID;
     }
 

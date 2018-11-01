@@ -5,6 +5,8 @@ import com.fnhelper.photo.beans.FansListBean;
 import com.fnhelper.photo.beans.FollowListBean;
 import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
+import com.fnhelper.photo.beans.MadiRecordBean;
+import com.fnhelper.photo.beans.MyVipInfoBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
 
@@ -150,7 +152,7 @@ public interface MyApi {
     Call<FansListBean> GetFansListByPage(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
 
     /**
-     *  分页获取提现记录  //DrawRecord/GetPageList
+     * 分页获取提现记录  //DrawRecord/GetPageList
      *
      * @return
      */
@@ -158,7 +160,7 @@ public interface MyApi {
     Call<PresentRecordBean> GetPageList(@Query("rows") int rows, @Query("page") int page);
 
     /**
-     *  分页获取返佣记录 /VipPackage/GetCommisionRecord
+     * 分页获取返佣记录 /VipPackage/GetCommisionRecord
      *
      * @return
      */
@@ -166,12 +168,20 @@ public interface MyApi {
     Call<MadiRecordBean> GetCommisionRecord(@Query("rows") int rows, @Query("page") int page);
 
     /**
-     *   获取会员Vip的信息 /Client/GetVipInfo
+     * 获取会员Vip的信息 /Client/GetVipInfo
      *
      * @return
      */
     @GET("Client/GetVipInfo")
-    Call<CheckCodeBean> GetCommisionRecord();
+    Call<MyVipInfoBean> GetCommisionRecord();
+
+    /**
+     * 获取会员充值套餐 /VipPackage/GetVipPackageList
+     *
+     * @return
+     */
+    @GET("VipPackage/GetVipPackageList")
+    Call<MyVipInfoBean> GetVipPackageList();
 
 
 }

@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- android 8.0 安装 -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
@@ -71,7 +71,8 @@
         <activity android:name=".mine.PresentRecordAc" />
         <activity android:name=".mine.MaidRecordAc" />
         <activity android:name=".myfans.SetRemarkNameAc" />
-        <activity android:name=".myfans.SetFansPermissionsAc"></activity>
+        <activity android:name=".myfans.SetFansPermissionsAc" />
+        <activity android:name=".mine.VipMealAc"></activity>
     </application>
 
 </manifest>
