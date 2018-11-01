@@ -3,14 +3,25 @@ package com.fnhelper.photo.utils;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.fnhelper.photo.MyApplication;
+import com.fnhelper.photo.R;
+
+import org.reactivestreams.Subscriber;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class FileUtil {
@@ -184,4 +195,7 @@ public class FileUtil {
         String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
         return suffix;
     }
+
+
+
 }

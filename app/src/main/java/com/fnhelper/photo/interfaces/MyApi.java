@@ -5,6 +5,7 @@ import com.fnhelper.photo.beans.FansListBean;
 import com.fnhelper.photo.beans.FollowListBean;
 import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
+import com.fnhelper.photo.beans.MadiRecordBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
 
