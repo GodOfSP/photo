@@ -1,10 +1,13 @@
 package com.fnhelper.photo.mine;
 
 import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
@@ -34,6 +37,12 @@ import com.zyyoona7.popup.YGravity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -128,6 +137,33 @@ public class MyCodeAc extends BaseActivity {
                 showSharePop();
             }
         });
+
+        /**
+         * 长按保存二维码
+         */
+        myCode.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MyCodeAc.this);
+                builder.setItems(new String[]{"保存二维码"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (mCodeBitmap!=null){
+                            saveBitmap(mCodeBitmap);
+
+                        }
+
+                    }
+                });
+                builder.show();
+
+
+
+                return false;
+            }
+        });
     }
 
     /**
@@ -207,7 +243,6 @@ public class MyCodeAc extends BaseActivity {
                             }
                             wxAPI.registerApp(Constants.WECHAT_APPID);
 
-                            Bitmap mCodeBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.year_big);
 
                             WXImageObject imgObj = new WXImageObject(mCodeBitmap);
                             WXMediaMessage msg = new WXMediaMessage();
@@ -215,7 +250,6 @@ public class MyCodeAc extends BaseActivity {
 
                             //设置缩略图
                             Bitmap thumbBmp = Bitmap.createScaledBitmap(mCodeBitmap, THUMB_SIZE, THUMB_SIZE, true);
-                            mCodeBitmap.recycle();
                             msg.thumbData = bmpToByteArray(thumbBmp, true);  // 设置所图；
 
 
@@ -223,6 +257,7 @@ public class MyCodeAc extends BaseActivity {
                             req.transaction = buildTransaction("img");
                             req.message = msg;
                             req.scene = t ? SendMessageToWX.Req.WXSceneSession : SendMessageToWX.Req.WXSceneTimeline;
+                            wxAPI.sendReq(req);
                         } else {
                             Toast.makeText(MyCodeAc.this, "请打开权限!", Toast.LENGTH_SHORT).show();
                         }
@@ -257,4 +292,42 @@ public class MyCodeAc extends BaseActivity {
         super.onDestroy();
         mCodeBitmap.recycle();
     }
+
+    public void saveBitmap(Bitmap bitmap) {
+
+
+
+
+        Calendar now = new GregorianCalendar();
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
+        String fileName = simpleDate.format(now.getTime());
+
+
+
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(),"fn/code");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileNames =fileName + ".png";
+       File file = new File(appDir, fileNames);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(this.getContentResolver(), file.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 通知图库更新
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + "/sdcard/namecard/")));
+        showBottom(MyCodeAc.this,"保存成功！");
+    }
+
 }
