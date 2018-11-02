@@ -9,6 +9,7 @@ import com.fnhelper.photo.beans.MadiRecordBean;
 import com.fnhelper.photo.beans.MyVipInfoBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
+import com.fnhelper.photo.beans.VipMealListBean;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -181,7 +182,7 @@ public interface MyApi {
      * @return
      */
     @GET("VipPackage/GetVipPackageList")
-    Call<MyVipInfoBean> GetVipPackageList();
+    Call<VipMealListBean> GetVipPackageList();
 
 
 }

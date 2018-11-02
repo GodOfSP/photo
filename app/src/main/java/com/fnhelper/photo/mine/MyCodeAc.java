@@ -39,10 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -295,38 +292,32 @@ public class MyCodeAc extends BaseActivity {
 
     public void saveBitmap(Bitmap bitmap) {
 
-
-
-
-        Calendar now = new GregorianCalendar();
-        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
-        String fileName = simpleDate.format(now.getTime());
-
-
-
         // 首先保存图片
-        File appDir = new File(Environment.getExternalStorageDirectory(),"fn/code");
+        File appDir = new File(Environment.getExternalStorageDirectory(), "fn");
         if (!appDir.exists()) {
             appDir.mkdir();
         }
-        String fileNames =fileName + ".png";
-       File file = new File(appDir, fileNames);
+        String fileName = System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
         try {
             FileOutputStream fos = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        // 把文件插入到系统图库
+
+        // 其次把文件插入到系统图库
         try {
-            MediaStore.Images.Media.insertImage(this.getContentResolver(), file.getAbsolutePath(), fileName, null);
+            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), fileName, null);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        // 通知图库更新
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + "/sdcard/namecard/")));
+        // 最后通知图库更新
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
         showBottom(MyCodeAc.this,"保存成功！");
     }
 

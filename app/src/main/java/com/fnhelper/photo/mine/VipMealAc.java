@@ -1,5 +1,7 @@
 package com.fnhelper.photo.mine;
 
+import android.graphics.Paint;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,7 +11,9 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
-import com.fnhelper.photo.beans.MyVipInfoBean;
+import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
+import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
+import com.fnhelper.photo.beans.VipMealListBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 
@@ -53,6 +57,9 @@ public class VipMealAc extends BaseActivity {
     @BindView(R.id.presentAndMaid_tv)
     TextView presentAndMaidTv;
 
+
+    private QuickAdapter<VipMealListBean.DataBean> adapter = null;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_vip_meal);
@@ -65,12 +72,12 @@ public class VipMealAc extends BaseActivity {
         comRight.setVisibility(View.GONE);
         headPic.setImageURI(Constants.sHeadImg);
         userName.setText(Constants.sTsNickNameoken);
-        if (Constants.isVIP){
+        if (Constants.isVIP) {
 
             expiryDate.setText(Constants.vip_exi_time);
-        }else {
-            expiryDateTitle.setText("不是会员");
-            expiryDate.setVisibility(View.GONE);
+        } else {
+            expiryDate.setText("暂不是会员");
+            expiryDateTitle.setVisibility(View.GONE);
             vipType.setVisibility(View.GONE);
         }
 
@@ -78,6 +85,7 @@ public class VipMealAc extends BaseActivity {
 
     @Override
     protected void initData() {
+        initRv();
         getVipMealList();
     }
 
@@ -86,16 +94,35 @@ public class VipMealAc extends BaseActivity {
 
     }
 
-    private void getVipMealList(){
-        retrofit2.Call<MyVipInfoBean> call = RetrofitService.createMyAPI().GetVipPackageList();
-        call.enqueue(new Callback<MyVipInfoBean>() {
+
+    private void initRv() {
+        recycler.setLayoutManager(new LinearLayoutManager(VipMealAc.this, LinearLayoutManager.VERTICAL, false));
+        adapter = new QuickAdapter<VipMealListBean.DataBean>(VipMealAc.this, R.layout.item_vipmeal_list) {
             @Override
-            public void onResponse(Call<MyVipInfoBean> call, Response<MyVipInfoBean> response) {
+            protected void convert(BaseAdapterHelper helper, VipMealListBean.DataBean item, int position) {
+
+                helper.setText(R.id.yj_num,item.getDOldPrices());
+                helper.setText(R.id.title_num,item.getDVipPrices());
+                helper.setText(R.id.title,item.getSVipName()+":  ¥");
+                helper.getTextView(R.id.yj_num).getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG); //中划线
+
+               // setFlags(Paint. STRIKE_THRU_TEXT_FLAG|Paint.ANTI_ALIAS_FLAG);  // 设置中划线并加清晰
+
+            }
+        };
+        recycler.setAdapter(adapter);
+    }
+
+    private void getVipMealList() {
+        retrofit2.Call<VipMealListBean> call = RetrofitService.createMyAPI().GetVipPackageList();
+        call.enqueue(new Callback<VipMealListBean>() {
+            @Override
+            public void onResponse(Call<VipMealListBean> call, Response<VipMealListBean> response) {
                 if (response != null) {
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-
+                            adapter.replaceAll(response.body().getData());
 
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
@@ -112,7 +139,7 @@ public class VipMealAc extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<MyVipInfoBean> call, Throwable t) {
+            public void onFailure(Call<VipMealListBean> call, Throwable t) {
                 showBottom(VipMealAc.this, "网络异常！");
             }
         });

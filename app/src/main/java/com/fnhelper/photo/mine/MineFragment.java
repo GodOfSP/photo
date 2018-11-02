@@ -156,7 +156,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.presentAndMaid:
                 //提现返佣
-                startActivity( new Intent(getContext(), ToPresentPresentMaidAc.class));
+                startActivity(new Intent(getContext(), ToPresentPresentMaidAc.class));
                 break;
             case R.id.bindPhone:
                 //去绑定
@@ -170,7 +170,12 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.more_detail:
                 //会员套餐
-                startActivity(new Intent(getContext(),VipMealAc.class));
+                startActivity(new Intent(getContext(), VipMealAc.class));
+                break;
+
+            case R.id.my2Code:
+                //我的相册二维码
+                startActivity(new Intent(getContext(), MyCodeAc.class));
                 break;
         }
 
@@ -192,54 +197,52 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     /**
      * 获取会员信息
      */
-   private void getMyVipInfo(){
+    private void getMyVipInfo() {
 
+        retrofit2.Call<MyVipInfoBean> call = RetrofitService.createMyAPI().GetCommisionRecord();
+        call.enqueue(new Callback<MyVipInfoBean>() {
+            @Override
+            public void onResponse(Call<MyVipInfoBean> call, Response<MyVipInfoBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            Constants.isVIP = response.body().getData().isBIsVip();
+                            if (response.body().getData().isBIsVip()) {
+                                Constants.vip_exi_time = response.body().getData().getDExpireTime();
+                                expiryDate.setText(response.body().getData().getDExpireTime());
+                                expiryDate.setVisibility(View.VISIBLE);
+                                expiryDateTitle.setVisibility(View.VISIBLE);
+                                moreDetail.setVisibility(View.VISIBLE);
+                                vipType.setVisibility(View.VISIBLE);
+                            } else {
+                                expiryDateTitle.setText("暂未开通会员");
+                                moreDetail.setText("开通会员");
+                                moreDetail.setVisibility(View.VISIBLE);
+                                expiryDate.setVisibility(View.GONE);
+                                expiryDateTitle.setVisibility(View.VISIBLE);
+                                vipType.setVisibility(View.GONE);
+                            }
 
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                        }
+                    }
+                }
 
-       retrofit2.Call<MyVipInfoBean> call = RetrofitService.createMyAPI().GetCommisionRecord();
-       call.enqueue(new Callback<MyVipInfoBean>() {
-           @Override
-           public void onResponse(Call<MyVipInfoBean> call, Response<MyVipInfoBean> response) {
-               if (response != null) {
-                   if (response.body() != null) {
-                       if (response.body().getCode() == CODE_SUCCESS) {
-                           //成功
-                           Constants.isVIP = response.body().getData().isBIsVip();
-                           if (response.body().getData().isBIsVip()){
-                               Constants.vip_exi_time = response.body().getData().getDExpireTime();
-                               expiryDate.setText(response.body().getData().getDExpireTime());
-                               expiryDate.setVisibility(View.VISIBLE);
-                               expiryDateTitle.setVisibility(View.VISIBLE);
-                               moreDetail.setVisibility(View.VISIBLE);
-                               vipType.setVisibility(View.VISIBLE);
-                           }else {
-                               expiryDate.setText("非会员");
-                               moreDetail.setText("开通会员");
-                               moreDetail.setVisibility(View.GONE);
-                               expiryDate.setVisibility(View.GONE);
-                               expiryDateTitle.setVisibility(View.GONE);
-                               vipType.setVisibility(View.GONE);
-                           }
+            }
 
-                       } else if (response.body().getCode() == CODE_ERROR) {
-                           //失败
-                       } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
-                           //服务错误
-                       } else if (response.body().getCode() == CODE_TOKEN) {
-                           //登录过期
-                       } else if (response.body().getCode() == CODE_TOKEN) {
-                           //账号冻结
-                       }
-                   }
-               }
-
-           }
-
-           @Override
-           public void onFailure(Call<MyVipInfoBean> call, Throwable t) {
-               showBottom(getContext(), "网络异常！");
-           }
-       });
-   }
+            @Override
+            public void onFailure(Call<MyVipInfoBean> call, Throwable t) {
+                showBottom(getContext(), "网络异常！");
+            }
+        });
+    }
 
 }

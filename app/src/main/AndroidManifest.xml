@@ -72,7 +72,8 @@
         <activity android:name=".mine.MaidRecordAc" />
         <activity android:name=".myfans.SetRemarkNameAc" />
         <activity android:name=".myfans.SetFansPermissionsAc" />
-        <activity android:name=".mine.VipMealAc"></activity>
+        <activity android:name=".mine.VipMealAc" />
+        <activity android:name=".mine.SystemSettingAc"></activity>
     </application>
 
 </manifest>
