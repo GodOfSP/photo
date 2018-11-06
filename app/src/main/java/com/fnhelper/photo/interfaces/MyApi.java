@@ -11,11 +11,18 @@ import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
 import com.fnhelper.photo.beans.VipMealListBean;
 
+import java.util.List;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 
 /**
@@ -24,9 +31,7 @@ import retrofit2.http.Query;
 
 public interface MyApi {
 
-    //查询  带参数
-    @POST("sy/pad/downloadQRCodeUrl")
-    Call<NormalApiResponse<String>> downloadQRCodeUrl(@Query("mainCode") String mainCode);
+
 
 
     //登陆
@@ -135,6 +140,56 @@ public interface MyApi {
     @FormUrlEncoded
     @POST("Concern/SetFansPermissions")
     Call<CheckCodeBean> SetFansPermissions(@Field("clientId") String clientId, @Field("bIsNotSeen") String bIsNotSeen);
+
+    /**
+     * 上传图片  /Upload/UploadImage
+     * sImageBase64tr 逗号隔开
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("Upload/UploadImage")
+    Call<CheckCodeBean> UploadImage(@Field("sImageBase64tr") String sImageBase64tr);
+
+
+    /**
+     * 上传图片  /Upload/UploadVideo
+     * sImageBase64tr 逗号隔开
+     *
+     * @return
+     */
+    @Multipart
+    @POST("Upload/UploadVideo")
+    Call<CheckCodeBean> UploadVideo(@PartMap List<RequestBody> params);
+    /**
+     * 文件整块上传
+     *
+     * @param file
+     * @return
+     */
+    @Multipart
+    @POST("Upload/UploadVideo")
+    Call<CheckCodeBean> uploadFile(@Part MultipartBody.Part file,@Query("format") String format);
+
+    /**
+     * 套餐充值  /VipPackage/Recharge
+     * sVipPackageId 充值的套餐ID
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("VipPackage/Recharge")
+    Call<CheckCodeBean> Recharge(@Field("sVipPackageId") String sVipPackageId);
+
+    /**
+     * 会员提现  /DrawRecord/Draw
+     * dDrawMoney 提现金额
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("DrawRecord/Draw")
+    Call<CheckCodeBean> Draw(@Field("dDrawMoney") String dDrawMoney);
 
     /**
      * 分页获取我的关注

@@ -57,12 +57,12 @@ public class MyFansFrafment extends Fragment {
     @BindView(R.id.refresh)
     TwinklingRefreshLayout refresh;
     Unbinder unbinder;
-
+    @BindView(R.id.viewGroup)
+    ConstraintLayout viewGroup;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    @BindView(R.id.viewGroup)
-    ConstraintLayout viewGroup;
+
 
     private QuickAdapter<FansListBean.DataBean.RowsBean> adapter;
     private boolean canLoadMore = false;

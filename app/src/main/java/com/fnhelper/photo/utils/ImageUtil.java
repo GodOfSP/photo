@@ -4,11 +4,16 @@ import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 /**
  * Created by little fly on 2018-11-1.
  */
@@ -114,4 +119,37 @@ public class ImageUtil {
     public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
+    /**
+     * 通过Base32将Bitmap转换成Base64字符串
+     *
+     * @param bit
+     * @return
+     */
+    public String Bitmap2StrByBase64(Bitmap bit) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bit.compress(Bitmap.CompressFormat.JPEG, 80, bos);//参数100表示不压缩
+        byte[] bytes = bos.toByteArray();
+        return Base64.encodeToString(bytes,Base64.DEFAULT);
+    }
+
+    public static String getBase64(String path) {
+        byte[] data = null;
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(path);
+            data = new byte[inputStream.available()];
+            inputStream.read(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return Base64.encodeToString(data,Base64.DEFAULT);
+    }
+
 }

@@ -1,17 +1,36 @@
 package com.fnhelper.photo.mine;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
+import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.diyviews.ClearEditText;
+import com.fnhelper.photo.interfaces.Constants;
+import com.fnhelper.photo.interfaces.RetrofitService;
+import com.zyyoona7.popup.EasyPopup;
+import com.zyyoona7.popup.XGravity;
+import com.zyyoona7.popup.YGravity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
 
 public class ToPresentPresentMaidAc extends BaseActivity {
 
@@ -33,7 +52,7 @@ public class ToPresentPresentMaidAc extends BaseActivity {
     @BindView(R.id.money_title)
     TextView moneyTitle;
     @BindView(R.id.money_et)
-    EditText moneyEt;
+    ClearEditText moneyEt;
     @BindView(R.id.dqktx_title)
     TextView dqktxTitle;
     @BindView(R.id.ktx_money)
@@ -44,6 +63,12 @@ public class ToPresentPresentMaidAc extends BaseActivity {
     TextView rhhdtxTitle;
     @BindView(R.id.tx_btn)
     Button txBtn;
+    @BindView(R.id.viewGroup)
+    ConstraintLayout viewGroup;
+
+
+    private EasyPopup mTxPop;
+    private String moneyNow = "";
 
     @Override
     public void setContentView() {
@@ -56,6 +81,8 @@ public class ToPresentPresentMaidAc extends BaseActivity {
 
         comTitle.setText("提现与返佣");
         comRight.setImageResource(R.drawable.more_btn);
+        initPop();
+
 
     }
 
@@ -91,6 +118,108 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+        /**
+         * 提现按钮
+         */
+        txBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moneyNow = moneyEt.getText().toString().trim();
+                if (TextUtils.isEmpty(moneyNow)) {
+                    showCenter(ToPresentPresentMaidAc.this, "请输入提现金额！");
+                } else if (Double.parseDouble(moneyNow) <= 0) {
+                    showCenter(ToPresentPresentMaidAc.this, "提现金额输入有误！");
+                } else {
+                    tx();
+                }
+            }
+        });
     }
+
+    /**
+     * 初始化弹框
+     */
+    private void initPop() {
+        mTxPop = EasyPopup.create()
+                .setContentView(ToPresentPresentMaidAc.this, R.layout.tx_pop)
+                .setAnimationStyle(R.style.BottomPopAnim)
+                //是否允许点击PopupWindow之外的地方消失
+                .setFocusAndOutsideEnable(true)
+                .setWidth(ViewGroup.LayoutParams.MATCH_PARENT)
+                //允许背景变暗
+                .setBackgroundDimEnable(true)
+                //变暗的透明度(0-1)，0为完全透明
+                .setDimValue(0.4f)
+                //变暗的背景颜色
+                .setDimColor(Color.BLACK)
+                //指定任意 ViewGroup 背景变暗
+                .setDimView(viewGroup)
+                .apply();
+
+        ((SimpleDraweeView) mTxPop.findViewById(R.id.head_pic)).setImageURI(Constants.sHeadImg);
+        ((TextView) mTxPop.findViewById(R.id.user_name)).setText(Constants.sTsNickNameoken);
+
+        mTxPop.findViewById(R.id.tx_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTxPop.dismiss();
+                txHttp();
+            }
+        });
+
+
+    }
+
+
+    /**
+     * 提现操作
+     */
+    private void tx() {
+        ((TextView) mTxPop.findViewById(R.id.je)).setText(moneyNow);
+        mTxPop.showAtAnchorView(ToPresentPresentMaidAc.this.findViewById(android.R.id.content), YGravity.ALIGN_BOTTOM, XGravity.CENTER, 0, 0);
+    }
+
+
+    private void txHttp() {
+
+        loadingDialog.setHintText("处理中");
+        loadingDialog.show();
+
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Draw(moneyNow);
+        call.enqueue(new Callback<CheckCodeBean>() {
+            @Override
+            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
+                        }
+                        loadingDialog.dismiss();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                showBottom(ToPresentPresentMaidAc.this, "网络出错！");
+            }
+        });
+    }
+
 
 }

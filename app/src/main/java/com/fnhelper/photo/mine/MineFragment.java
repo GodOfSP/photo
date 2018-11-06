@@ -177,6 +177,11 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 //我的相册二维码
                 startActivity(new Intent(getContext(), MyCodeAc.class));
                 break;
+
+            case R.id.system_setting:
+                //系统设置
+                startActivity(new Intent(getContext(), SystemSettingAc.class));
+                break;
         }
 
     }

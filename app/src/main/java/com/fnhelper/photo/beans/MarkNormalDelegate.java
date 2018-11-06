@@ -1,14 +1,11 @@
 package com.fnhelper.photo.beans;
 
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.fnhelper.photo.AddNewPhotoWordActivity;
 import com.fnhelper.photo.R;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -87,7 +84,7 @@ public class MarkNormalDelegate implements ItemViewDelegate<MarkListItemBean> {
         holder.setOnClickListener(R.id.modify, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onNormalItemThings.modify(markListItemBean.getType());
+                onNormalItemThings.modify(markListItemBean.getType(),markListItemBean.isOpen());
             }
         });
     }
@@ -95,7 +92,7 @@ public class MarkNormalDelegate implements ItemViewDelegate<MarkListItemBean> {
     public interface onNormalItemThings {
         void del(int position,int type);
 
-        void modify(int type);
+        void modify(int type,boolean isOpen);
     }
 
 }

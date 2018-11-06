@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,14 +20,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fnhelper.photo.base.BaseActivity;
-import com.fnhelper.photo.base.recyclerviewadapter.BaseQuickAdapter;
+import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.MarkListItemBean;
 import com.fnhelper.photo.beans.MarkMarkDelegate;
 import com.fnhelper.photo.beans.MarkNoneDelegate;
 import com.fnhelper.photo.beans.MarkNormalDelegate;
 import com.fnhelper.photo.diyviews.ClearEditText;
+import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.GridImageAdapter;
+import com.fnhelper.photo.utils.ImageUtil;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -41,6 +42,7 @@ import com.zyyoona7.popup.EasyPopup;
 import com.zyyoona7.popup.XGravity;
 import com.zyyoona7.popup.YGravity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,11 +50,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 添加图文
  */
-public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClickListener, MarkNormalDelegate.onNormalItemThings ,MarkMarkDelegate.onNormalItemThings {
+public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClickListener, MarkNormalDelegate.onNormalItemThings, MarkMarkDelegate.onNormalItemThings {
 
     @BindView(R.id.tv_com_back)
     ImageView tvComBack;
@@ -124,6 +132,8 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 
         comTitle.setText("添加图文");
 
+        comRight.setVisibility(View.GONE);
+
         initChooseMediaPop();
 
         initMarkList();
@@ -144,6 +154,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 
         markAddIv.setOnClickListener(this);
         markAddTv.setOnClickListener(this);
+        saveBtn.setOnClickListener(this);
     }
 
     /**
@@ -157,7 +168,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         marKListAdapter = new MultiItemTypeAdapter(AddNewPhotoWordActivity.this, markList);
         marKListAdapter.addItemViewDelegate(new MarkNoneDelegate());
         marKListAdapter.addItemViewDelegate(new MarkMarkDelegate(this));
-        marKListAdapter.addItemViewDelegate(new MarkNormalDelegate( this));
+        marKListAdapter.addItemViewDelegate(new MarkNormalDelegate(this));
         markRv.setAdapter(marKListAdapter);
 
 
@@ -206,7 +217,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
      * 初始化备注弹框
      * type--  不同备注类型显示不同弹框
      */
-    private void initMarkPop(final int type) {
+    private void initMarkPop(final int type, boolean isOpen) {
 
 
         mMarkPop = EasyPopup.create()
@@ -293,6 +304,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                             break;
                         }
                     }
+                    goodNumSwitch.setChecked(isOpen);
                     getPriceCl.setVisibility(View.GONE);
                     salePriceCl.setVisibility(View.GONE);
                     pfPriceCl.setVisibility(View.GONE);
@@ -306,6 +318,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                             break;
                         }
                     }
+                    getPriceSwitch.setChecked(isOpen);
                     goodNumCl.setVisibility(View.GONE);
                     salePriceCl.setVisibility(View.GONE);
                     pfPriceCl.setVisibility(View.GONE);
@@ -319,6 +332,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                             break;
                         }
                     }
+                    salePriceSwitch.setChecked(isOpen);
                     goodNumCl.setVisibility(View.GONE);
                     getPriceCl.setVisibility(View.GONE);
                     pfPriceCl.setVisibility(View.GONE);
@@ -332,6 +346,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                             break;
                         }
                     }
+                    pfPriceSwitch.setChecked(isOpen);
                     goodNumCl.setVisibility(View.GONE);
                     getPriceCl.setVisibility(View.GONE);
                     salePriceCl.setVisibility(View.GONE);
@@ -345,6 +360,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                             break;
                         }
                     }
+                    packPriceSwitch.setChecked(isOpen);
                     goodNumCl.setVisibility(View.GONE);
                     getPriceCl.setVisibility(View.GONE);
                     salePriceCl.setVisibility(View.GONE);
@@ -674,6 +690,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
             @Override
             public void onClick(View v) {
                 chooseMode = PictureMimeType.ofImage();
+                maxSelectNum = 9;
                 choosePhoto();
                 mCirclePop.dismiss();
             }
@@ -683,6 +700,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         videoCl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                maxSelectNum = 1;
                 chooseMode = PictureMimeType.ofVideo();
                 choosePhoto();
                 mCirclePop.dismiss();
@@ -762,7 +780,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                 //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
                 //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
-                .enableCrop(true)// 是否裁剪
+                .enableCrop(false)// 是否裁剪
                 .compress(true)// 是否压缩
                 .synOrAsy(true)//同步true或异步false 压缩 默认同步
                 //.compressSavePath(getPath())//压缩图片保存地址
@@ -834,13 +852,113 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
             //添加备注按钮
             case R.id.mark_add_iv:
             case R.id.mark_add_tv:
-                initMarkPop(MARK_TYPE_ALL);
+                initMarkPop(MARK_TYPE_ALL, false);
+                break;
 
+            case R.id.save_btn:
+                if (selectList.size() == 0) {
+                    showCenter(AddNewPhotoWordActivity.this, "请选择照片或图片!");
+                } else {
+                    commit();
+                }
                 break;
         }
 
     }
 
+    /*
+     * Java文件操作 获取文件扩展名
+     * */
+    public static String getExtensionName(String filename) {
+        if ((filename != null) && (filename.length() > 0)) {
+            int dot = filename.lastIndexOf('.');
+            if ((dot > -1) && (dot < (filename.length() - 1))) {
+                return filename.substring(dot + 1);
+            }
+        }
+        return filename;
+    }
+
+
+    public static final String MULTIPART_FORM_DATA = "image/jpg";       // 指明要上传的文件格式
+
+
+    /**
+     * 提交
+     */
+    private void commit() {
+
+        loadingDialog.setHintText("上传中");
+        loadingDialog.show();
+
+        //如果是视频的话
+        if (PictureMimeType.isPictureType(selectList.get(0).getPictureType()) == PictureConfig.TYPE_VIDEO) {
+
+
+            //构建要上传的文件
+            File file = new File(selectList.get(0).getPath());   // 需要上传的文件
+
+      /*      RequestBody requestFile =               // 根据文件格式封装文件
+                    RequestBody.create(MediaType.parse(MULTIPART_FORM_DATA), file);
+
+            // 初始化请求体对象，设置Content-Type以及文件数据流
+            RequestBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)            // multipart/form-data
+                    .addFormDataPart(partName, file.getName(), requestFile)
+                    .build();*/
+
+            RequestBody requestFile =
+                    RequestBody.create(MediaType.parse("multipart/form-data;charset=utf-8"), file);
+
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("aFile", file.getName(), requestFile);
+
+
+            Call<CheckCodeBean> call = RetrofitService.createMyAPI().uploadFile(body,getExtensionName(file.getAbsolutePath()));
+            call.enqueue(new Callback<CheckCodeBean>() {
+                @Override
+                public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                    loadingDialog.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                    loadingDialog.dismiss();
+                }
+            });
+
+
+
+
+
+        } else {
+            //如果是图片
+
+            StringBuffer stringBuffer = new StringBuffer();
+            for (int i = 0; i < selectList.size(); i++) {
+                stringBuffer.append(ImageUtil.getBase64(selectList.get(i).getCompressPath()));
+                if (i != selectList.size() - 1) {
+                    stringBuffer.append(",");
+                }
+            }
+
+            Call<CheckCodeBean> call = RetrofitService.createMyAPI().UploadImage(stringBuffer.toString());
+            call.enqueue(new Callback<CheckCodeBean>() {
+                @Override
+                public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                    showBottom(AddNewPhotoWordActivity.this,response.body().getInfo());
+                    loadingDialog.dismiss();
+                }
+
+                @Override
+                public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                    loadingDialog.dismiss();
+                }
+            });
+
+        }
+
+    }
 
     /**
      * 备注列表normalItem侧滑中的点击事件 删除
@@ -848,10 +966,10 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
      * @param position
      */
     @Override
-    public void del(int position,int type) {
+    public void del(int position, int type) {
         markList.remove(position);
 
-        switch (type){
+        switch (type) {
             case MARK_TYPE_GOOD_NUM:
                 markHaveFillList[0] = false;
                 break;
@@ -872,12 +990,20 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 break;
         }
 
-        if (markList.size() == 0){
+        if (markList.size() == 0) {
             markList.add(new MarkListItemBean("", "", false, "", MARK_TYPE_NONE));
         }
 
         marKListAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void modify(int type) {
+
+        initMarkPop(type, false);
+        showMarkPop();
+    }
+
 
     /**
      * 备注列表normalItem侧滑中的点击事件 编辑
@@ -885,10 +1011,16 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
      * @param type item 类型
      */
     @Override
-    public void modify(int type) {
+    public void modify(int type, boolean isOpen) {
 
-        initMarkPop(type);
+        initMarkPop(type, isOpen);
         showMarkPop();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        clearCash();
     }
 }
