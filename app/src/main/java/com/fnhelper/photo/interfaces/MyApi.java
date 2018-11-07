@@ -7,8 +7,11 @@ import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
 import com.fnhelper.photo.beans.MadiRecordBean;
 import com.fnhelper.photo.beans.MyVipInfoBean;
+import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
+import com.fnhelper.photo.beans.UpdatePicBean;
+import com.fnhelper.photo.beans.UpdateVdieoBean;
 import com.fnhelper.photo.beans.VipMealListBean;
 
 import java.util.List;
@@ -30,8 +33,6 @@ import retrofit2.http.Query;
  */
 
 public interface MyApi {
-
-
 
 
     //登陆
@@ -149,7 +150,7 @@ public interface MyApi {
      */
     @FormUrlEncoded
     @POST("Upload/UploadImage")
-    Call<CheckCodeBean> UploadImage(@Field("sImageBase64tr") String sImageBase64tr);
+    Call<UpdatePicBean> UploadImage(@Field("sImageBase64tr") String sImageBase64tr);
 
 
     /**
@@ -161,6 +162,7 @@ public interface MyApi {
     @Multipart
     @POST("Upload/UploadVideo")
     Call<CheckCodeBean> UploadVideo(@PartMap List<RequestBody> params);
+
     /**
      * 文件整块上传
      *
@@ -169,7 +171,32 @@ public interface MyApi {
      */
     @Multipart
     @POST("Upload/UploadVideo")
-    Call<CheckCodeBean> uploadFile(@Part MultipartBody.Part file,@Query("format") String format);
+    Call<UpdateVdieoBean> uploadFile(@Part MultipartBody.Part file, @Query("format") String format);
+
+    /**
+     * 发布和编辑动态 /ImageText/InsertAndUpdate
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("ImageText/InsertAndUpdate")
+    Call<CheckCodeBean> InsertAndUpdate(@Field("ID") String ID,
+                                        @Field("sClientId") String sClientId,
+                                        @Field("sSourceId") String sSourceId,
+                                        @Field("dRetailprices") String dRetailprices,
+                                        @Field("iTradePricesPrivate") String iTradePricesPrivate,
+                                        @Field("sContext") String sContext,
+                                        @Field("sGoodsNo") String sGoodsNo,
+                                        @Field("dCommodityPrices") String dCommodityPrices,
+                                        @Field("iCommodityPricesPrivate") String iCommodityPricesPrivate,
+                                        @Field("dPackPrices") String dPackPrices,
+                                        @Field("iRetailpricesPrivate") String iRetailpricesPrivate,
+                                        @Field("iPackPricesPrivate") String iPackPricesPrivate,
+                                        @Field("dTradePrices") String dTradePrices,
+                                        @Field("sRemark") String sRemark,
+                                        @Field("iPrivate") String iPrivate,
+                                        @Field("sVideoUrl") String sVideoUrl,
+                                        @Field("sImagesUrl") String sImagesUrl);
 
     /**
      * 套餐充值  /VipPackage/Recharge
@@ -198,6 +225,14 @@ public interface MyApi {
      */
     @GET("Concern/GetConcernListByPage")
     Call<FollowListBean> GetConcernListByPage(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
+
+    /**
+     * 分页获取动态  /ImageText/GetImageTextList
+     *
+     * @return
+     */
+    @GET("ImageText/GetImageTextList")
+    Call<NewsListBean> GetImageTextList(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
 
     /**
      * 分页获取我的粉丝  /Concern/GetFansListByPage

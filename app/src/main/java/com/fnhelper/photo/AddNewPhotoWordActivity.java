@@ -3,6 +3,7 @@ package com.fnhelper.photo;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,7 +26,10 @@ import com.fnhelper.photo.beans.MarkListItemBean;
 import com.fnhelper.photo.beans.MarkMarkDelegate;
 import com.fnhelper.photo.beans.MarkNoneDelegate;
 import com.fnhelper.photo.beans.MarkNormalDelegate;
+import com.fnhelper.photo.beans.UpdatePicBean;
+import com.fnhelper.photo.beans.UpdateVdieoBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
+import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.GridImageAdapter;
@@ -57,6 +61,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+
 /**
  * 添加图文
  */
@@ -74,10 +83,6 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     EditText word;
     @BindView(R.id.recycler)
     RecyclerView recycler;
-    @BindView(R.id.source_tv)
-    TextView sourceTv;
-    @BindView(R.id.source_iv)
-    ImageView sourceIv;
     @BindView(R.id.mark_add_iv)
     ImageView markAddIv;
     @BindView(R.id.mark_add_tv)
@@ -86,6 +91,8 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     RecyclerView markRv;
     @BindView(R.id.save_btn)
     Button saveBtn;
+    @BindView(R.id.who_can_see_sw)
+    Switch whoCanSeeSw;
 
 
     private EasyPopup mCirclePop;
@@ -155,6 +162,17 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         markAddIv.setOnClickListener(this);
         markAddTv.setOnClickListener(this);
         saveBtn.setOnClickListener(this);
+        whoCanSeeSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                        whoCanSeeSw.setText("公开: 粉丝可见");
+                }else {
+                    whoCanSeeSw.setText("仅自己可见");
+                }
+
+            }
+        });
     }
 
     /**
@@ -389,9 +407,9 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    goodNumTv.setText("公开");
+                    goodNumTv.setText("");
                 } else {
-                    goodNumTv.setText("仅自己可见");
+                    goodNumTv.setText("");
                 }
             }
         });
@@ -880,11 +898,135 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     }
 
 
-    public static final String MULTIPART_FORM_DATA = "image/jpg";       // 指明要上传的文件格式
+    private String vPath = ""; // 上传成功后的视频路径
+    private String pPath = ""; // 上传成功后的图片路径
 
 
     /**
-     * 提交
+     * 提交其它动态信息
+     */
+    private void commitOtherInfo() {
+
+
+        String dRetailprices = ""; // 零售价
+        String iTradePricesPrivate = ""; // 批发价是否公开 0-公开 1自己看
+        String sContext = "";  // 动态内容
+        String sGoodsNo = ""; // 货号
+        String dCommodityPrices = ""; // 拿货价
+        String iCommodityPricesPrivate = ""; // 拿货价是否公开 0-公开 1自己看
+        String dPackPrices = "";  //打包价
+        String iRetailpricesPrivate = ""; // 零售价是否公开 0-公开 1自己看
+        String iPackPricesPrivate = ""; // 打包是否公开 0-公开 1自己看
+        String dTradePrices = ""; // 批发价
+        String sRemark = "";  //备注说明
+        String iPrivate = ""; //0-公开 1-自己可见
+
+/*        public static final int MARK_TYPE_GOOD_NUM = 601; //货号备注
+        public static final int MARK_TYPE_GET_PRICE = 602; //拿货价
+        public static final int MARK_TYPE_SALE_PRICE = 603; //零售价
+        public static final int MARK_TYPE_PF_PRICE = 604; //批发价
+        public static final int MARK_TYPE_PACK_PRICE = 605; //打包价
+        public static final int MARK_TYPE_TV = 606; //备注文字
+        public static final int MARK_TYPE_ALL = 600; //全部
+        public static final int MARK_TYPE_NONE = 607; //没有*/
+        for (int i = 0; i < markList.size(); i++) {
+            MarkListItemBean bean = markList.get(i);
+            switch (bean.getType()) {
+                case MARK_TYPE_GOOD_NUM:
+                    sGoodsNo = bean.getTvContent();
+                    break;
+                case MARK_TYPE_GET_PRICE:
+                    dCommodityPrices = bean.getTvContent();
+                    if (bean.isOpen()) {
+                        iCommodityPricesPrivate = "0";
+                    } else {
+                        iCommodityPricesPrivate = "1";
+                    }
+                    break;
+                case MARK_TYPE_SALE_PRICE:
+                    dRetailprices = bean.getTvContent();
+                    if (bean.isOpen()) {
+                        iRetailpricesPrivate = "0";
+                    } else {
+                        iRetailpricesPrivate = "1";
+                    }
+                    break;
+                case MARK_TYPE_PF_PRICE:
+                    dTradePrices = bean.getTvContent();
+                    if (bean.isOpen()) {
+                        iTradePricesPrivate = "0";
+                    } else {
+                        iTradePricesPrivate = "1";
+                    }
+                    break;
+                case MARK_TYPE_PACK_PRICE:
+                    dPackPrices = bean.getTvContent();
+                    if (bean.isOpen()) {
+                        iPackPricesPrivate = "0";
+                    } else {
+                        iPackPricesPrivate = "1";
+                    }
+                    break;
+                case MARK_TYPE_TV:
+                    sRemark = bean.getTvMark();
+
+                    break;
+
+            }
+        }
+
+        //是否公开
+        if (whoCanSeeSw.isChecked()) {
+            iPrivate = "0";
+        } else {
+            iPrivate = "1";
+        }
+
+        sContext = word.getText().toString().trim();
+
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().InsertAndUpdate("", Constants.ID, "",
+                dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath);
+        call.enqueue(new Callback<CheckCodeBean>() {
+            @Override
+            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            if ("发布成功".equals(response.body().getInfo())){
+                                    finish();
+                            }
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                        }
+                    }
+                }
+                loadingDialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                loadingDialog.dismiss();
+                showBottom(AddNewPhotoWordActivity.this, "网络可能有问题！");
+            }
+        });
+
+    }
+
+
+    /**
+     * 提交图片或者视频 成功后再提交信息
      */
     private void commit() {
 
@@ -894,18 +1036,8 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         //如果是视频的话
         if (PictureMimeType.isPictureType(selectList.get(0).getPictureType()) == PictureConfig.TYPE_VIDEO) {
 
-
             //构建要上传的文件
             File file = new File(selectList.get(0).getPath());   // 需要上传的文件
-
-      /*      RequestBody requestFile =               // 根据文件格式封装文件
-                    RequestBody.create(MediaType.parse(MULTIPART_FORM_DATA), file);
-
-            // 初始化请求体对象，设置Content-Type以及文件数据流
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)            // multipart/form-data
-                    .addFormDataPart(partName, file.getName(), requestFile)
-                    .build();*/
 
             RequestBody requestFile =
                     RequestBody.create(MediaType.parse("multipart/form-data;charset=utf-8"), file);
@@ -914,22 +1046,44 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                     MultipartBody.Part.createFormData("aFile", file.getName(), requestFile);
 
 
-            Call<CheckCodeBean> call = RetrofitService.createMyAPI().uploadFile(body,getExtensionName(file.getAbsolutePath()));
-            call.enqueue(new Callback<CheckCodeBean>() {
+            Call<UpdateVdieoBean> call = RetrofitService.createMyAPI().uploadFile(body, getExtensionName(file.getAbsolutePath()));
+            call.enqueue(new Callback<UpdateVdieoBean>() {
                 @Override
-                public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                public void onResponse(Call<UpdateVdieoBean> call, Response<UpdateVdieoBean> response) {
+                    if (response != null) {
+                        if (response.body() != null) {
+                            if (response.body().getCode() == CODE_SUCCESS) {
+                                //成功
+                                if ("上传成功".equals(response.body().getInfo())) {
+                                    vPath = response.body().getData();
+                                    commitOtherInfo();
+                                }else {
+                                    showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                                }
+                            } else if (response.body().getCode() == CODE_ERROR) {
+                                //失败
+                                showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                                //服务错误
+                                showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                //登录过期
+                                showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                //账号冻结
+                                showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            }
+                        }
+                    }
                     loadingDialog.dismiss();
                 }
 
                 @Override
-                public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                public void onFailure(Call<UpdateVdieoBean> call, Throwable t) {
                     loadingDialog.dismiss();
+                    showBottom(AddNewPhotoWordActivity.this, "网络可能有问题！");
                 }
             });
-
-
-
-
 
         } else {
             //如果是图片
@@ -942,17 +1096,47 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 }
             }
 
-            Call<CheckCodeBean> call = RetrofitService.createMyAPI().UploadImage(stringBuffer.toString());
-            call.enqueue(new Callback<CheckCodeBean>() {
+            Call<UpdatePicBean> call = RetrofitService.createMyAPI().UploadImage(stringBuffer.toString());
+            call.enqueue(new Callback<UpdatePicBean>() {
                 @Override
-                public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
-                    showBottom(AddNewPhotoWordActivity.this,response.body().getInfo());
+                public void onResponse(Call<UpdatePicBean> call, Response<UpdatePicBean> response) {
+                    if (response != null) {
+                        if (response.body() != null) {
+                            if (response.body().getCode() == CODE_SUCCESS) {
+                                //成功
+                                if ("上传成功".equals(response.body().getInfo())) {
+                                    for (int i = 0; i < response.body().getData().size(); i++) {
+                                        pPath += response.body().getData().get(i);
+                                        if (i != response.body().getData().size() - 1) {
+                                            pPath += ",";
+                                        }
+                                    }
+                                    commitOtherInfo();
+                                }else {
+                                    showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                                }
+                            } else if (response.body().getCode() == CODE_ERROR) {
+                                //失败
+                                showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                                //服务错误
+                                showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                //登录过期
+                                showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            } else if (response.body().getCode() == CODE_TOKEN) {
+                                //账号冻结
+                                showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            }
+                        }
+                    }
                     loadingDialog.dismiss();
                 }
 
                 @Override
-                public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                public void onFailure(Call<UpdatePicBean> call, Throwable t) {
                     loadingDialog.dismiss();
+                    showBottom(AddNewPhotoWordActivity.this, "网络可能有问题！");
                 }
             });
 
@@ -1022,5 +1206,12 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     protected void onDestroy() {
         super.onDestroy();
         clearCash();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

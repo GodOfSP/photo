@@ -9,6 +9,8 @@ import com.fnhelper.photo.R;
 import com.zhy.adapter.recyclerview.base.ItemViewDelegate;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import static com.fnhelper.photo.AddNewPhotoWordActivity.MARK_TYPE_GOOD_NUM;
+
 /**
  * Created by little fly on 2018-10-5.
  */
@@ -41,7 +43,9 @@ public class MarkNormalDelegate implements ItemViewDelegate<MarkListItemBean> {
         holder.setText(R.id.title,markListItemBean.getTvTitle());
         holder.setText(R.id.content,markListItemBean.getTvContent());
         holder.setText(R.id.open_state,markListItemBean.isOpen()?"公开":"仅自己可见");
-
+        if (markListItemBean.getType() == MARK_TYPE_GOOD_NUM){
+            holder.setVisible(R.id.open_state,false);
+        }
         SwipeLayout swipeLayout = holder.getView(R.id.swipe);
         swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         swipeLayout.addSwipeListener(new SimpleSwipeListener() {

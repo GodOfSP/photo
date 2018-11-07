@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +16,31 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.fnhelper.photo.R;
+import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
+import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
+import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
+import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.MyCodeAc;
+import com.fnhelper.photo.utils.FullyGridLayoutManager;
+import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
+import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.fnhelper.photo.base.BaseActivity.showBottom;
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
 
 
 /**
@@ -45,6 +66,14 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.refresh)
     TwinklingRefreshLayout refresh;
     Unbinder unbinder;
+
+
+    private QuickAdapter<NewsListBean.DataBean.RowsBean> adapter;
+    private boolean canLoadMore = false;
+    private int pageNum = 1;
+    private int pageSize = 2;
+    private String keyWord = "";
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -88,6 +117,10 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        initSearch();
+        initTklRefreshLayout();
+        initRecyclerView();
+
         return view;
     }
 
@@ -95,6 +128,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        refresh.startRefresh();
     }
 
     @Override
@@ -111,58 +145,155 @@ public class HomeFragment extends Fragment {
     }
 
 
-    /*    *//**
-     * 初始化刷新控件
-     *//*
-    private void initTklRefreshLayout() {
-        MyRefreshView sinaRefreshView = new MyRefreshView(getContext());
-        tklRefreshLayout.setHeaderView(sinaRefreshView);
-        tklRefreshLayout.setEnableLoadmore(false);
-        tklRefreshLayout.setEnableOverScroll(true);
-        tklRefreshLayout.setOnRefreshListener(new RefreshListenerAdapter() {
-            */
+    private void initSearch() {
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                keyWord = searchEt.getText().toString().trim();
+                if (!TextUtils.isEmpty(keyWord)) {
+                    getList(false);
+                }
+            }
+        });
+    }
 
-    /**
-     * 刷新
-     *//*
+    private void initRecyclerView() {
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
+
+        adapter = new QuickAdapter<NewsListBean.DataBean.RowsBean>(getContext(), R.layout.item_news) {
+            @Override
+            protected void convert(BaseAdapterHelper helper, final NewsListBean.DataBean.RowsBean item, int position) {
+
+                helper.setFrescoImageResource(R.id.head_pic, item.getSHeadImg());
+                //  helper.setVisible(R.id.vip_logo, item.isBIsVip());
+
+
+                if (TextUtils.isEmpty(item.getSVideoUrl())) { //图片
+
+                    ArrayList<String> pics = new ArrayList<>();
+                    String[] p = item.getSImagesUrl().split(",");
+
+                    for (int i = 0; i < p.length; i++) {
+                        pics.add(p[i]);
+                    }
+
+                    RecyclerView recyclerView = helper.getView(R.id.recycler);
+                    recyclerView.setLayoutManager(new FullyGridLayoutManager(getContext(), 3,GridLayoutManager.VERTICAL,false));
+                    recyclerView.setAdapter(new QuickAdapter<String>(getContext(), R.layout.item_news_pic, pics) {
+                        @Override
+                        protected void convert(BaseAdapterHelper helper, String item, int position) {
+
+                            helper.setFrescoImageResource(R.id.pic, item);
+                        }
+                    });
+
+                } else { // 视频
+
+                }
+
+
+            }
+        };
+
+        recyclerView.setAdapter(adapter);
+
+
+    }
+
+
+    private void initTklRefreshLayout() {
+
+        new TwinklingRefreshLayoutUtil().getUpdateAndLoadMoreTwinkling(getActivity(), refresh);
+        refresh.setOnRefreshListener(new RefreshListenerAdapter() {
+
+
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {
                 super.onRefresh(refreshLayout);
-                //获取未读消失数
-                loadMsgCount();
-                //获取banner图片
-                getBannerPic();
-                //请求定位权限，获取主页内容
-                new RxPermissions(getActivity()).request(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS)
-                        .subscribe(new Consumer<Boolean>() {
-                            @Override
-                            public void accept(Boolean aBoolean) throws Exception {
-                                if (aBoolean) {
-                                    getHomeList();
-                                } else {
-                                    ToastUtil.showCenter(getActivity(), "请打开定位权限以获取数据!");
-                                }
-                            }
-                        });
+                pageNum = 1;
+                getList(false);
+            }
+
+            @Override
+            public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
+                super.onLoadMore(refreshLayout);
+                if (canLoadMore) {
+                    pageNum++;
+                    getList(true);
+                } else {
+                    refreshLayout.finishLoadmore();
+                    showBottom(getContext(), "没有更多了 ~");
+                }
             }
         });
-    }*/
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //请求权限后定位
-    /*    new RxPermissions(getActivity()).request(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS)
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean) {
-                        } else {
-                            Toast.makeText(getActivity(), "请打开定位权限以获取数据!",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });*/
     }
 
+    private void getList(final boolean isLoadMore) {
+
+
+        Call<NewsListBean> call = RetrofitService.createMyAPI().GetImageTextList(keyWord, pageSize, pageNum);
+        call.enqueue(new Callback<NewsListBean>() {
+            @Override
+            public void onResponse(Call<NewsListBean> call, Response<NewsListBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            if (response.body().getData() != null) {
+                                if (response.body().getData().getRows() != null && response.body().getData().getRows().size() != 0) {
+                                    if (isLoadMore) {
+                                        adapter.addAll(response.body().getData().getRows());
+                                    } else {
+                                        adapter.replaceAll(response.body().getData().getRows());
+                                    }
+                                    if (response.body().getData().getTotal() > adapter.getData().size()) {
+                                        canLoadMore = true;
+                                    } else {
+                                        canLoadMore = false;
+                                    }
+                                }
+                            }
+
+                            refresh.finishRefreshing();
+                            refresh.finishLoadmore();
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            refresh.finishRefreshing();
+                            refresh.finishLoadmore();
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            refresh.finishRefreshing();
+                            refresh.finishLoadmore();
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            refresh.finishRefreshing();
+                            refresh.finishLoadmore();
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            refresh.finishRefreshing();
+                            refresh.finishLoadmore();
+                            showBottom(getContext(), response.body().getInfo());
+                        }
+                    } else {
+                        refresh.finishRefreshing();
+                        refresh.finishLoadmore();
+                        showBottom(getContext(), "网络异常！");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsListBean> call, Throwable t) {
+                refresh.finishRefreshing();
+                refresh.finishLoadmore();
+            }
+        });
+    }
 
 }
