@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.VideoView;
 
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
@@ -192,9 +193,11 @@ public class HomeFragment extends Fragment {
 
                 } else { // 视频
 
+                    helper.setVisible(R.id.recycler,false);
+                    helper.setVisible(R.id.video,true);
+                    ((VideoView)helper.getView(R.id.video)).setVideoPath(item.getSVideoUrl());
+
                 }
-
-
             }
         };
 
@@ -295,5 +298,7 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
+
 
 }

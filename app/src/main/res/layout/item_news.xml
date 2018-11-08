@@ -71,6 +71,16 @@
         app:layout_constraintTop_toBottomOf="@+id/content" />
 
 
+    <VideoView
+        android:id="@id/video"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@id/date"
+        app:layout_constraintTop_toBottomOf="@+id/content"
+        />
+
     <View
         android:id="@+id/div_l"
         android:layout_width="0dp"
@@ -89,7 +99,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/recycler"
         app:layout_constraintRight_toRightOf="@id/recycler"
         app:layout_constraintTop_toBottomOf="@+id/recycler"
-
+        app:layout_goneMarginTop="120dp"
         />
 
     <View
@@ -99,7 +109,7 @@
         android:background="@color/colorInactive"
         app:layout_constraintBottom_toBottomOf="@id/mark_title"
         app:layout_constraintLeft_toRightOf="@id/mark_title"
-        app:layout_constraintRight_toRightOf="@+id/recycler"
+        app:layout_constraintRight_toRightOf="@+id/content"
         app:layout_constraintTop_toTopOf="@+id/mark_title" />
 
 
