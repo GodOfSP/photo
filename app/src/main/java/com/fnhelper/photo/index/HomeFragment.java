@@ -14,12 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.VideoView;
 
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
 import com.fnhelper.photo.beans.NewsListBean;
+import com.fnhelper.photo.beans.PreviewItemBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.MyCodeAc;
@@ -27,6 +27,8 @@ import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.previewlibrary.GPreviewBuilder;
+import com.previewlibrary.enitity.IThumbViewInfo;
 
 import java.util.ArrayList;
 
@@ -72,7 +74,7 @@ public class HomeFragment extends Fragment {
     private QuickAdapter<NewsListBean.DataBean.RowsBean> adapter;
     private boolean canLoadMore = false;
     private int pageNum = 1;
-    private int pageSize = 2;
+    private int pageSize = 15;
     private String keyWord = "";
 
 
@@ -158,55 +160,224 @@ public class HomeFragment extends Fragment {
         });
     }
 
+
+    /**
+     * 初始化recyclerView
+     */
     private void initRecyclerView() {
 
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-
 
         adapter = new QuickAdapter<NewsListBean.DataBean.RowsBean>(getContext(), R.layout.item_news) {
             @Override
             protected void convert(BaseAdapterHelper helper, final NewsListBean.DataBean.RowsBean item, int position) {
-
+                //公共部分
+                //头像
                 helper.setFrescoImageResource(R.id.head_pic, item.getSHeadImg());
                 //  helper.setVisible(R.id.vip_logo, item.isBIsVip());
+                //用户名
+                helper.setText(R.id.user_name, item.getSNickName());
+                // 发布时间
+                helper.setText(R.id.date, item.getDInsertTime());
+                //上次分享时间
+                if (item.getDShareTime() == null && TextUtils.isEmpty(item.getDInsertTime())) {
+                    helper.setVisible(R.id.share_time, false);
+                } else {
+                    helper.setText(R.id.share_time, item.getDShareTime());
+                }
+                //货号
+                if (item.getSGoodsNo() == null || TextUtils.isEmpty(item.getSGoodsNo())) {
+
+                    helper.setVisible(R.id.good_num, false);
+                    helper.setVisible(R.id.good_num_title, false);
+                } else {
+                    helper.setText(R.id.good_num, item.getSGoodsNo());
+                }
+                //拿货价
+                if (item.getDCommodityPrices() == null || TextUtils.isEmpty(item.getDCommodityPrices()) || "1".equals(item.getICommodityPricesPrivate())) {
+                    helper.setVisible(R.id.get_price, false);
+                } else {
+                    helper.setText(R.id.get_price, item.getDCommodityPrices());
+                }
+                //零售
+                if (item.getDRetailprices() == null || TextUtils.isEmpty(item.getDRetailprices()) || "1".equals(item.getIRetailpricesPrivate())) {
+                    helper.setVisible(R.id.sale_price, false);
+                } else {
+                    helper.setText(R.id.sale_price, item.getDRetailprices());
+                }
+                //批发价
+                if (item.getDTradePrices() == null || TextUtils.isEmpty(item.getDTradePrices()) || "1".equals(item.getITradePricesPrivate())) {
+                    helper.setVisible(R.id.pf_price, false);
+                } else {
+                    helper.setText(R.id.pf_price, item.getDTradePrices());
+                }
+                //打包价
+                if (item.getDPackPrices() == null || TextUtils.isEmpty(item.getDPackPrices()) || "1".equals(item.getIPackPricesPrivate())) {
+                    helper.setVisible(R.id.pf_price, false);
+                } else {
+                    helper.setText(R.id.pf_price, item.getDPackPrices());
+                }
+                //备注
+                if (item.getSRemark() == null || TextUtils.isEmpty(item.getSRemark())) {
+                    helper.setVisible(R.id.mark, false);
+                } else {
+                    helper.setText(R.id.mark, item.getSRemark());
+                }
+
+                //内容
+                if (item.getSContext() == null || TextUtils.isEmpty(item.getSContext())) {
+                    helper.setVisible(R.id.content, false);
+                } else {
+                    helper.setText(R.id.content, item.getSContext());
+                }
 
 
                 if (TextUtils.isEmpty(item.getSVideoUrl())) { //图片
 
-                    ArrayList<String> pics = new ArrayList<>();
+                    final ArrayList<IThumbViewInfo> pics = new ArrayList<>();
                     String[] p = item.getSImagesUrl().split(",");
 
                     for (int i = 0; i < p.length; i++) {
-                        pics.add(p[i]);
+                        pics.add(new PreviewItemBean(p[i]));
                     }
 
                     RecyclerView recyclerView = helper.getView(R.id.recycler);
-                    recyclerView.setLayoutManager(new FullyGridLayoutManager(getContext(), 3,GridLayoutManager.VERTICAL,false));
-                    recyclerView.setAdapter(new QuickAdapter<String>(getContext(), R.layout.item_news_pic, pics) {
+                    recyclerView.setLayoutManager(new FullyGridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false));
+                    recyclerView.setAdapter(new QuickAdapter<IThumbViewInfo>(getContext(), R.layout.item_news_pic, pics) {
                         @Override
-                        protected void convert(BaseAdapterHelper helper, String item, int position) {
+                        protected void convert(BaseAdapterHelper helper, final IThumbViewInfo item, final int position) {
 
-                            helper.setFrescoImageResource(R.id.pic, item);
+                            helper.setFrescoImageResource(R.id.pic, item.getUrl());
+
+                            helper.getConvertView().setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+
+                                    GPreviewBuilder.from(getActivity())//activity实例必须
+                                            .setData(pics)//集合
+                                            .setCurrentIndex(position)
+                                            .setSingleFling(false)//是否在黑屏区域点击返回
+                                            .setDrag(false)//是否禁用图片拖拽返回
+                                            .setType(GPreviewBuilder.IndicatorType.Dot)//指示器类型
+                                            .start();//启动
+
+                                }
+                            });
                         }
                     });
 
+
                 } else { // 视频
 
-                    helper.setVisible(R.id.recycler,false);
-                    helper.setVisible(R.id.video,true);
-                    ((VideoView)helper.getView(R.id.video)).setVideoPath(item.getSVideoUrl());
+                    helper.setVisible(R.id.recycler, false);
+                    helper.setVisible(R.id.video, true);
+
+                  /*  MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                    Bitmap bitmap = null;
+                    try {
+                        //这里要用FileProvider获取的Uri
+                        if (item.getSVideoUrl().contains("http")) {
+                            retriever.setDataSource(item.getSVideoUrl(), new HashMap<String, String>());
+                        } else {
+                            retriever.setDataSource(item.getSVideoUrl());
+                        }
+                        bitmap = retriever.getFrameAtTime();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    } finally {
+                        try {
+                            retriever.release();
+                        } catch (RuntimeException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                    helper.setImageBitmap(R.id.video, bitmap);*/
+                    //点击图片播放视频
+                    helper.setOnClickListener(R.id.video, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                     /*       Intent intent = new Intent(getContext(), ShowVedioAc.class);
+                            intent.putExtra("path", item.getSVideoUrl());
+                            startActivity(intent);*/
+
+                        /*    List<IThumbViewInfo> vList = new ArrayList<>();
+                            vList.add(new PreviewItemBean("https://upload.jianshu.io/users/upload_avatars/2354392/e962ec3f97a7.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240",item.getSVideoUrl()));
+                            GPreviewBuilder.from(getActivity())
+                                    .setData(vList)
+                                    .setCurrentIndex(0)
+                                    .setSingleFling(true)
+                                    .setOnVideoPlayerListener(new VideoClickListener(){
+                                        @Override
+                                        public void onPlayerVideo(String url) {
+                                            Log.d("onPlayerVideo",url);
+                                          Intent intent=new Intent(getActivity(),VideoPlayerDetailedActivity.class);
+                                            intent.putExtra("url",url);
+                                            startActivity(intent);
+                                        }
+                                    })
+                                    .setType(GPreviewBuilder.IndicatorType.Number)
+                                    .start();*/
+                        }
+                    });
 
                 }
+
+                //公共点击事件
+                //删除
+                helper.setOnClickListener(R.id.delete, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        delNews();
+                    }
+                });
+                //置顶
+                helper.setOnClickListener(R.id.toTop, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        toTop();
+                    }
+                });
+                //下载
+                helper.setOnClickListener(R.id.toTop, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        downloadNews();
+                    }
+                });
             }
         };
-
         recyclerView.setAdapter(adapter);
+    }
+
+
+    /**
+     * 删除动态
+     */
+    private void delNews() {
 
 
     }
 
+    /**
+     * 置顶动态
+     */
+    private void toTop() {
 
+
+    }
+
+    /**
+     * 下载动态
+     */
+    private void downloadNews(){
+
+    }
+
+    /**
+     * 初始化下拉控件
+     */
     private void initTklRefreshLayout() {
 
         new TwinklingRefreshLayoutUtil().getUpdateAndLoadMoreTwinkling(getActivity(), refresh);
@@ -298,7 +469,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
 
 
 }

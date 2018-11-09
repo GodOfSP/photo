@@ -214,7 +214,7 @@ public class NewsListBean {
                 this.bIsTop = bIsTop;
             }
 
-            public Object getSGoodsNo() {
+            public String getSGoodsNo() {
                 return sGoodsNo;
             }
 
@@ -230,7 +230,7 @@ public class NewsListBean {
                 this.iPrivate = iPrivate;
             }
 
-            public Object getDCommodityPrices() {
+            public String getDCommodityPrices() {
                 return dCommodityPrices;
             }
 

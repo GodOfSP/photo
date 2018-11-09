@@ -173,6 +173,7 @@ public interface MyApi {
     @POST("Upload/UploadVideo")
     Call<UpdateVdieoBean> uploadFile(@Part MultipartBody.Part file, @Query("format") String format);
 
+
     /**
      * 发布和编辑动态 /ImageText/InsertAndUpdate
      *
@@ -217,6 +218,16 @@ public interface MyApi {
     @FormUrlEncoded
     @POST("DrawRecord/Draw")
     Call<CheckCodeBean> Draw(@Field("dDrawMoney") String dDrawMoney);
+
+    /**
+     * 删除动态/ImageText/Cancel  sImageTextId
+     * dDrawMoney 提现金额
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("ImageText/Cancel")
+    Call<CheckCodeBean> Cancel(@Field("sImageTextId") String sImageTextId);
 
     /**
      * 分页获取我的关注

@@ -7,7 +7,9 @@ import android.support.multidex.MultiDexApplication;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
+import com.fnhelper.photo.index.TestImageLoader;
 import com.fnhelper.photo.interfaces.Constants;
+import com.previewlibrary.ZoomMediaLoader;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
@@ -51,6 +53,8 @@ public class MyApplication extends MultiDexApplication {
 
         //初始化zxing
         ZXingLibrary.initDisplayOpinion(this);
+        //初始化预览框架
+        ZoomMediaLoader.getInstance().init(new TestImageLoader());
 
     }
 

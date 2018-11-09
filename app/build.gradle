@@ -88,4 +88,9 @@ dependencies {
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     //zxing二维码
     implementation 'cn.yipianfengye.android:zxing-library:2.2'
+    //图片预览
+    implementation 'com.ycjiang:ImagePreview:2.2.2'
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.5.0'
+
 }

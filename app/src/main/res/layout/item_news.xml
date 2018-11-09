@@ -71,7 +71,7 @@
         app:layout_constraintTop_toBottomOf="@+id/content" />
 
 
-    <VideoView
+    <ImageView
         android:id="@id/video"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -205,7 +205,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/selector_full_white_r0"
         android:padding="8dp"
         android:text="删除"
         android:textColor="@color/text_gray_dark"
@@ -216,9 +215,8 @@
         android:id="@+id/toTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
+        android:layout_marginLeft="6dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/selector_full_white_r0"
         android:padding="8dp"
         android:text="置顶"
         android:textColor="@color/text_gray_dark"
@@ -229,9 +227,8 @@
         android:id="@+id/download"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
+        android:layout_marginLeft="6dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/selector_full_white_r0"
         android:padding="8dp"
         android:text="下载"
         android:textColor="@color/text_gray_dark"
@@ -242,9 +239,8 @@
         android:id="@+id/modify"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
+        android:layout_marginLeft="6dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/selector_full_white_r0"
         android:padding="8dp"
         android:text="编辑"
         android:textColor="@color/text_gray_dark"
