@@ -85,6 +85,12 @@ public class VipMealAc extends BaseActivity {
 
     @Override
     protected void initData() {
+        tvComBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         initRv();
         getVipMealList();
     }

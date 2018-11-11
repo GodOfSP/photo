@@ -221,13 +221,39 @@ public interface MyApi {
 
     /**
      * 删除动态/ImageText/Cancel  sImageTextId
-     * dDrawMoney 提现金额
+     * dDrawMoney
      *
      * @return
      */
     @FormUrlEncoded
     @POST("ImageText/Cancel")
     Call<CheckCodeBean> Cancel(@Field("sImageTextId") String sImageTextId);
+
+
+    /**
+     * 置顶动态/ImageText/SetTop  sImageTextId
+     * dDrawMoney
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("ImageText/SetTop")
+    Call<CheckCodeBean> SetTop(@Field("sImageTextId") String sImageTextId);
+
+    /**
+     * 分享动态/ImageText/SetTop  sImageTextId
+     * /ImageText/Share
+     * 接口状态: 有效
+     * 接口描述
+     * <p>
+     * 图文分享到微信朋友圈成功后需要调用该接口
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("ImageText/Share")
+    Call<CheckCodeBean> Share(@Field("sImageTextId") String sImageTextId);
+
 
     /**
      * 分页获取我的关注

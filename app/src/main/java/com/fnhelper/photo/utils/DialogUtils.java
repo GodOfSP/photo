@@ -32,6 +32,7 @@ public class DialogUtils {
         b = m.matches();
         return b;
     }
+
     public static void showAlertDialog(Context context, String commitText, String content, final OnCommitListener onCommitListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogU);
         final AlertDialog alertDialog = builder.create();
@@ -107,7 +108,7 @@ public class DialogUtils {
     public static void showLoginTips(Context context, final OnCommitListener onCommitListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogU);
         final AlertDialog alertDialog = builder.create();
-        if (alertDialog.getWindow()!=null){
+        if (alertDialog.getWindow() != null) {
             alertDialog.show();
         }
         Window window = alertDialog.getWindow();
@@ -117,6 +118,50 @@ public class DialogUtils {
             TextView cancel = (TextView) window.findViewById(R.id.tv_cancel);
             TextView commit = (TextView) window.findViewById(R.id.tv_commit);
             ImageView close = (ImageView) window.findViewById(R.id.close);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            commit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onCommitListener.onCommit();
+                    alertDialog.dismiss();
+                }
+            });
+        }
+    }
+
+    /**
+     * 删除 --  提示框
+     */
+    public static void showDelNewsTips(Context context, final OnCommitListener onCommitListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogU);
+        final AlertDialog alertDialog = builder.create();
+        if (alertDialog.getWindow() != null) {
+            alertDialog.show();
+        }
+        Window window = alertDialog.getWindow();
+        if (window != null) {
+            window.setContentView(R.layout.dialog_login_tips);
+            alertDialog.setCanceledOnTouchOutside(false);
+            TextView cancel = (TextView) window.findViewById(R.id.tv_cancel);
+            TextView commit = (TextView) window.findViewById(R.id.tv_commit);
+            TextView content = (TextView) window.findViewById(R.id.tv_content);
+            ImageView close = (ImageView) window.findViewById(R.id.close);
+
+            cancel.setText("取消");
+            commit.setText("确认");
+            content.setText("删除图文后将不可恢复，确认删除 ？");
+
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -1,8 +1,17 @@
 package com.fnhelper.photo.index;
 
 
+import android.Manifest;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,27 +23,51 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.fnhelper.photo.ModifyPhotoWordActivity;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
+import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.PreviewItemBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
+import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.MyCodeAc;
+import com.fnhelper.photo.myfans.SetRemarkNameAc;
+import com.fnhelper.photo.utils.DialogUtils;
+import com.fnhelper.photo.utils.FileUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
+import com.fnhelper.photo.utils.ImageUtil;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.permissions.RxPermissions;
 import com.previewlibrary.GPreviewBuilder;
 import com.previewlibrary.enitity.IThumbViewInfo;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXImageObject;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXVideoObject;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.zyao89.view.zloading.ZLoadingDialog;
+import com.zyyoona7.popup.EasyPopup;
+import com.zyyoona7.popup.XGravity;
+import com.zyyoona7.popup.YGravity;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,6 +77,7 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+import static com.zyao89.view.zloading.Z_TYPE.DOUBLE_CIRCLE;
 
 
 /**
@@ -123,6 +157,8 @@ public class HomeFragment extends Fragment {
         initSearch();
         initTklRefreshLayout();
         initRecyclerView();
+        initSharePop();
+
 
         return view;
     }
@@ -171,6 +207,9 @@ public class HomeFragment extends Fragment {
         adapter = new QuickAdapter<NewsListBean.DataBean.RowsBean>(getContext(), R.layout.item_news) {
             @Override
             protected void convert(BaseAdapterHelper helper, final NewsListBean.DataBean.RowsBean item, int position) {
+
+                boolean isMyNews = Constants.ID.equals(item.getSClientId());
+
                 //公共部分
                 //头像
                 helper.setFrescoImageResource(R.id.head_pic, item.getSHeadImg());
@@ -197,25 +236,33 @@ public class HomeFragment extends Fragment {
                 if (item.getDCommodityPrices() == null || TextUtils.isEmpty(item.getDCommodityPrices()) || "1".equals(item.getICommodityPricesPrivate())) {
                     helper.setVisible(R.id.get_price, false);
                 } else {
-                    helper.setText(R.id.get_price, item.getDCommodityPrices());
+                    helper.setText(R.id.get_price, "拿货价:" + item.getDCommodityPrices());
                 }
                 //零售
                 if (item.getDRetailprices() == null || TextUtils.isEmpty(item.getDRetailprices()) || "1".equals(item.getIRetailpricesPrivate())) {
                     helper.setVisible(R.id.sale_price, false);
                 } else {
-                    helper.setText(R.id.sale_price, item.getDRetailprices());
+                    helper.setText(R.id.sale_price, "零售价:" + item.getDRetailprices());
                 }
                 //批发价
                 if (item.getDTradePrices() == null || TextUtils.isEmpty(item.getDTradePrices()) || "1".equals(item.getITradePricesPrivate())) {
                     helper.setVisible(R.id.pf_price, false);
                 } else {
-                    helper.setText(R.id.pf_price, item.getDTradePrices());
+                    helper.setText(R.id.pf_price, "批发价:" + item.getDTradePrices());
                 }
                 //打包价
                 if (item.getDPackPrices() == null || TextUtils.isEmpty(item.getDPackPrices()) || "1".equals(item.getIPackPricesPrivate())) {
-                    helper.setVisible(R.id.pf_price, false);
+                    helper.setVisible(R.id.pack_price, false);
                 } else {
-                    helper.setText(R.id.pf_price, item.getDPackPrices());
+                    helper.setText(R.id.pack_price, "打包价:" + item.getDPackPrices());
+                }
+
+
+                if (helper.getTextView(R.id.get_price).getVisibility() == View.GONE && helper.getTextView(R.id.sale_price).getVisibility() == View.GONE) {
+                    helper.setVisible(R.id.first_tag, false);
+                }
+                if (helper.getTextView(R.id.pf_price).getVisibility() == View.GONE && helper.getTextView(R.id.pack_price).getVisibility() == View.GONE) {
+                    helper.setVisible(R.id.second_tag, false);
                 }
                 //备注
                 if (item.getSRemark() == null || TextUtils.isEmpty(item.getSRemark())) {
@@ -232,7 +279,7 @@ public class HomeFragment extends Fragment {
                 }
 
 
-                if (TextUtils.isEmpty(item.getSVideoUrl())) { //图片
+                if (item.getSVideoUrl() == null || TextUtils.isEmpty(item.getSVideoUrl()) || "".equals(item.getSVideoUrl())) { //图片
 
                     final ArrayList<IThumbViewInfo> pics = new ArrayList<>();
                     String[] p = item.getSImagesUrl().split(",");
@@ -267,7 +314,8 @@ public class HomeFragment extends Fragment {
                         }
                     });
 
-
+                    helper.setVisible(R.id.recycler, true);
+                    helper.setVisible(R.id.video, false);
                 } else { // 视频
 
                     helper.setVisible(R.id.recycler, false);
@@ -298,54 +346,67 @@ public class HomeFragment extends Fragment {
                     helper.setOnClickListener(R.id.video, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                     /*       Intent intent = new Intent(getContext(), ShowVedioAc.class);
-                            intent.putExtra("path", item.getSVideoUrl());
-                            startActivity(intent);*/
 
-                        /*    List<IThumbViewInfo> vList = new ArrayList<>();
-                            vList.add(new PreviewItemBean("https://upload.jianshu.io/users/upload_avatars/2354392/e962ec3f97a7.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240",item.getSVideoUrl()));
-                            GPreviewBuilder.from(getActivity())
-                                    .setData(vList)
-                                    .setCurrentIndex(0)
-                                    .setSingleFling(true)
-                                    .setOnVideoPlayerListener(new VideoClickListener(){
-                                        @Override
-                                        public void onPlayerVideo(String url) {
-                                            Log.d("onPlayerVideo",url);
-                                          Intent intent=new Intent(getActivity(),VideoPlayerDetailedActivity.class);
-                                            intent.putExtra("url",url);
-                                            startActivity(intent);
-                                        }
-                                    })
-                                    .setType(GPreviewBuilder.IndicatorType.Number)
-                                    .start();*/
+                            Intent intent = new Intent(getContext(), VideoPlayerDetailedActivity.class);
+                            intent.putExtra("url", item.getSVideoUrl());
+                            startActivity(intent);
+
                         }
+
+
                     });
 
                 }
 
                 //公共点击事件
+                if (!isMyNews) {
+                    helper.setVisible(R.id.delete, false);
+                    helper.setVisible(R.id.toTop, false);
+                }
                 //删除
                 helper.setOnClickListener(R.id.delete, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        delNews();
+                        delNews(item.getID());
                     }
                 });
                 //置顶
                 helper.setOnClickListener(R.id.toTop, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        toTop();
+                        toTop(item.getID());
                     }
                 });
                 //下载
-                helper.setOnClickListener(R.id.toTop, new View.OnClickListener() {
+                helper.setOnClickListener(R.id.download, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         downloadNews();
                     }
                 });
+                //编辑，
+                helper.setOnClickListener(R.id.modify, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       Intent i = new Intent(getContext(), ModifyPhotoWordActivity.class);
+                       i.putExtra("data",item);
+                       startActivity(i);
+                    }
+                });
+                //一键分享
+                helper.setOnClickListener(R.id.one_share, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        nowItem = item;
+                        if (TextUtils.isEmpty(item.getSVideoUrl())) { //图片
+                            nowWhich = 0;
+                        } else {
+                            nowWhich = 1;
+                        }
+                        showSharePop();
+                    }
+                });
+
             }
         };
         recyclerView.setAdapter(adapter);
@@ -355,7 +416,47 @@ public class HomeFragment extends Fragment {
     /**
      * 删除动态
      */
-    private void delNews() {
+    private void delNews(final String sImageTextId) {
+
+
+        DialogUtils.showDelNewsTips(getContext(), new DialogUtils.OnCommitListener() {
+            @Override
+            public void onCommit() {
+                retrofit2.Call<CheckCodeBean> call = RetrofitService.createMyAPI().Cancel(sImageTextId);
+                call.enqueue(new Callback<CheckCodeBean>() {
+                    @Override
+                    public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                        if (response != null) {
+                            if (response.body() != null) {
+                                if (response.body().getCode() == CODE_SUCCESS) {
+                                    //成功
+                                    showBottom(getContext(), response.body().getInfo());
+                                    refresh.startRefresh();
+                                } else if (response.body().getCode() == CODE_ERROR) {
+                                    //失败
+                                    showBottom(getContext(), response.body().getInfo());
+                                } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                                    //服务错误
+                                    showBottom(getContext(), response.body().getInfo());
+                                } else if (response.body().getCode() == CODE_TOKEN) {
+                                    //登录过期
+                                    showBottom(getContext(), response.body().getInfo());
+                                } else if (response.body().getCode() == CODE_TOKEN) {
+                                    //账号冻结
+                                    showBottom(getContext(), response.body().getInfo());
+                                }
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                        showBottom(getContext(), "网络异常！");
+                    }
+                });
+            }
+        });
 
 
     }
@@ -363,7 +464,244 @@ public class HomeFragment extends Fragment {
     /**
      * 置顶动态
      */
-    private void toTop() {
+    private void toTop(String sImageTextId) {
+        retrofit2.Call<CheckCodeBean> call = RetrofitService.createMyAPI().SetTop(sImageTextId);
+        call.enqueue(new Callback<CheckCodeBean>() {
+            @Override
+            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(getContext(), response.body().getInfo());
+                            refresh.startRefresh();
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(getContext(), response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                showBottom(getContext(), "网络异常！");
+            }
+        });
+
+    }
+
+    private IWXAPI wxAPI = null;
+    private static final int THUMB_SIZE = 150;
+    private EasyPopup mSharePop;
+    private int nowWhich = 0;
+    private NewsListBean.DataBean.RowsBean nowItem = null;
+    private ZLoadingDialog zLoadingDialog;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Toast.makeText(getContext(), "除第一张图片之外的需要您手动点击添加哦 ~", Toast.LENGTH_LONG).show();
+        }
+    };
+
+    private void initSharePop() {
+
+        zLoadingDialog = new ZLoadingDialog(getContext());
+        zLoadingDialog.setLoadingBuilder(DOUBLE_CIRCLE)//设置类型
+                .setLoadingColor(getResources().getColor(R.color.colorPrimaryDark))//颜色
+                .setHintText("加载中...")
+                .setHintTextSize(16) // 设置字体大小 dp
+                .setHintTextColor(getResources().getColor(R.color.text_gray));  // 设置字体颜色
+
+        mSharePop = EasyPopup.create()
+                .setContentView(getContext(), R.layout.share_pop)
+                .setAnimationStyle(R.style.BottomPopAnim)
+                //是否允许点击PopupWindow之外的地方消失
+                .setFocusAndOutsideEnable(true)
+                .setWidth(ViewGroup.LayoutParams.MATCH_PARENT)
+                //允许背景变暗
+                .setBackgroundDimEnable(true)
+                //变暗的透明度(0-1)，0为完全透明
+                .setDimValue(0.4f)
+                //变暗的背景颜色
+                .setDimColor(Color.BLACK)
+                //指定任意 ViewGroup 背景变暗
+                .setDimView((ViewGroup) getActivity().findViewById(android.R.id.content))
+                .apply();
+
+
+        RelativeLayout friend = mSharePop.findViewById(R.id.friend_rl);
+        RelativeLayout cicler = mSharePop.findViewById(R.id.cicler_rl);
+
+        friend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareNews(true);
+            }
+        });
+
+        cicler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareNews(false);
+            }
+        });
+    }
+
+    private void showSharePop() {
+        mSharePop.showAtAnchorView(getActivity().findViewById(android.R.id.content), YGravity.ALIGN_BOTTOM, XGravity.CENTER, 0, 0);
+    }
+
+
+    /**
+     * 分享动态
+     * t 朋友圈或者朋友
+     * which  图片或视频
+     */
+    private void shareNews(final boolean t) {
+
+        mSharePop.dismiss();
+        zLoadingDialog.setHintText("处理中");
+        zLoadingDialog.show();
+
+        if (nowWhich == 0) {
+            //图文
+            //请求权限
+            new RxPermissions(getActivity()).request(Manifest.permission.READ_PHONE_STATE)
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) throws Exception {
+                            if (aBoolean) {
+                                //初始化微信
+                                if (wxAPI == null) {
+                                    wxAPI = WXAPIFactory.createWXAPI(getContext(), Constants.WECHAT_APPID, true);
+                                }
+                                if (!wxAPI.isWXAppInstalled()) {//检查是否安装了微信
+                                    showBottom(getContext(), "没有安装微信");
+                                    return;
+                                }
+                                wxAPI.registerApp(Constants.WECHAT_APPID);
+
+
+                                //这一步一定要clear,不然分享了朋友圈马上分享好友图片就会翻倍
+
+
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        //这一步一定要clear,不然分享了朋友圈马上分享好友图片就会翻倍
+
+                                        try {
+
+
+                                            ArrayList<File> files = new ArrayList<>();
+
+                                            try {
+
+                                                for (int i = 0; i < nowItem.getSImagesUrl().split(",").length; i++) {
+
+                                                    if (i == 0)
+                                                        files.add(ImageUtil.saveImageToSdCard(getContext(), nowItem.getSImagesUrl().split(",")[i]));
+                                                }
+
+                                                Intent intent = new Intent(Intent.ACTION_SEND);
+                                                ComponentName comp;
+
+                                                if (t) {
+                                                    comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI");
+                                                } else {
+                                                    comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
+                                                    intent.putExtra("Kdescription", "分享朋友圈的图片说明");
+                                                }
+                                                intent.setComponent(comp);
+                                                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                intent.setType("image/*");
+
+                                                ArrayList<Uri> imageUris = new ArrayList<Uri>();
+                                                for (File f : files) {
+                                                    imageUris.add(ImageUtil.getImageContentUri(f, getContext()));
+                                                }
+
+                                                intent.putExtra(Intent.EXTRA_STREAM, imageUris);
+                                                startActivity(intent);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            zLoadingDialog.dismiss();
+                                            handler.sendEmptyMessage(1);
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }).start();
+
+
+                            } else {
+                                Toast.makeText(getContext(), "请打开权限!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        } else {
+            //视频
+
+            //请求权限
+            new RxPermissions(getActivity()).request(Manifest.permission.READ_PHONE_STATE)
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) throws Exception {
+                            if (aBoolean) {
+                                //初始化微信
+                                if (wxAPI == null) {
+                                    wxAPI = WXAPIFactory.createWXAPI(getContext(), Constants.WECHAT_APPID, true);
+                                }
+                                if (!wxAPI.isWXAppInstalled()) {//检查是否安装了微信
+                                    showBottom(getContext(), "没有安装微信");
+                                    return;
+                                }
+                                wxAPI.registerApp(Constants.WECHAT_APPID);
+
+
+                                WXVideoObject video = new WXVideoObject();
+                                video.videoUrl = nowItem.getSVideoUrl();
+
+                                WXMediaMessage msg = new WXMediaMessage(video);
+                                msg.title = nowItem.getSNickName();
+                                msg.description = nowItem.getSContext();
+                                Bitmap thumb = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_video_play);
+                                /**
+                                 * 测试过程中会出现这种情况，会有个别手机会出现调不起微信客户端的情况。造成这种情况的原因是微信对缩略图的大小、title、description等参数的大小做了限制，所以有可能是大小超过了默认的范围。
+                                 * 一般情况下缩略图超出比较常见。Title、description都是文本，一般不会超过。
+                                 */
+                                Bitmap thumbBitmap = Bitmap.createScaledBitmap(thumb, THUMB_SIZE, THUMB_SIZE, true);
+                                thumb.recycle();
+                                msg.thumbData = ImageUtil.bmpToByteArray(thumbBitmap, true);
+
+                                SendMessageToWX.Req req = new SendMessageToWX.Req();
+                                req.transaction = ImageUtil.buildTransaction("video");
+                                req.message = msg;
+                                req.scene = t ? SendMessageToWX.Req.WXSceneSession : SendMessageToWX.Req.WXSceneTimeline;
+                                wxAPI.sendReq(req);
+
+                            } else {
+                                Toast.makeText(getContext(), "请打开权限!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
 
 
     }
@@ -371,7 +709,7 @@ public class HomeFragment extends Fragment {
     /**
      * 下载动态
      */
-    private void downloadNews(){
+    private void downloadNews() {
 
     }
 
@@ -405,6 +743,23 @@ public class HomeFragment extends Fragment {
         });
     }
 
+
+    /**
+     * 判断是否有置顶的item
+     */
+    private void checkHaveTopTag(ArrayList<NewsListBean.DataBean.RowsBean> elem){
+
+
+        for (int i = 0 ; i < elem.size(); i ++){
+            if (elem.get(i).isBIsDeleted()){
+                elem.remove(i);
+            }
+           if (elem.get(i).isBIsTop()){
+               elem.add(0,elem.remove(i));
+           }
+        }
+    }
+
     private void getList(final boolean isLoadMore) {
 
 
@@ -418,6 +773,7 @@ public class HomeFragment extends Fragment {
                             //成功
                             if (response.body().getData() != null) {
                                 if (response.body().getData().getRows() != null && response.body().getData().getRows().size() != 0) {
+                                    checkHaveTopTag((ArrayList<NewsListBean.DataBean.RowsBean>) response.body().getData().getRows());
                                     if (isLoadMore) {
                                         adapter.addAll(response.body().getData().getRows());
                                     } else {

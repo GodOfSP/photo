@@ -1,8 +1,11 @@
 package com.fnhelper.photo.beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class NewsListBean {
+public class NewsListBean implements Parcelable {
 
     /**
      * code : 100
@@ -13,6 +16,23 @@ public class NewsListBean {
     private int code;
     private String info;
     private DataBean data;
+
+    protected NewsListBean(Parcel in) {
+        code = in.readInt();
+        info = in.readString();
+    }
+
+    public static final Creator<NewsListBean> CREATOR = new Creator<NewsListBean>() {
+        @Override
+        public NewsListBean createFromParcel(Parcel in) {
+            return new NewsListBean(in);
+        }
+
+        @Override
+        public NewsListBean[] newArray(int size) {
+            return new NewsListBean[size];
+        }
+    };
 
     public int getCode() {
         return code;
@@ -38,7 +58,18 @@ public class NewsListBean {
         this.data = data;
     }
 
-    public static class DataBean {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(code);
+        dest.writeString(info);
+    }
+
+    public static class DataBean  implements Parcelable{
         /**
          * page : 1
          * total : 4
@@ -50,6 +81,24 @@ public class NewsListBean {
         private int total;
         private String data;
         private List<RowsBean> rows;
+
+        protected DataBean(Parcel in) {
+            page = in.readInt();
+            total = in.readInt();
+            data = in.readString();
+        }
+
+        public static final Creator<DataBean> CREATOR = new Creator<DataBean>() {
+            @Override
+            public DataBean createFromParcel(Parcel in) {
+                return new DataBean(in);
+            }
+
+            @Override
+            public DataBean[] newArray(int size) {
+                return new DataBean[size];
+            }
+        };
 
         public int getPage() {
             return page;
@@ -83,7 +132,19 @@ public class NewsListBean {
             this.rows = rows;
         }
 
-        public static class RowsBean {
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(page);
+            dest.writeInt(total);
+            dest.writeString(data);
+        }
+
+        public static class RowsBean  implements Parcelable{
             /**
              * Number : 1
              * ID : 788752da234a4617a9545c2e1ef5fd71
@@ -141,6 +202,84 @@ public class NewsListBean {
             private String sHeadImg;
             private String sNickName;
             private int MaxRows;
+
+            protected RowsBean(Parcel in) {
+                Number = in.readString();
+                ID = in.readString();
+                sClientId = in.readString();
+                sSourceId = in.readString();
+                iType = in.readString();
+                sContext = in.readString();
+                sImagesUrl = in.readString();
+                sVideoUrl = in.readString();
+                bIsTop = in.readByte() != 0;
+                sGoodsNo = in.readString();
+                iPrivate = in.readString();
+                dCommodityPrices = in.readString();
+                iCommodityPricesPrivate = in.readString();
+                dRetailprices = in.readString();
+                iRetailpricesPrivate = in.readString();
+                dTradePrices = in.readString();
+                iTradePricesPrivate = in.readString();
+                dPackPrices = in.readString();
+                iPackPricesPrivate = in.readString();
+                sRemark = in.readString();
+                dInsertTime = in.readString();
+                dUpdateTime = in.readString();
+                dShareTime = in.readString();
+                bIsDeleted = in.readByte() != 0;
+                sHeadImg = in.readString();
+                sNickName = in.readString();
+                MaxRows = in.readInt();
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(Number);
+                dest.writeString(ID);
+                dest.writeString(sClientId);
+                dest.writeString(sSourceId);
+                dest.writeString(iType);
+                dest.writeString(sContext);
+                dest.writeString(sImagesUrl);
+                dest.writeString(sVideoUrl);
+                dest.writeByte((byte) (bIsTop ? 1 : 0));
+                dest.writeString(sGoodsNo);
+                dest.writeString(iPrivate);
+                dest.writeString(dCommodityPrices);
+                dest.writeString(iCommodityPricesPrivate);
+                dest.writeString(dRetailprices);
+                dest.writeString(iRetailpricesPrivate);
+                dest.writeString(dTradePrices);
+                dest.writeString(iTradePricesPrivate);
+                dest.writeString(dPackPrices);
+                dest.writeString(iPackPricesPrivate);
+                dest.writeString(sRemark);
+                dest.writeString(dInsertTime);
+                dest.writeString(dUpdateTime);
+                dest.writeString(dShareTime);
+                dest.writeByte((byte) (bIsDeleted ? 1 : 0));
+                dest.writeString(sHeadImg);
+                dest.writeString(sNickName);
+                dest.writeInt(MaxRows);
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            public static final Creator<RowsBean> CREATOR = new Creator<RowsBean>() {
+                @Override
+                public RowsBean createFromParcel(Parcel in) {
+                    return new RowsBean(in);
+                }
+
+                @Override
+                public RowsBean[] newArray(int size) {
+                    return new RowsBean[size];
+                }
+            };
 
             public String getNumber() {
                 return Number;

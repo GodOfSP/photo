@@ -19,7 +19,6 @@
         app:roundAsCircle="true" />
 
 
-
     <TextView
         android:id="@+id/user_name"
         android:layout_width="wrap_content"
@@ -76,10 +75,11 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="12dp"
+        android:background="@color/colorInactive"
+        android:src="@drawable/ic_video_play"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@id/date"
-        app:layout_constraintTop_toBottomOf="@+id/content"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/content" />
 
     <View
         android:id="@+id/div_l"
@@ -99,8 +99,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/recycler"
         app:layout_constraintRight_toRightOf="@id/recycler"
         app:layout_constraintTop_toBottomOf="@+id/recycler"
-        app:layout_goneMarginTop="120dp"
-        />
+        app:layout_goneMarginTop="120dp" />
 
     <View
         android:id="@+id/div_2"
@@ -137,11 +136,24 @@
 
 
     <TextView
+        android:id="@+id/first_tag"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_full_white_green"
+        android:gravity="center"
+        android:text="拿货价: 213213"
+        android:visibility="invisible"
+        android:textColor="@color/text_gray_dark"
+        app:layout_constraintLeft_toLeftOf="@id/div_l"
+        app:layout_constraintTop_toBottomOf="@+id/good_num_title" />
+
+    <TextView
         android:id="@+id/get_price"
         android:layout_width="120dp"
         android:layout_height="30dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/bg_full_white_login_btn"
+        android:background="@drawable/bg_full_white_green"
         android:gravity="center"
         android:text="拿货价: 213213"
         android:textColor="@color/text_gray_dark"
@@ -153,7 +165,7 @@
         android:layout_width="120dp"
         android:layout_height="30dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/bg_full_white_login_btn"
+        android:background="@drawable/bg_full_white_green"
         android:gravity="center"
         android:text="零售价: 213213"
         android:textColor="@color/text_gray_dark"
@@ -166,24 +178,37 @@
         android:layout_width="120dp"
         android:layout_height="30dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/bg_full_white_login_btn"
+        android:background="@drawable/bg_full_white_green"
         android:gravity="center"
         android:text="批发价: 213213"
         android:textColor="@color/text_gray_dark"
         app:layout_constraintLeft_toLeftOf="@id/div_l"
-        app:layout_constraintTop_toBottomOf="@+id/get_price" />
+        app:layout_constraintTop_toBottomOf="@+id/first_tag" />
+
+    <TextView
+        android:id="@+id/second_tag"
+        android:layout_width="120dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_full_white_green"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:text="批发价: 213213"
+        android:textColor="@color/text_gray_dark"
+        app:layout_constraintLeft_toLeftOf="@id/div_l"
+        app:layout_constraintTop_toBottomOf="@+id/first_tag" />
 
     <TextView
         android:id="@+id/pack_price"
         android:layout_width="120dp"
         android:layout_height="30dp"
         android:layout_marginTop="12dp"
-        android:background="@drawable/bg_full_white_login_btn"
+        android:background="@drawable/bg_full_white_green"
         android:gravity="center"
         android:text="包装价: 213213"
         android:textColor="@color/text_gray_dark"
         app:layout_constraintRight_toRightOf="@id/div_2"
-        app:layout_constraintTop_toBottomOf="@+id/sale_price" />
+        app:layout_constraintTop_toBottomOf="@+id/first_tag" />
 
 
     <TextView
@@ -197,7 +222,7 @@
         android:text="请你去就是肯定会加快速度"
         app:layout_constraintLeft_toLeftOf="@id/div_l"
         app:layout_constraintRight_toRightOf="@id/div_2"
-        app:layout_constraintTop_toBottomOf="@+id/pf_price" />
+        app:layout_constraintTop_toBottomOf="@+id/second_tag" />
 
 
     <TextView
@@ -253,16 +278,28 @@
         android:layout_height="wrap_content"
         android:text="2分钟前分想过"
         android:textColor="@color/text_gray_dark"
-        app:layout_constraintRight_toRightOf="@id/div_2"
         app:layout_constraintBottom_toBottomOf="@id/delete"
-        app:layout_constraintTop_toTopOf="@+id/delete"
-        />
+        app:layout_constraintRight_toRightOf="@id/div_2"
+        app:layout_constraintTop_toTopOf="@+id/delete" />
+
+    <TextView
+        android:id="@+id/one_share"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:background="@drawable/bg_full_white_green_r6"
+        android:gravity="center"
+        android:text="一键分享"
+        android:textColor="@color/colorPrimaryDark"
+        app:layout_constraintLeft_toLeftOf="@id/div_l"
+        app:layout_constraintRight_toRightOf="@id/div_2"
+        app:layout_constraintTop_toBottomOf="@+id/modify" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/colorInactive"
-        app:layout_constraintTop_toBottomOf="@+id/delete"
         android:layout_marginTop="12dp"
-        />
+        android:background="@color/colorInactive"
+        app:layout_constraintTop_toBottomOf="@+id/one_share" />
+
+
 </android.support.constraint.ConstraintLayout>

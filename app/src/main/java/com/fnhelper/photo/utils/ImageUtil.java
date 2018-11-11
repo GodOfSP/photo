@@ -2,18 +2,34 @@ package com.fnhelper.photo.utils;
 
 import android.annotation.TargetApi;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
 
+import com.facebook.binaryresource.FileBinaryResource;
+import com.facebook.cache.common.SimpleCacheKey;
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import static com.tencent.bugly.crashreport.crash.c.i;
+
 /**
  * Created by little fly on 2018-11-1.
  */
@@ -87,6 +103,47 @@ public class ImageUtil {
         }
         return null;
     }
+    public static String buildTransaction(final String type) {
+        return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
+    }
+
+
+
+    public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
+        int i;
+        int j;
+        if (bmp.getHeight() > bmp.getWidth()) {
+            i = bmp.getWidth();
+            j = bmp.getWidth();
+        }  else {
+            i = bmp.getHeight();
+            j = bmp.getHeight();
+        }
+
+        Bitmap localBitmap = Bitmap.createBitmap(i, j, Bitmap.Config.RGB_565);
+        Canvas localCanvas =  new Canvas(localBitmap);
+
+        while ( true) {
+            localCanvas.drawBitmap(bmp,  new Rect(0, 0, i, j),  new Rect(0, 0,i, j),  null);
+            if (needRecycle)
+                bmp.recycle();
+            ByteArrayOutputStream localByteArrayOutputStream =  new ByteArrayOutputStream();
+            localBitmap.compress(Bitmap.CompressFormat.JPEG, 100,
+                    localByteArrayOutputStream);
+            localBitmap.recycle();
+            byte[] arrayOfByte = localByteArrayOutputStream.toByteArray();
+            try {
+                localByteArrayOutputStream.close();
+                return arrayOfByte;
+            }  catch (Exception e) {
+                // F.out(e);
+            }
+            i = bmp.getHeight();
+            j = bmp.getHeight();
+        }
+    }
+
+
 
     /**
      * @param uri The Uri to check.
@@ -151,5 +208,107 @@ public class ImageUtil {
 
         return Base64.encodeToString(data,Base64.DEFAULT);
     }
+    /**
+     * 获取缓存中的bitmap
+     *
+     * @param uri
+     * @return
+     */
+    public static Bitmap returnBitmap(Uri uri) {
 
+        Bitmap bitmap = null;
+        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getSmallImageFileCache().getResource(new SimpleCacheKey(uri.toString()));
+        File file = resource.getFile();
+        bitmap = BitmapFactory.decodeFile(file.getPath());
+        return bitmap;
+
+    }
+
+    /**
+     * 获取缓存中的file
+     *
+     * @param uri
+     * @return
+     */
+    public static File returnFile(Uri uri) {
+
+        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainFileCache().getResource(new SimpleCacheKey(uri.toString()));
+        File file = resource.getFile();
+        return file;
+
+    }
+
+    /**
+     * 转换 content:// uri
+     *
+     * @param imageFile
+     * @return
+     */
+    public static Uri getImageContentUri(File imageFile,Context context) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Images.Media._ID },
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[] { filePath }, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor
+                    .getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/images/media");
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
+    }
+    public static String IMAGE_NAME = "iv_share_";
+    public static int  i =0;
+    //根据网络图片url路径保存到本地
+    public static final File saveImageToSdCard(Context context, String image) {
+        boolean success = false;
+        File file = null;
+        try {
+            file = createStableImageFile(context);
+
+            Bitmap bitmap = null;
+            URL url = new URL(image);
+            HttpURLConnection conn = null;
+            conn = (HttpURLConnection) url.openConnection();
+            InputStream is = null;
+            is = conn.getInputStream();
+            bitmap =  BitmapFactory.decodeStream(is);
+
+            FileOutputStream outStream;
+
+            outStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+            outStream.flush();
+            outStream.close();
+            success = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (success) {
+            return file;
+        } else {
+            return null;
+        }
+    }
+
+    //创建本地保存路径
+    public static File createStableImageFile(Context context) throws IOException {
+        i++;
+        String imageFileName =IMAGE_NAME + i+ ".jpg";
+        File storageDir = context.getExternalCacheDir();
+        File image = new File(storageDir, imageFileName);
+        return image;
+    }
 }

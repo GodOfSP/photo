@@ -24,6 +24,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.interfaces.Constants;
+import com.fnhelper.photo.utils.ImageUtil;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXImageObject;
@@ -102,7 +103,7 @@ public class MyCodeAc extends BaseActivity {
                         if (aBoolean) {
                             //获取头衔bitmap
                             Uri uri = Uri.parse(Constants.sHeadImg);
-                            Bitmap bitmap = returnBitmap(uri);
+                            Bitmap bitmap = ImageUtil.returnBitmap(uri);
                             //生成二维码
                             mCodeBitmap = CodeUtils.createImage(Constants.ID, 400, 400, bitmap);
                             myCode.setImageURI(Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), mCodeBitmap, null, null)));
@@ -163,21 +164,7 @@ public class MyCodeAc extends BaseActivity {
         });
     }
 
-    /**
-     * 获取缓存中的bitmap
-     *
-     * @param uri
-     * @return
-     */
-    private Bitmap returnBitmap(Uri uri) {
 
-        Bitmap bitmap = null;
-        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getSmallImageFileCache().getResource(new SimpleCacheKey(uri.toString()));
-        File file = resource.getFile();
-        bitmap = BitmapFactory.decodeFile(file.getPath());
-        return bitmap;
-
-    }
 
     private void initSharePop() {
         mSharePop = EasyPopup.create()
@@ -247,11 +234,11 @@ public class MyCodeAc extends BaseActivity {
 
                             //设置缩略图
                             Bitmap thumbBmp = Bitmap.createScaledBitmap(mCodeBitmap, THUMB_SIZE, THUMB_SIZE, true);
-                            msg.thumbData = bmpToByteArray(thumbBmp, true);  // 设置所图；
+                            msg.thumbData = ImageUtil.bmpToByteArray(thumbBmp, true);  // 设置所图；
 
 
                             SendMessageToWX.Req req = new SendMessageToWX.Req();
-                            req.transaction = buildTransaction("img");
+                            req.transaction = ImageUtil.buildTransaction("img");
                             req.message = msg;
                             req.scene = t ? SendMessageToWX.Req.WXSceneSession : SendMessageToWX.Req.WXSceneTimeline;
                             wxAPI.sendReq(req);
@@ -263,26 +250,8 @@ public class MyCodeAc extends BaseActivity {
 
     }
 
-    public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 50, output);
-        if (needRecycle) {
-            bmp.recycle();
-        }
 
-        byte[] result = output.toByteArray();
-        try {
-            output.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        return result;
-    }
-
-    private String buildTransaction(final String type) {
-        return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
-    }
 
     @Override
     protected void onDestroy() {

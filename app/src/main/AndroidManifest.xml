@@ -75,6 +75,9 @@
         <activity android:name=".mine.VipMealAc" />
         <activity android:name=".mine.SystemSettingAc" />
         <activity android:name=".index.ShowVedioAc"></activity>
+
+        <activity android:name=".index.VideoPlayerDetailedActivity"/>
+        <activity android:name=".ModifyPhotoWordActivity"/>
     </application>
 
 </manifest>
