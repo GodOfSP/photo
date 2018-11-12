@@ -74,10 +74,11 @@
         <activity android:name=".myfans.SetFansPermissionsAc" />
         <activity android:name=".mine.VipMealAc" />
         <activity android:name=".mine.SystemSettingAc" />
-        <activity android:name=".index.ShowVedioAc"></activity>
-
-        <activity android:name=".index.VideoPlayerDetailedActivity"/>
-        <activity android:name=".ModifyPhotoWordActivity"/>
+        <activity android:name=".index.ShowVedioAc" />
+        <activity android:name=".index.VideoPlayerDetailedActivity" />
+        <activity android:name=".ModifyPhotoWordActivity" />
+        <activity android:name=".mine.NoticeAc" />
+        <activity android:name=".mine.NoticeDetailAc"></activity>
     </application>
 
 </manifest>

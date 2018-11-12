@@ -28,8 +28,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static com.tencent.bugly.crashreport.crash.c.i;
-
 /**
  * Created by little fly on 2018-11-1.
  */
@@ -217,7 +215,7 @@ public class ImageUtil {
     public static Bitmap returnBitmap(Uri uri) {
 
         Bitmap bitmap = null;
-        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getSmallImageFileCache().getResource(new SimpleCacheKey(uri.toString()));
+        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainFileCache().getResource(new SimpleCacheKey(uri.toString()));
         File file = resource.getFile();
         bitmap = BitmapFactory.decodeFile(file.getPath());
         return bitmap;

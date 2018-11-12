@@ -3,15 +3,16 @@ package com.fnhelper.photo.index;
 
 import android.Manifest;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -37,20 +38,16 @@ import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.MyCodeAc;
-import com.fnhelper.photo.myfans.SetRemarkNameAc;
 import com.fnhelper.photo.utils.DialogUtils;
-import com.fnhelper.photo.utils.FileUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.ImageUtil;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
-import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.previewlibrary.GPreviewBuilder;
 import com.previewlibrary.enitity.IThumbViewInfo;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.opensdk.modelmsg.WXImageObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXVideoObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -61,8 +58,10 @@ import com.zyyoona7.popup.XGravity;
 import com.zyyoona7.popup.YGravity;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -108,7 +107,7 @@ public class HomeFragment extends Fragment {
     private QuickAdapter<NewsListBean.DataBean.RowsBean> adapter;
     private boolean canLoadMore = false;
     private int pageNum = 1;
-    private int pageSize = 15;
+    private int pageSize = 2;
     private String keyWord = "";
 
 
@@ -381,16 +380,16 @@ public class HomeFragment extends Fragment {
                 helper.setOnClickListener(R.id.download, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        downloadNews();
+                        downloadNews(item.getSImagesUrl());
                     }
                 });
                 //编辑，
                 helper.setOnClickListener(R.id.modify, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       Intent i = new Intent(getContext(), ModifyPhotoWordActivity.class);
-                       i.putExtra("data",item);
-                       startActivity(i);
+                        Intent i = new Intent(getContext(), ModifyPhotoWordActivity.class);
+                        i.putExtra("data", item);
+                        startActivity(i);
                     }
                 });
                 //一键分享
@@ -511,7 +510,14 @@ public class HomeFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Toast.makeText(getContext(), "除第一张图片之外的需要您手动点击添加哦 ~", Toast.LENGTH_LONG).show();
+            if (msg.what==1){
+                Toast.makeText(getContext(), "除第一张图片之外的需要您手动点击添加哦 ~", Toast.LENGTH_LONG).show();
+            }else if (msg.what == 2){
+                // 最后通知图库更新
+                getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+                zLoadingDialog.dismiss();
+                showBottom(getContext(), "保存成功！");
+            }
         }
     };
 
@@ -703,13 +709,57 @@ public class HomeFragment extends Fragment {
                     });
         }
 
-
     }
+
+
+
+
 
     /**
      * 下载动态
      */
-    private void downloadNews() {
+    private void downloadNews(final String data) {
+
+
+        zLoadingDialog.setHintText("保存中...");
+        zLoadingDialog.show();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String[] strings = data.split(",");
+
+                for (int i = 0; i < strings.length; i++) {
+                    // 首先保存图片
+                    Bitmap bitmap = ImageUtil.returnBitmap(Uri.parse(strings[i]));
+                    File appDir = new File(Environment.getExternalStorageDirectory(), "蜂鸟微商相册");
+                    if (!appDir.exists()) {
+                        appDir.mkdir();
+                    }
+                    String fileName = System.currentTimeMillis() + ".jpg";
+                    File file = new File(appDir, fileName);
+                    try {
+                        FileOutputStream fos = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                        fos.flush();
+                        fos.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // 其次把文件插入到系统图库
+                    try {
+                        MediaStore.Images.Media.insertImage(getContext().getContentResolver(), file.getAbsolutePath(), fileName, null);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                handler.sendEmptyMessage(2);
+            }
+        }).start();
 
     }
 
@@ -747,16 +797,16 @@ public class HomeFragment extends Fragment {
     /**
      * 判断是否有置顶的item
      */
-    private void checkHaveTopTag(ArrayList<NewsListBean.DataBean.RowsBean> elem){
+    private void checkHaveTopTag(ArrayList<NewsListBean.DataBean.RowsBean> elem) {
 
 
-        for (int i = 0 ; i < elem.size(); i ++){
-            if (elem.get(i).isBIsDeleted()){
+        for (int i = 0; i < elem.size(); i++) {
+            if (elem.get(i).isBIsDeleted()) {
                 elem.remove(i);
             }
-           if (elem.get(i).isBIsTop()){
-               elem.add(0,elem.remove(i));
-           }
+            if (elem.get(i).isBIsTop()) {
+                elem.add(0, elem.remove(i));
+            }
         }
     }
 

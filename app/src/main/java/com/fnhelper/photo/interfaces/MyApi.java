@@ -1,5 +1,6 @@
 package com.fnhelper.photo.interfaces;
 
+import com.fnhelper.photo.beans.BalanceBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.FansListBean;
 import com.fnhelper.photo.beans.FollowListBean;
@@ -8,6 +9,7 @@ import com.fnhelper.photo.beans.LoginBean;
 import com.fnhelper.photo.beans.MadiRecordBean;
 import com.fnhelper.photo.beans.MyVipInfoBean;
 import com.fnhelper.photo.beans.NewsListBean;
+import com.fnhelper.photo.beans.NoticeBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
 import com.fnhelper.photo.beans.UpdatePicBean;
@@ -197,7 +199,9 @@ public interface MyApi {
                                         @Field("sRemark") String sRemark,
                                         @Field("iPrivate") String iPrivate,
                                         @Field("sVideoUrl") String sVideoUrl,
-                                        @Field("sImagesUrl") String sImagesUrl);
+                                        @Field("sImagesUrl") String sImagesUrl,
+                                        @Field("iType") String iType
+    );
 
     /**
      * 套餐充值  /VipPackage/Recharge
@@ -256,6 +260,15 @@ public interface MyApi {
 
 
     /**
+     * 获取可提现余额
+     *    /Client/GetBalance
+     * @return
+     */
+    @GET("Client/GetBalance")
+    Call<BalanceBean> GetBalance();
+
+
+    /**
      * 分页获取我的关注
      *
      * @return
@@ -294,6 +307,14 @@ public interface MyApi {
      */
     @GET("VipPackage/GetCommisionRecord")
     Call<MadiRecordBean> GetCommisionRecord(@Query("rows") int rows, @Query("page") int page);
+
+    /**
+     * 分页获取公共列表 Notice/GetNoticeList
+     *
+     * @return
+     */
+    @GET("Notice/GetNoticeList")
+    Call<NoticeBean> GetNoticeList(@Query("rows") int rows, @Query("page") int page);
 
     /**
      * 获取会员Vip的信息 /Client/GetVipInfo

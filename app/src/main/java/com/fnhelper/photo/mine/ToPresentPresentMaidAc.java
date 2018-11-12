@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
+import com.fnhelper.photo.beans.BalanceBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
@@ -135,6 +136,64 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                 }
             }
         });
+
+        /**
+         * 全部提现
+         */
+        qbtxBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moneyEt.setText(ktxMoney.getText().toString());
+                tx();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getBalance();
+    }
+
+    /**
+     * 获取可提现余额
+     */
+    private void getBalance() {
+
+        Call<BalanceBean> call = RetrofitService.createMyAPI().GetBalance();
+        call.enqueue(new Callback<BalanceBean>() {
+            @Override
+            public void onResponse(Call<BalanceBean> call, Response<BalanceBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            if (response.body().getData() != null) {
+                                ktxMoney.setText(response.body().getData().getDBalance());
+                            }
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
+                        }
+                        loadingDialog.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BalanceBean> call, Throwable t) {
+                showBottom(ToPresentPresentMaidAc.this, "网络出错！");
+            }
+        });
     }
 
     /**
@@ -167,10 +226,7 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                 txHttp();
             }
         });
-
-
     }
-
 
     /**
      * 提现操作
@@ -180,7 +236,9 @@ public class ToPresentPresentMaidAc extends BaseActivity {
         mTxPop.showAtAnchorView(ToPresentPresentMaidAc.this.findViewById(android.R.id.content), YGravity.ALIGN_BOTTOM, XGravity.CENTER, 0, 0);
     }
 
-
+    /**
+     * 提现
+     */
     private void txHttp() {
 
         loadingDialog.setHintText("处理中");
@@ -210,7 +268,6 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                         }
                         loadingDialog.dismiss();
                     }
-
                 }
             }
 
@@ -220,6 +277,5 @@ public class ToPresentPresentMaidAc extends BaseActivity {
             }
         });
     }
-
 
 }

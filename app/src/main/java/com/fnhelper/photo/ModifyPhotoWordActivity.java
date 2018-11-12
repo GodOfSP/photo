@@ -1007,7 +1007,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
     /**
      * 提交其它动态信息
      */
-    private void commitOtherInfo() {
+    private void commitOtherInfo(String iType) {
 
 
         String dRetailprices = ""; // 零售价
@@ -1087,7 +1087,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
         sContext = word.getText().toString().trim();
 
         Call<CheckCodeBean> call = RetrofitService.createMyAPI().InsertAndUpdate("", Constants.ID, "",
-                dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath);
+                dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath,iType);
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
             public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
@@ -1158,7 +1158,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
                                 //成功
                                 if ("上传成功".equals(response.body().getInfo())) {
                                     vPath = response.body().getData();
-                                    commitOtherInfo();
+                                    commitOtherInfo("1");
                                 } else {
                                     showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
                                 }
@@ -1213,7 +1213,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
                                             pPath += ",";
                                         }
                                     }
-                                    commitOtherInfo();
+                                    commitOtherInfo("0");
                                 } else {
                                     showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
                                 }
