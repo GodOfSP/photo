@@ -176,6 +176,7 @@ public class MyInterstFrafment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(getContext(), PersonalCenterAc.class);
                         intent.putExtra("concernId", item.getSConcernId());
+                        intent.putExtra("nickName", item.getSNickName());
                         startActivity(intent);
                     }
                 });

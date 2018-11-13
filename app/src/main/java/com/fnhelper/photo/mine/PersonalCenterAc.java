@@ -14,15 +14,23 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
+import com.fnhelper.photo.beans.PersonalHeadBean;
 import com.fnhelper.photo.diyviews.CustomViewPager;
-import com.fnhelper.photo.myfans.MyFansFrafment;
-import com.fnhelper.photo.myinterst.MyInterstFrafment;
+import com.fnhelper.photo.interfaces.RetrofitService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
 
 /**
  * 个人主页
@@ -50,8 +58,6 @@ public class PersonalCenterAc extends BaseActivity {
     TextView phone;
     @BindView(R.id.content)
     TextView content;
-    @BindView(R.id.store_collection)
-    ImageView storeCollection;
     @BindView(R.id.head_ConstraintLayout)
     ConstraintLayout headConstraintLayout;
     @BindView(R.id.tablayout)
@@ -61,6 +67,7 @@ public class PersonalCenterAc extends BaseActivity {
 
 
     private String mConcernId = "";
+    private String nickName = "";
     private ArrayList<Fragment> fragmentList = null;
     private ArrayList<String> list_Title = null;
 
@@ -81,6 +88,7 @@ public class PersonalCenterAc extends BaseActivity {
     protected void initData() {
 
         mConcernId = getIntent().getStringExtra("concernId");
+        nickName = getIntent().getStringExtra("nickName");
         getData();
         initViewPagerAndTabLayout();
 
@@ -108,21 +116,13 @@ public class PersonalCenterAc extends BaseActivity {
 
 
     private void getData() {
-
-        comTitle.setText(mConcernId);
+        getHeadInfo(mConcernId);
     }
 
     private void initViewPagerAndTabLayout() {
         fragmentList = new ArrayList<>();
         list_Title = new ArrayList<>();
-        fragmentList.add(new MyInterstFrafment());
-        fragmentList.add(new MyFansFrafment());
-        fragmentList.add(new MineFragment());
-        list_Title.add("one");
-        list_Title.add("two");
-        list_Title.add("3");
-        viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), PersonalCenterAc.this, fragmentList, list_Title));
-        tablayout.setupWithViewPager(viewPager);//此方法就是让tablayout和ViewPager联动
+
     }
 
 
@@ -158,5 +158,63 @@ public class PersonalCenterAc extends BaseActivity {
         public CharSequence getPageTitle(int position) {
             return list_Title.get(position);
         }
+    }
+
+
+    /**
+     * 获取头部信息
+     */
+    private void getHeadInfo(String sConcernId){
+
+        retrofit2.Call<PersonalHeadBean> call = RetrofitService.createMyAPI().GetConcernUserInfo(sConcernId);
+        call.enqueue(new Callback<PersonalHeadBean>() {
+            @Override
+            public void onResponse(Call<PersonalHeadBean> call, Response<PersonalHeadBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            //头像
+                            headPic.setImageURI(response.body().getData().getSHeadImg());
+                            //微信号
+                            name.setText(response.body().getData().getSWeiXinNo());
+                            //title
+                            comTitle.setText(nickName);
+                            //电话
+                            phone.setText(response.body().getData().getSLinkPhone());
+                            //介绍
+                            content.setText(response.body().getData().getSIntroduce());
+                            list_Title.add("动态");
+                            list_Title.add("图文("+response.body().getData().getImageCount()+")");
+                            list_Title.add("视频("+response.body().getData().getVideoCount()+")");
+                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,mConcernId));
+                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,mConcernId));
+                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,mConcernId));
+                            viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), PersonalCenterAc.this, fragmentList, list_Title));
+                            tablayout.setupWithViewPager(viewPager);//此方法就是让tablayout和ViewPager联动
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(PersonalCenterAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(PersonalCenterAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            showBottom(PersonalCenterAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(PersonalCenterAc.this, response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<PersonalHeadBean> call, Throwable t) {
+                showBottom(PersonalCenterAc.this, "网络异常！");
+            }
+        });
+
     }
 }

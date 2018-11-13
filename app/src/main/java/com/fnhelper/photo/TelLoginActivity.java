@@ -49,8 +49,8 @@ public class TelLoginActivity extends BaseActivity {
 
     @Override
     protected void initUI() {
-        phone.setText("18681364871");
-        password.setText("q1111111");
+        phone.setText("18381333492");
+        password.setText("qwer1111");
         forgetPassword.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
 

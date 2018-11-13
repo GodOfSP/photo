@@ -10,6 +10,8 @@ import com.fnhelper.photo.beans.MadiRecordBean;
 import com.fnhelper.photo.beans.MyVipInfoBean;
 import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.NoticeBean;
+import com.fnhelper.photo.beans.PersonalHeadBean;
+import com.fnhelper.photo.beans.PersonalListBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
 import com.fnhelper.photo.beans.UpdatePicBean;
@@ -269,6 +271,15 @@ public interface MyApi {
 
 
     /**
+     * 获取关注用户的信息
+     *    /Concern/GetConcernUserInfo
+     * @return
+     */
+    @GET("Concern/GetConcernUserInfo")
+    Call<PersonalHeadBean> GetConcernUserInfo(@Query("sConcernId")String sConcernId);
+
+
+    /**
      * 分页获取我的关注
      *
      * @return
@@ -283,6 +294,14 @@ public interface MyApi {
      */
     @GET("ImageText/GetImageTextList")
     Call<NewsListBean> GetImageTextList(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
+
+    /**
+     * 分页获取动态 GetConcernImageTextList
+     *
+     * @return
+     */
+    @GET("ImageText/GetConcernImageTextList")
+    Call<PersonalListBean> GetConcernImageTextList(@Query("iType") String iType, @Query("sConcernId") String sConcernId, @Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
 
     /**
      * 分页获取我的粉丝  /Concern/GetFansListByPage
