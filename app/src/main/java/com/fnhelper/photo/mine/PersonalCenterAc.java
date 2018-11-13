@@ -1,12 +1,15 @@
 package com.fnhelper.photo.mine;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +20,11 @@ import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.PersonalHeadBean;
 import com.fnhelper.photo.diyviews.CustomViewPager;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.myfans.SetFansPermissionsAc;
+import com.fnhelper.photo.myfans.SetRemarkNameAc;
+import com.zyyoona7.popup.EasyPopup;
+import com.zyyoona7.popup.XGravity;
+import com.zyyoona7.popup.YGravity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +79,8 @@ public class PersonalCenterAc extends BaseActivity {
     private ArrayList<Fragment> fragmentList = null;
     private ArrayList<String> list_Title = null;
 
+    private EasyPopup mCirclePop;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_personal_center);
@@ -90,6 +100,7 @@ public class PersonalCenterAc extends BaseActivity {
         mConcernId = getIntent().getStringExtra("concernId");
         nickName = getIntent().getStringExtra("nickName");
         getData();
+        initPop();
         initViewPagerAndTabLayout();
 
     }
@@ -107,7 +118,7 @@ public class PersonalCenterAc extends BaseActivity {
         comRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                  showAuthSettingPop();
             }
         });
 
@@ -160,6 +171,65 @@ public class PersonalCenterAc extends BaseActivity {
         }
     }
 
+    /**
+     * 初始化弹框
+     */
+    private void initPop() {
+        mCirclePop = EasyPopup.create()
+                .setContentView(PersonalCenterAc.this, R.layout.auth_pop)
+                .setAnimationStyle(R.style.BottomPopAnim)
+                //是否允许点击PopupWindow之外的地方消失
+                .setFocusAndOutsideEnable(true)
+                .setWidth(ViewGroup.LayoutParams.MATCH_PARENT)
+                //允许背景变暗
+                .setBackgroundDimEnable(true)
+                //变暗的透明度(0-1)，0为完全透明
+                .setDimValue(0.4f)
+                //变暗的背景颜色
+                .setDimColor(Color.BLACK)
+                //指定任意 ViewGroup 背景变暗
+                .setDimView((ViewGroup)findViewById(android.R.id.content))
+                .apply();
+
+        //设置备注名
+        mCirclePop.findViewById(R.id.set_markName).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PersonalCenterAc.this,SetRemarkNameAc.class);
+                intent.putExtra("id",mConcernId);
+                startActivity(intent);
+                mCirclePop.dismiss();
+            }
+        });
+
+        //设置权限
+        mCirclePop.findViewById(R.id.set_auth).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PersonalCenterAc.this,SetFansPermissionsAc.class);
+                intent.putExtra("id",mConcernId);
+                startActivity(intent);
+                mCirclePop.dismiss();
+            }
+        });
+        //取消
+        mCirclePop.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCirclePop.dismiss();
+            }
+        });
+    }
+
+
+    /**
+     * 权限设置
+     */
+    private void showAuthSettingPop() {
+
+        mCirclePop.showAtAnchorView(findViewById(android.R.id.content), YGravity.ALIGN_BOTTOM, XGravity.CENTER, 0, 0);
+
+    }
 
     /**
      * 获取头部信息
@@ -187,9 +257,9 @@ public class PersonalCenterAc extends BaseActivity {
                             list_Title.add("动态");
                             list_Title.add("图文("+response.body().getData().getImageCount()+")");
                             list_Title.add("视频("+response.body().getData().getVideoCount()+")");
-                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,mConcernId));
-                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,mConcernId));
-                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,mConcernId));
+                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,"-1"));
+                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,"0"));
+                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,"1"));
                             viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), PersonalCenterAc.this, fragmentList, list_Title));
                             tablayout.setupWithViewPager(viewPager);//此方法就是让tablayout和ViewPager联动
                         } else if (response.body().getCode() == CODE_ERROR) {

@@ -630,7 +630,7 @@ public class PersonalFreagmentAll extends Fragment {
     private void getList(final boolean isLoadMore) {
 
 
-        Call<PersonalListBean> call = RetrofitService.createMyAPI().GetConcernImageTextList("-1", mParam1, keyWord, pageSize, pageNum);
+        Call<PersonalListBean> call = RetrofitService.createMyAPI().GetConcernImageTextList(mParam2, mParam1, keyWord, pageSize, pageNum);
         call.enqueue(new Callback<PersonalListBean>() {
             @Override
             public void onResponse(Call<PersonalListBean> call, Response<PersonalListBean> response) {

@@ -160,7 +160,7 @@ public class MyFansFrafment extends Fragment {
                 .setContentView(getContext(), R.layout.auth_pop)
                 .setAnimationStyle(R.style.BottomPopAnim)
                 //是否允许点击PopupWindow之外的地方消失
-                .setFocusAndOutsideEnable(false)
+                .setFocusAndOutsideEnable(true)
                 .setWidth(ViewGroup.LayoutParams.MATCH_PARENT)
                 //允许背景变暗
                 .setBackgroundDimEnable(true)
@@ -190,6 +190,13 @@ public class MyFansFrafment extends Fragment {
                 Intent intent = new Intent(getContext(),SetFansPermissionsAc.class);
                 intent.putExtra("id",nowId);
                 startActivity(intent);
+                mCirclePop.dismiss();
+            }
+        });
+        //取消
+        mCirclePop.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 mCirclePop.dismiss();
             }
         });
