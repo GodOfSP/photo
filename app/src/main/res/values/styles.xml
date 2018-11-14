@@ -25,6 +25,23 @@
         <item name="android:backgroundDimAmount">0.6</item>
     </style>
 
+    -<style name="NavPage">
+
+    <item name="android:layout_width">fill_parent</item>
+
+    <item name="android:layout_height">fill_parent</item>
+
+    <item name="android:orientation">vertical</item>
+
+    <item name="android:gravity">center_horizontal</item>
+
+    <!-- <item name="android:background">@drawable/nav_page</item> -->
+
+
+    <item name="android:background">@color/white</item>
+
+</style>
+
     <style name="BottomBarText">
         <item name="android:textSize">10sp</item>
     </style>

@@ -24,7 +24,7 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        api = WXAPIFactory.createWXAPI(this, Constants.WECHAT_APPID, false);
+        api = WXAPIFactory.createWXAPI(this, Constants.WECHAT_APPID, true);
         //注意：
         //第三方开发者如果使用透明界面来实现WXEntryActivity，需要判断handleIntent的返回值，如果返回值为false，则说明入参不合法未被SDK处理，应finish当前透明界面，避免外部通过传递非法参数的Intent导致停留在透明界面，引起用户的疑惑
         try {
@@ -74,21 +74,25 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
                 Intent intent = new Intent();
                 intent.setAction("authlogin");
                 WXEntryActivity.this.sendBroadcast(intent);
+                Log.d("fn","ERR_OK");
                 finish();
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 result = "发送取消";
+                Log.d("fn","发送取消");
                 Toast.makeText(this, result, Toast.LENGTH_LONG).show();
                 finish();
                 break;
 
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 result = "发送被拒绝";
+                Log.d("fn","发送被拒绝");
                 Toast.makeText(this, result, Toast.LENGTH_LONG).show();
                 finish();
                 break;
             default:
                 result = "发送返回";
+                Log.d("fn","发送返回");
                 Toast.makeText(this, result, Toast.LENGTH_LONG).show();
                 finish();
                 break;

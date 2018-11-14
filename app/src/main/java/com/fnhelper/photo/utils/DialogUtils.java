@@ -184,5 +184,49 @@ public class DialogUtils {
         }
     }
 
+    /**
+     * 退出 --  提示框
+     */
+    public static void showLogoutDialog(Context context, final OnCommitListener onCommitListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogU);
+        final AlertDialog alertDialog = builder.create();
+        if (alertDialog.getWindow() != null) {
+            alertDialog.show();
+        }
+        Window window = alertDialog.getWindow();
+        if (window != null) {
+            window.setContentView(R.layout.dialog_login_tips);
+            alertDialog.setCanceledOnTouchOutside(false);
+            TextView cancel = (TextView) window.findViewById(R.id.tv_cancel);
+            TextView commit = (TextView) window.findViewById(R.id.tv_commit);
+            TextView content = (TextView) window.findViewById(R.id.tv_content);
+            ImageView close = (ImageView) window.findViewById(R.id.close);
+
+            cancel.setText("取消");
+            commit.setText("确认");
+            content.setText("退出后将不保留用户信息，确认退出 ？");
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            commit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onCommitListener.onCommit();
+                    alertDialog.dismiss();
+                }
+            });
+        }
+    }
+
 
 }

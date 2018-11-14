@@ -224,6 +224,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                                 expiryDateTitle.setVisibility(View.VISIBLE);
                                 moreDetail.setVisibility(View.VISIBLE);
                                 vipType.setVisibility(View.VISIBLE);
+                                expiryDateTitle.setText("会员有效期:");
+                                moreDetail.setText("查看详情");
                             } else {
                                 expiryDateTitle.setText("暂未开通会员");
                                 moreDetail.setText("开通会员");

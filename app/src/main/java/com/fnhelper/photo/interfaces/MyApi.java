@@ -17,6 +17,7 @@ import com.fnhelper.photo.beans.PresentRecordBean;
 import com.fnhelper.photo.beans.UpdatePicBean;
 import com.fnhelper.photo.beans.UpdateVdieoBean;
 import com.fnhelper.photo.beans.VipMealListBean;
+import com.fnhelper.photo.beans.VipMealOrderBean;
 
 import java.util.List;
 
@@ -213,7 +214,7 @@ public interface MyApi {
      */
     @FormUrlEncoded
     @POST("VipPackage/Recharge")
-    Call<CheckCodeBean> Recharge(@Field("sVipPackageId") String sVipPackageId);
+    Call<VipMealOrderBean> Recharge(@Field("sVipPackageId") String sVipPackageId);
 
     /**
      * 会员提现  /DrawRecord/Draw

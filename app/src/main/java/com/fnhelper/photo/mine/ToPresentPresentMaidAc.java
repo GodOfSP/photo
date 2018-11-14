@@ -252,6 +252,9 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
+                            if ("提现成功".equals(response.body().getInfo())){
+                                getBalance();
+                            }
                             showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
@@ -276,6 +279,24 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                 showBottom(ToPresentPresentMaidAc.this, "网络出错！");
             }
         });
+    }
+
+    public void wxPay(final BaseActivity activity,String order_id,String payType){
+                 /*       PayReq req = new PayReq();//待修改
+
+                        req.appId = Constants.WECHAT_APPID;
+                        req.nonceStr=obj.getNoncestr();
+                        req.packageValue=obj.getPackage_value();
+                        req.sign=obj.getSign();
+                        req.partnerId=obj.getPartnerid();
+                        req.prepayId=obj.getPrepayid();
+                        req.timeStamp=obj.getTimestamp();
+
+                        wxAPI.registerApp(obj.getAppid());
+                        wxAPI.sendReq(req);
+
+                        MLog.i("ansen", "开始进行微信支付..");
+                        iView.showToast("开始进行微信支付..");*/
     }
 
 }
