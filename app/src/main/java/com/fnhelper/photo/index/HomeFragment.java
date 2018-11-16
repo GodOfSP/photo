@@ -38,6 +38,7 @@ import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.MyCodeAc;
+import com.fnhelper.photo.mine.PersonalCenterAc;
 import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.ImageUtil;
@@ -403,6 +404,17 @@ public class HomeFragment extends Fragment {
                             nowWhich = 1;
                         }
                         showSharePop();
+                    }
+                });
+
+                //进入个人信息
+                helper.setOnClickListener(R.id.head_pic, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), PersonalCenterAc.class);
+                        intent.putExtra("concernId", item.getSClientId());
+                        intent.putExtra("nickName", item.getSNickName());
+                        startActivity(intent);
                     }
                 });
 
