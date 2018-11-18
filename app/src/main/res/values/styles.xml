@@ -2,17 +2,35 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" mce_bogus="1" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Customize your theme here. -->
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:windowIsTranslucent">false</item>
+    <item name="android:windowDisablePreview">true</item>
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorAccent">@color/colorPrimary</item>
+    <item name="android:textColor">@color/bar_grey_90</item>
+    <item name="colorPrimaryDark">@color/colorPrimary</item>
+    <item name="android:windowBackground">@color/colorWindowBackground</item>
+    </style>
+
+    <!-- Base 关于相册专用 theme. -->
+    <style name="AppThemeBlue" mce_bogus="1" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowDisablePreview">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimaryBlue</item>
         <item name="android:textColor">@color/bar_grey_90</item>
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <!-- Customize your theme here. -->
+        <!--标题栏背景色-->
+        <item name="android:color">@color/colorPrimaryBlue</item>
+        <!--状态栏背景色-->
+        <item name="colorPrimaryDark">@color/colorPrimaryBlue</item>
         <item name="android:windowBackground">@color/colorWindowBackground</item>
     </style>
+
     <style name="dialogU" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
@@ -25,22 +43,24 @@
         <item name="android:backgroundDimAmount">0.6</item>
     </style>
 
-    -<style name="NavPage">
+    -
 
-    <item name="android:layout_width">fill_parent</item>
+    <style name="NavPage">
 
-    <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_width">fill_parent</item>
 
-    <item name="android:orientation">vertical</item>
+        <item name="android:layout_height">fill_parent</item>
 
-    <item name="android:gravity">center_horizontal</item>
+        <item name="android:orientation">vertical</item>
 
-    <!-- <item name="android:background">@drawable/nav_page</item> -->
+        <item name="android:gravity">center_horizontal</item>
+
+        <!-- <item name="android:background">@drawable/nav_page</item> -->
 
 
-    <item name="android:background">@color/white</item>
+        <item name="android:background">@color/white</item>
 
-</style>
+    </style>
 
     <style name="BottomBarText">
         <item name="android:textSize">10sp</item>

@@ -11,7 +11,6 @@ import com.fnhelper.photo.beans.MyVipInfoBean;
 import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.NoticeBean;
 import com.fnhelper.photo.beans.PersonalHeadBean;
-import com.fnhelper.photo.beans.PersonalListBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
 import com.fnhelper.photo.beans.UpdatePicBean;
@@ -302,7 +301,7 @@ public interface MyApi {
      * @return
      */
     @GET("ImageText/GetConcernImageTextList")
-    Call<PersonalListBean> GetConcernImageTextList(@Query("iType") String iType, @Query("sConcernId") String sConcernId, @Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
+    Call<NewsListBean> GetConcernImageTextList(@Query("iType") String iType, @Query("sConcernId") String sConcernId, @Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
 
     /**
      * 分页获取我的粉丝  /Concern/GetFansListByPage

@@ -1,6 +1,7 @@
 package com.fnhelper.photo.mine;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -28,6 +29,7 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+import static com.fnhelper.photo.interfaces.Constants.pageSize;
 
 /**
  * 公告列表
@@ -48,11 +50,12 @@ public class NoticeAc extends BaseActivity {
     RecyclerView recycler;
     @BindView(R.id.refresh)
     TwinklingRefreshLayout refresh;
+    @BindView(R.id.empty_page)
+    RelativeLayout emptyPage;
 
     private QuickAdapter<NoticeBean.DataBean.RowsBean> adapter = null;
     private boolean canLoadMore = false;
     private int pageNum = 1;
-    private int pageSize = 2;
 
     @Override
     public void setContentView() {
@@ -93,14 +96,14 @@ public class NoticeAc extends BaseActivity {
             @Override
             protected void convert(BaseAdapterHelper helper, final NoticeBean.DataBean.RowsBean item, int position) {
 
-                helper.setText(R.id.notice_title,item.getSTitle());
-                helper.setText(R.id.notice_content,item.getDInsertTime());
+                helper.setText(R.id.notice_title, item.getSTitle());
+                helper.setText(R.id.notice_content, item.getDInsertTime());
 
                 helper.getConvertView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(NoticeAc.this,NoticeDetailAc.class);
-                        i.putExtra("data",item);
+                        Intent i = new Intent(NoticeAc.this, NoticeDetailAc.class);
+                        i.putExtra("data", item);
                         startActivity(i);
                     }
                 });
@@ -152,7 +155,7 @@ public class NoticeAc extends BaseActivity {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
                             if (response.body().getData() != null) {
-                                if (response.body().getData().getRows()!= null && response.body().getData().getRows().size() != 0) {
+                                if (response.body().getData().getRows() != null && response.body().getData().getRows().size() != 0) {
                                     if (isLoadMore) {
                                         adapter.addAll(response.body().getData().getRows());
                                     } else {
@@ -162,6 +165,12 @@ public class NoticeAc extends BaseActivity {
                                         canLoadMore = true;
                                     } else {
                                         canLoadMore = false;
+                                    }
+                                    emptyPage.setVisibility(View.GONE);
+                                }else {
+                                    if (!isLoadMore){
+                                        adapter.clear();
+                                        emptyPage.setVisibility(View.VISIBLE);
                                     }
                                 }
                             }
@@ -199,5 +208,12 @@ public class NoticeAc extends BaseActivity {
     protected void onStart() {
         super.onStart();
         refresh.startRefresh();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

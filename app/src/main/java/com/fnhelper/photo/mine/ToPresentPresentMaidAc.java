@@ -81,6 +81,7 @@ public class ToPresentPresentMaidAc extends BaseActivity {
     protected void initUI() {
 
         comTitle.setText("提现与返佣");
+        comRight.setVisibility(View.GONE);
         comRight.setImageResource(R.drawable.more_btn);
         initPop();
 
@@ -144,6 +145,7 @@ public class ToPresentPresentMaidAc extends BaseActivity {
             @Override
             public void onClick(View v) {
                 moneyEt.setText(ktxMoney.getText().toString());
+                moneyNow = moneyEt.getText().toString().trim();
                 tx();
             }
         });

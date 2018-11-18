@@ -1,5 +1,6 @@
 package com.fnhelper.photo.mine;
 
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -27,6 +28,7 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+import static com.fnhelper.photo.interfaces.Constants.pageSize;
 
 public class MaidRecordAc extends BaseActivity {
 
@@ -44,11 +46,12 @@ public class MaidRecordAc extends BaseActivity {
     RecyclerView recycler;
     @BindView(R.id.refresh)
     TwinklingRefreshLayout refresh;
+    @BindView(R.id.empty_page)
+    RelativeLayout emptyPage;
 
     private QuickAdapter<MadiRecordBean.DataBean.RowsBean> adapter = null;
     private boolean canLoadMore = false;
     private int pageNum = 1;
-    private int pageSize = 2;
 
 
     @Override
@@ -65,7 +68,7 @@ public class MaidRecordAc extends BaseActivity {
 
     @Override
     protected void initData() {
-     initRecyclerView();
+        initRecyclerView();
         initTklRefreshLayout();
     }
 
@@ -90,10 +93,10 @@ public class MaidRecordAc extends BaseActivity {
             @Override
             protected void convert(BaseAdapterHelper helper, final MadiRecordBean.DataBean.RowsBean item, int position) {
 
-                helper.setText(R.id.user_name,item.getSNickName());
-                helper.setText(R.id.vip_money,item.getDRechargePrice());
-                helper.setText(R.id.maid_money,item.getDMoney());
-                helper.setText(R.id.time,item.getDInsertTime());
+                helper.setText(R.id.user_name, item.getSNickName());
+                helper.setText(R.id.vip_money, item.getDRechargePrice());
+                helper.setText(R.id.maid_money, item.getDMoney());
+                helper.setText(R.id.time, item.getDInsertTime());
                 helper.setFrescoImageResource(R.id.head_pic, item.getSHeadImg());
                 helper.setVisible(R.id.vip_logo, item.isBIsVip());
 
@@ -144,7 +147,7 @@ public class MaidRecordAc extends BaseActivity {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
                             if (response.body().getData() != null) {
-                                if (response.body().getData().getRows()!= null && response.body().getData().getRows().size() != 0) {
+                                if (response.body().getData().getRows() != null && response.body().getData().getRows().size() != 0) {
                                     if (isLoadMore) {
                                         adapter.addAll(response.body().getData().getRows());
                                     } else {
@@ -154,6 +157,12 @@ public class MaidRecordAc extends BaseActivity {
                                         canLoadMore = true;
                                     } else {
                                         canLoadMore = false;
+                                    }
+                                    emptyPage.setVisibility(View.GONE);
+                                }else {
+                                    if (!isLoadMore){
+                                        adapter.clear();
+                                        emptyPage.setVisibility(View.VISIBLE);
                                     }
                                 }
                             }
@@ -191,5 +200,12 @@ public class MaidRecordAc extends BaseActivity {
     protected void onStart() {
         super.onStart();
         refresh.startRefresh();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

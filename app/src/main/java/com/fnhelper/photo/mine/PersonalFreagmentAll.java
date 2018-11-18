@@ -1,6 +1,7 @@
 package com.fnhelper.photo.mine;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,11 +28,12 @@ import com.fnhelper.photo.ModifyPhotoWordActivity;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
-import com.fnhelper.photo.beans.PersonalListBean;
+import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.PreviewItemBean;
 import com.fnhelper.photo.index.VideoPlayerDetailedActivity;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.DownloadUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.ImageUtil;
 import com.luck.picture.lib.permissions.RxPermissions;
@@ -75,13 +77,15 @@ public class PersonalFreagmentAll extends Fragment {
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-  //  @BindView(R.id.refresh)
-  //  TwinklingRefreshLayout refresh;
+    //  @BindView(R.id.refresh)
+    //  TwinklingRefreshLayout refresh;
     Unbinder unbinder;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private QuickAdapter<PersonalListBean.DataBean.RowsBean> adapter;
+    @BindView(R.id.empty_page)
+    RelativeLayout emptyPage;
+    private QuickAdapter<NewsListBean.DataBean.RowsBean> adapter;
     private boolean canLoadMore = false;
     private int pageNum = 1;
     private int pageSize = 100;
@@ -122,7 +126,7 @@ public class PersonalFreagmentAll extends Fragment {
         View view = inflater.inflate(R.layout.fragment_personal_all, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-     //   initTklRefreshLayout();
+        //   initTklRefreshLayout();
         initRecyclerView();
         initSharePop();
 
@@ -150,7 +154,6 @@ public class PersonalFreagmentAll extends Fragment {
     }
 
 
-
     /**
      * 初始化recyclerView
      */
@@ -158,9 +161,9 @@ public class PersonalFreagmentAll extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-        adapter = new QuickAdapter<PersonalListBean.DataBean.RowsBean>(getContext(), R.layout.item_persnoal_list) {
+        adapter = new QuickAdapter<NewsListBean.DataBean.RowsBean>(getContext(), R.layout.item_persnoal_list) {
             @Override
-            protected void convert(BaseAdapterHelper helper, final PersonalListBean.DataBean.RowsBean item, int position) {
+            protected void convert(BaseAdapterHelper helper, final NewsListBean.DataBean.RowsBean item, int position) {
 
 
                 //公共部分
@@ -304,7 +307,12 @@ public class PersonalFreagmentAll extends Fragment {
                 helper.setOnClickListener(R.id.download, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        downloadNews(item.getSImagesUrl());
+                        if ("0".equals(item.getIType())){
+
+                            downloadNews(item.getSImagesUrl(),item.getIType());
+                        }else {
+                            downloadNews(item.getSVideoUrl(),item.getIType());
+                        }
                     }
                 });
                 //编辑，
@@ -340,7 +348,7 @@ public class PersonalFreagmentAll extends Fragment {
     private static final int THUMB_SIZE = 150;
     private EasyPopup mSharePop;
     private int nowWhich = 0;
-    private PersonalListBean.DataBean.RowsBean nowItem = null;
+    private NewsListBean.DataBean.RowsBean nowItem = null;
     private ZLoadingDialog zLoadingDialog;
     private Handler handler = new Handler() {
         @Override
@@ -533,6 +541,7 @@ public class PersonalFreagmentAll extends Fragment {
                         }
                     });
         }
+        ImageUtil.copyWord(getContext(),nowItem.getSContext());
 
     }
 
@@ -540,49 +549,93 @@ public class PersonalFreagmentAll extends Fragment {
     /**
      * 下载动态
      */
-    private void downloadNews(final String data) {
+    private void downloadNews(final String data,String type) {
 
 
-        zLoadingDialog.setHintText("保存中...");
-        zLoadingDialog.show();
+        if ("0".equals(type)){
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String[] strings = data.split(",");
+            zLoadingDialog.setHintText("保存中...");
+            zLoadingDialog.show();
 
-                for (int i = 0; i < strings.length; i++) {
-                    // 首先保存图片
-                    Bitmap bitmap = ImageUtil.returnBitmap(Uri.parse(strings[i]));
-                    File appDir = new File(Environment.getExternalStorageDirectory(), "蜂鸟微商相册");
-                    if (!appDir.exists()) {
-                        appDir.mkdir();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String[] strings = data.split(",");
+
+                    for (int i = 0; i < strings.length; i++) {
+                        // 首先保存图片
+                        Bitmap bitmap = ImageUtil.returnBitmap(Uri.parse(strings[i]));
+                        File appDir = new File(Environment.getExternalStorageDirectory(), "蜂鸟微商相册");
+                        if (!appDir.exists()) {
+                            appDir.mkdir();
+                        }
+                        String fileName = System.currentTimeMillis() + ".jpg";
+                        File file = new File(appDir, fileName);
+                        try {
+                            FileOutputStream fos = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                            fos.flush();
+                            fos.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        // 其次把文件插入到系统图库
+                        try {
+                            MediaStore.Images.Media.insertImage(getContext().getContentResolver(), file.getAbsolutePath(), fileName, null);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    String fileName = System.currentTimeMillis() + ".jpg";
-                    File file = new File(appDir, fileName);
-                    try {
-                        FileOutputStream fos = new FileOutputStream(file);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                        fos.flush();
-                        fos.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
 
-                    // 其次把文件插入到系统图库
-                    try {
-                        MediaStore.Images.Media.insertImage(getContext().getContentResolver(), file.getAbsolutePath(), fileName, null);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                    handler.sendEmptyMessage(2);
                 }
+            }).start();
 
-                handler.sendEmptyMessage(2);
+        }else {
+            downFile(data);
+        }
+
+
+    }
+
+    /**
+     * 文件下载
+     *
+     * @param url
+     */
+    public void downFile(String url) {
+        final ProgressDialog
+                progressDialog = new ProgressDialog(getContext());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("正在下载");
+        progressDialog.setMessage("请稍后...");
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
+        progressDialog.show();
+        progressDialog.setCancelable(false);
+        DownloadUtil.get().download(url, new DownloadUtil.OnDownloadListener() {
+            @Override
+            public void onDownloadSuccess(File file) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                //下载完成进行相关逻辑操作
+                showBottom(getContext(),"保存成功！");
             }
-        }).start();
 
+            @Override
+            public void onDownloading(int progress) {
+                progressDialog.setProgress(progress);
+            }
+
+            @Override
+            public void onDownloadFailed(Exception e) {
+                //下载异常进行相关提示操作
+            }
+        });
     }
 
   /*  */
@@ -622,18 +675,13 @@ public class PersonalFreagmentAll extends Fragment {
             }
         });
     }*/
-
-
-
-
-
     private void getList(final boolean isLoadMore) {
 
 
-        Call<PersonalListBean> call = RetrofitService.createMyAPI().GetConcernImageTextList(mParam2, mParam1, keyWord, pageSize, pageNum);
-        call.enqueue(new Callback<PersonalListBean>() {
+        Call<NewsListBean> call = RetrofitService.createMyAPI().GetConcernImageTextList(mParam2, mParam1, keyWord, pageSize, pageNum);
+        call.enqueue(new Callback<NewsListBean>() {
             @Override
-            public void onResponse(Call<PersonalListBean> call, Response<PersonalListBean> response) {
+            public void onResponse(Call<NewsListBean> call, Response<NewsListBean> response) {
                 if (response != null) {
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
@@ -649,6 +697,12 @@ public class PersonalFreagmentAll extends Fragment {
                                         canLoadMore = true;
                                     } else {
                                         canLoadMore = false;
+                                    }
+                                    emptyPage.setVisibility(View.GONE);
+                                }else {
+                                    if (!isLoadMore){
+                                        adapter.clear();
+                                        emptyPage.setVisibility(View.VISIBLE);
                                     }
                                 }
                             }
@@ -674,7 +728,7 @@ public class PersonalFreagmentAll extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<PersonalListBean> call, Throwable t) {
+            public void onFailure(Call<NewsListBean> call, Throwable t) {
             }
         });
     }

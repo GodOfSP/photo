@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
+import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.PersonalHeadBean;
 import com.fnhelper.photo.diyviews.CustomViewPager;
 import com.fnhelper.photo.interfaces.RetrofitService;
@@ -79,6 +80,8 @@ public class PersonalCenterAc extends BaseActivity {
     private ArrayList<Fragment> fragmentList = null;
     private ArrayList<String> list_Title = null;
 
+    private int where = 0;
+
     private EasyPopup mCirclePop;
 
     @Override
@@ -99,6 +102,7 @@ public class PersonalCenterAc extends BaseActivity {
 
         mConcernId = getIntent().getStringExtra("concernId");
         nickName = getIntent().getStringExtra("nickName");
+        where = getIntent().getIntExtra("where",0);
         getData();
         initPop();
         initViewPagerAndTabLayout();
@@ -118,7 +122,7 @@ public class PersonalCenterAc extends BaseActivity {
         comRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                  showAuthSettingPop();
+                showAuthSettingPop();
             }
         });
 
@@ -188,15 +192,15 @@ public class PersonalCenterAc extends BaseActivity {
                 //变暗的背景颜色
                 .setDimColor(Color.BLACK)
                 //指定任意 ViewGroup 背景变暗
-                .setDimView((ViewGroup)findViewById(android.R.id.content))
+                .setDimView((ViewGroup) findViewById(android.R.id.content))
                 .apply();
 
         //设置备注名
         mCirclePop.findViewById(R.id.set_markName).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PersonalCenterAc.this,SetRemarkNameAc.class);
-                intent.putExtra("id",mConcernId);
+                Intent intent = new Intent(PersonalCenterAc.this, SetRemarkNameAc.class);
+                intent.putExtra("id", mConcernId);
                 startActivity(intent);
                 mCirclePop.dismiss();
             }
@@ -206,12 +210,24 @@ public class PersonalCenterAc extends BaseActivity {
         mCirclePop.findViewById(R.id.set_auth).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PersonalCenterAc.this,SetFansPermissionsAc.class);
-                intent.putExtra("id",mConcernId);
+                Intent intent = new Intent(PersonalCenterAc.this, SetFansPermissionsAc.class);
+                intent.putExtra("id", mConcernId);
                 startActivity(intent);
                 mCirclePop.dismiss();
             }
         });
+        //取消关注
+        if (where == 100){  //从我的关注进来的
+            mCirclePop.findViewById(R.id.cancel_gz).setVisibility(View.VISIBLE);
+        }
+        mCirclePop.findViewById(R.id.cancel_gz).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelFollow();
+                mCirclePop.dismiss();
+            }
+        });   
+        
         //取消
         mCirclePop.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,6 +237,43 @@ public class PersonalCenterAc extends BaseActivity {
         });
     }
 
+
+    /**
+     * 取消关注
+     */
+    private void cancelFollow() {
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().CancelFollow(mConcernId);
+        call.enqueue(new Callback<CheckCodeBean>() {
+            @Override
+            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(PersonalCenterAc.this,response.body().getInfo());
+                            finish();
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(PersonalCenterAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(PersonalCenterAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            showBottom(PersonalCenterAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(PersonalCenterAc.this, response.body().getInfo());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+            }
+        });
+    }
 
     /**
      * 权限设置
@@ -234,7 +287,7 @@ public class PersonalCenterAc extends BaseActivity {
     /**
      * 获取头部信息
      */
-    private void getHeadInfo(String sConcernId){
+    private void getHeadInfo(String sConcernId) {
 
         retrofit2.Call<PersonalHeadBean> call = RetrofitService.createMyAPI().GetConcernUserInfo(sConcernId);
         call.enqueue(new Callback<PersonalHeadBean>() {
@@ -255,11 +308,11 @@ public class PersonalCenterAc extends BaseActivity {
                             //介绍
                             content.setText(response.body().getData().getSIntroduce());
                             list_Title.add("动态");
-                            list_Title.add("图文("+response.body().getData().getImageCount()+")");
-                            list_Title.add("视频("+response.body().getData().getVideoCount()+")");
-                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,"-1"));
-                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,"0"));
-                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId,"1"));
+                            list_Title.add("图文(" + response.body().getData().getImageCount() + ")");
+                            list_Title.add("视频(" + response.body().getData().getVideoCount() + ")");
+                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId, "-1"));
+                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId, "0"));
+                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId, "1"));
                             viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), PersonalCenterAc.this, fragmentList, list_Title));
                             tablayout.setupWithViewPager(viewPager);//此方法就是让tablayout和ViewPager联动
                         } else if (response.body().getCode() == CODE_ERROR) {

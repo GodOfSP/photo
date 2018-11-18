@@ -2,6 +2,7 @@ package com.fnhelper.photo.index;
 
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +42,7 @@ import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.MyCodeAc;
 import com.fnhelper.photo.mine.PersonalCenterAc;
 import com.fnhelper.photo.utils.DialogUtils;
+import com.fnhelper.photo.utils.DownloadUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.ImageUtil;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
@@ -62,6 +65,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -77,6 +84,7 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+import static com.fnhelper.photo.interfaces.Constants.pageSize;
 import static com.zyao89.view.zloading.Z_TYPE.DOUBLE_CIRCLE;
 
 
@@ -103,12 +111,13 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.refresh)
     TwinklingRefreshLayout refresh;
     Unbinder unbinder;
+    @BindView(R.id.empty_page)
+    RelativeLayout emptyPage;
 
 
     private QuickAdapter<NewsListBean.DataBean.RowsBean> adapter;
     private boolean canLoadMore = false;
     private int pageNum = 1;
-    private int pageSize = 2;
     private String keyWord = "";
 
 
@@ -362,6 +371,9 @@ public class HomeFragment extends Fragment {
                 if (!isMyNews) {
                     helper.setVisible(R.id.delete, false);
                     helper.setVisible(R.id.toTop, false);
+                }else {
+                    helper.setVisible(R.id.delete, true);
+                    helper.setVisible(R.id.toTop, true);
                 }
                 //删除
                 helper.setOnClickListener(R.id.delete, new View.OnClickListener() {
@@ -381,7 +393,11 @@ public class HomeFragment extends Fragment {
                 helper.setOnClickListener(R.id.download, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        downloadNews(item.getSImagesUrl());
+                        if ("0".equals(item.getIType())) {
+                            downloadNews(item.getSImagesUrl(), item.getIType());
+                        } else {
+                            downloadNews(item.getSVideoUrl(), item.getIType());
+                        }
                     }
                 });
                 //编辑，
@@ -433,7 +449,7 @@ public class HomeFragment extends Fragment {
         DialogUtils.showDelNewsTips(getContext(), new DialogUtils.OnCommitListener() {
             @Override
             public void onCommit() {
-                retrofit2.Call<CheckCodeBean> call = RetrofitService.createMyAPI().Cancel(sImageTextId);
+                Call<CheckCodeBean> call = RetrofitService.createMyAPI().Cancel(sImageTextId);
                 call.enqueue(new Callback<CheckCodeBean>() {
                     @Override
                     public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
@@ -476,7 +492,7 @@ public class HomeFragment extends Fragment {
      * 置顶动态
      */
     private void toTop(String sImageTextId) {
-        retrofit2.Call<CheckCodeBean> call = RetrofitService.createMyAPI().SetTop(sImageTextId);
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().SetTop(sImageTextId);
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
             public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
@@ -522,13 +538,16 @@ public class HomeFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what==1){
+            if (msg.what == 1) {
                 Toast.makeText(getContext(), "除第一张图片之外的需要您手动点击添加哦 ~", Toast.LENGTH_LONG).show();
-            }else if (msg.what == 2){
+            } else if (msg.what == 2) {
                 // 最后通知图库更新
                 getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
                 zLoadingDialog.dismiss();
                 showBottom(getContext(), "保存成功！");
+            }else if (msg.what ==3){
+                zLoadingDialog.dismiss();
+                showBottom(getContext(), "保存视频失败！");
             }
         }
     };
@@ -721,58 +740,101 @@ public class HomeFragment extends Fragment {
                     });
         }
 
+        ImageUtil.copyWord(getContext(),nowItem.getSContext());
+
     }
-
-
-
 
 
     /**
      * 下载动态
+     * type 0图片 1 视频
      */
-    private void downloadNews(final String data) {
+    private void downloadNews(final String data, final String type) {
 
 
-        zLoadingDialog.setHintText("保存中...");
-        zLoadingDialog.show();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String[] strings = data.split(",");
+        if ("0".equals(type)) {
 
-                for (int i = 0; i < strings.length; i++) {
-                    // 首先保存图片
-                    Bitmap bitmap = ImageUtil.returnBitmap(Uri.parse(strings[i]));
-                    File appDir = new File(Environment.getExternalStorageDirectory(), "蜂鸟微商相册");
-                    if (!appDir.exists()) {
-                        appDir.mkdir();
+            zLoadingDialog.setHintText("保存中...");
+            zLoadingDialog.show();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String[] strings = data.split(",");
+
+                    for (int i = 0; i < strings.length; i++) {
+                        // 首先保存图片
+                        Bitmap bitmap = ImageUtil.returnBitmap(Uri.parse(strings[i]));
+                        File appDir = new File(Environment.getExternalStorageDirectory(), "蜂鸟微商相册");
+                        if (!appDir.exists()) {
+                            appDir.mkdir();
+                        }
+                        String fileName = System.currentTimeMillis() + ".jpg";
+                        File file = new File(appDir, fileName);
+                        try {
+                            FileOutputStream fos = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                            fos.flush();
+                            fos.close();
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        // 其次把文件插入到系统图库
+                        try {
+                            MediaStore.Images.Media.insertImage(getContext().getContentResolver(), file.getAbsolutePath(), fileName, null);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    String fileName = System.currentTimeMillis() + ".jpg";
-                    File file = new File(appDir, fileName);
-                    try {
-                        FileOutputStream fos = new FileOutputStream(file);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                        fos.flush();
-                        fos.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
 
-                    // 其次把文件插入到系统图库
-                    try {
-                        MediaStore.Images.Media.insertImage(getContext().getContentResolver(), file.getAbsolutePath(), fileName, null);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                    handler.sendEmptyMessage(2);
+                }
+            }).start();
+        } else {
+
+            downFile(data);
+        }
+
+
+    }
+    /**
+     * 文件下载
+     *
+     * @param url
+     */
+    public void downFile(String url) {
+        final ProgressDialog
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("正在下载");
+        progressDialog.setMessage("请稍后...");
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
+        progressDialog.show();
+        progressDialog.setCancelable(false);
+            DownloadUtil.get().download(url, new DownloadUtil.OnDownloadListener() {
+                @Override
+                public void onDownloadSuccess(File file) {
+                    if (progressDialog != null && progressDialog.isShowing()) {
+                        progressDialog.dismiss();
                     }
+                    //下载完成进行相关逻辑操作
+                    showBottom(getContext(),"保存成功！");
                 }
 
-                handler.sendEmptyMessage(2);
-            }
-        }).start();
+                @Override
+                public void onDownloading(int progress) {
+                    progressDialog.setProgress(progress);
+                }
 
+                @Override
+                public void onDownloadFailed(Exception e) {
+                    //下载异常进行相关提示操作
+                }
+            });
     }
 
     /**
@@ -845,6 +907,12 @@ public class HomeFragment extends Fragment {
                                         canLoadMore = true;
                                     } else {
                                         canLoadMore = false;
+                                    }
+                                    emptyPage.setVisibility(View.GONE);
+                                } else {
+                                    if (!isLoadMore) {
+                                        adapter.clear();
+                                        emptyPage.setVisibility(View.VISIBLE);
                                     }
                                 }
                             }

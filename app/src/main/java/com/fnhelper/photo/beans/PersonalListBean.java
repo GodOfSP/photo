@@ -179,6 +179,7 @@ public class PersonalListBean implements Parcelable{
             private String dInsertTime;
             private int MaxRows;
 
+
             protected RowsBean(Parcel in) {
                 Number = in.readInt();
                 ID = in.readString();

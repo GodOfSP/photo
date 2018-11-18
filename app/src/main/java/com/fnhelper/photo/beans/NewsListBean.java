@@ -203,6 +203,9 @@ public class NewsListBean implements Parcelable {
             private String sNickName;
             private int MaxRows;
 
+
+
+
             protected RowsBean(Parcel in) {
                 Number = in.readString();
                 ID = in.readString();

@@ -1,6 +1,10 @@
 package com.fnhelper.photo;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -65,6 +69,7 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+import static com.fnhelper.photo.utils.ImageUtil.getExtensionName;
 
 /**
  * 添加图文
@@ -133,7 +138,29 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         tvComBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                final AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(AddNewPhotoWordActivity.this);
+                normalDialog.setTitle("提示");
+                normalDialog.setMessage("退出此次编辑？?");
+                normalDialog.setPositiveButton("退出",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //...To-do
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                normalDialog.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //...To-do
+                                dialog.dismiss();
+                            }
+                        });
+                // 显示
+                normalDialog.show();
             }
         });
 
@@ -165,9 +192,9 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         whoCanSeeSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                        whoCanSeeSw.setText("公开: 粉丝可见");
-                }else {
+                if (isChecked) {
+                    whoCanSeeSw.setText("公开: 粉丝可见");
+                } else {
                     whoCanSeeSw.setText("仅自己可见");
                 }
 
@@ -876,25 +903,14 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
             case R.id.save_btn:
                 if (selectList.size() == 0) {
                     showCenter(AddNewPhotoWordActivity.this, "请选择照片或图片!");
+                } else if (TextUtils.isEmpty(word.getText().toString().trim())) {
+                    showCenter(AddNewPhotoWordActivity.this, "请添加文字内容!");
                 } else {
                     commit();
                 }
                 break;
         }
 
-    }
-
-    /*
-     * Java文件操作 获取文件扩展名
-     * */
-    public static String getExtensionName(String filename) {
-        if ((filename != null) && (filename.length() > 0)) {
-            int dot = filename.lastIndexOf('.');
-            if ((dot > -1) && (dot < (filename.length() - 1))) {
-                return filename.substring(dot + 1);
-            }
-        }
-        return filename;
     }
 
 
@@ -985,7 +1001,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         sContext = word.getText().toString().trim();
 
         Call<CheckCodeBean> call = RetrofitService.createMyAPI().InsertAndUpdate("", Constants.ID, "",
-                dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath,iType);
+                dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath, iType);
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
             public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
@@ -994,8 +1010,8 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
                             showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
-                            if ("发布成功".equals(response.body().getInfo())){
-                                    finish();
+                            if ("发布成功".equals(response.body().getInfo())) {
+                                finish();
                             }
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
@@ -1057,7 +1073,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                                 if ("上传成功".equals(response.body().getInfo())) {
                                     vPath = response.body().getData();
                                     commitOtherInfo("1");
-                                }else {
+                                } else {
                                     showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                                 }
                             } else if (response.body().getCode() == CODE_ERROR) {
@@ -1112,7 +1128,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                                         }
                                     }
                                     commitOtherInfo("0");
-                                }else {
+                                } else {
                                     showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                                 }
                             } else if (response.body().getCode() == CODE_ERROR) {
@@ -1208,10 +1224,4 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         clearCash();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

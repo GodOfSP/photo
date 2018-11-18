@@ -1,6 +1,8 @@
 package com.fnhelper.photo;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -67,6 +69,7 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+import static com.fnhelper.photo.utils.ImageUtil.getExtensionName;
 
 /**
  * 编辑图文
@@ -132,10 +135,33 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
     @Override
     protected void initUI() {
 
+
         tvComBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                final AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(ModifyPhotoWordActivity.this);
+                normalDialog.setTitle("提示");
+                normalDialog.setMessage("退出此次编辑？?");
+                normalDialog.setPositiveButton("退出",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //...To-do
+                                dialog.dismiss();
+                                finish();
+                            }
+                        });
+                normalDialog.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //...To-do
+                                dialog.dismiss();
+                            }
+                        });
+                // 显示
+                normalDialog.show();
             }
         });
 
@@ -252,7 +278,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     whoCanSeeSw.setText("公开: 粉丝可见");
-                } else {
+                }  else {
                     whoCanSeeSw.setText("仅自己可见");
                 }
 
@@ -978,25 +1004,14 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
             case R.id.save_btn:
                 if (selectList.size() == 0) {
                     showCenter(ModifyPhotoWordActivity.this, "请选择照片或图片!");
+                }else if (TextUtils.isEmpty(word.getText().toString().trim())) {
+                    showCenter(ModifyPhotoWordActivity.this, "请添加文字内容!");
                 } else {
                     commit();
                 }
                 break;
         }
 
-    }
-
-    /*
-     * Java文件操作 获取文件扩展名
-     * */
-    public static String getExtensionName(String filename) {
-        if ((filename != null) && (filename.length() > 0)) {
-            int dot = filename.lastIndexOf('.');
-            if ((dot > -1) && (dot < (filename.length() - 1))) {
-                return filename.substring(dot + 1);
-            }
-        }
-        return filename;
     }
 
 

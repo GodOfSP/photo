@@ -1,6 +1,8 @@
 package com.fnhelper.photo.utils;
 
 import android.annotation.TargetApi;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,6 +16,8 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.SimpleCacheKey;
@@ -25,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -309,4 +314,78 @@ public class ImageUtil {
         File image = new File(storageDir, imageFileName);
         return image;
     }
+
+
+    //根据网络视频url路径保存到本地
+    public static final File saveVedioToSdCard(Context context, String vPath) {
+        boolean success = false;
+        File file = null;
+        try {
+            file = createStableVFile(context,vPath);
+
+            URL url = new URL(vPath);
+            HttpURLConnection conn = null;
+            conn = (HttpURLConnection) url.openConnection();
+            InputStream is = null;
+            is = conn.getInputStream();
+            FileOutputStream outStream;
+            outStream = new FileOutputStream(file);
+            byte [] buffer = new byte[4 * 1024];
+            while(is.read(buffer) != -1){
+                outStream.write(buffer);
+                outStream.flush();
+            }
+            outStream.flush();
+            outStream.close();
+            success = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (success) {
+            return file;
+        } else {
+            return null;
+        }
+    }
+
+    //创建本地保存路径
+    public static File createStableVFile(Context context,String fileName) throws IOException {
+        i++;
+        String imageFileName =IMAGE_NAME + i+ "."+getExtensionName(fileName);
+        File storageDir = context.getExternalCacheDir();
+        File image = new File(storageDir, imageFileName);
+        return image;
+    }
+
+    /*
+   * Java文件操作 获取文件扩展名
+   * */
+    public static String getExtensionName(String filename) {
+        if ((filename != null) && (filename.length() > 0)) {
+            int dot = filename.lastIndexOf('.');
+            if ((dot > -1) && (dot < (filename.length() - 1))) {
+                return filename.substring(dot + 1);
+            }
+        }
+        return filename;
+    }
+
+
+    /**
+     *   将文字复制到粘贴板
+     */
+    public static void copyWord(Context context,String url){
+        // 获取系统剪贴板
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+
+        // 创建一个剪贴数据集，包含一个普通文本数据条目（需要复制的数据）
+        ClipData clipData = ClipData.newPlainText(null, url);
+
+// 把数据集设置（复制）到剪贴板
+        clipboard.setPrimaryClip(clipData);
+        Toast.makeText(context,"文字已复制到粘贴板!",Toast.LENGTH_SHORT).show();
+    }
+
+
 }

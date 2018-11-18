@@ -33,4 +33,7 @@ public class Constants {
     public  static String vip_exi_time ="";
     public  static boolean isVIP =false;
 
+    //分页参数
+    public static int pageSize = 15;
+
 }

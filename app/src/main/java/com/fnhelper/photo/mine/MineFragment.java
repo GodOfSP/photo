@@ -186,6 +186,14 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 //系统设置
                 startActivity(new Intent(getContext(), SystemSettingAc.class));
                 break;
+            case R.id.question:
+                //问题与反馈
+                startActivity(new Intent(getContext(), QuestionAndReportAc.class));
+                break;
+            case R.id.about_app:
+                //关于app
+                startActivity(new Intent(getContext(), AboutAppAc.class));
+                break;
         }
 
     }

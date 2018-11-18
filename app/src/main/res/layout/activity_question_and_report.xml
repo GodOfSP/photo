@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.fnhelper.photo.mine.QuestionAndReportAc">
+
+    <RelativeLayout
+        android:id="@+id/head_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/com_toolbar" />
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/head_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/qa_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/head_view" />
+
+
+    <RelativeLayout
+        android:id="@+id/bindPhone"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:background="@drawable/selector_full_white_r0"
+        app:layout_constraintTop_toBottomOf="@id/head_bg">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:src="@drawable/mobile_pic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="48dp"
+            android:layout_marginStart="68dp"
+            android:text="18030655285"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="22dp"
+            android:background="@color/colorInactive" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/tel"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:background="@drawable/selector_full_white_r0"
+        app:layout_constraintTop_toBottomOf="@id/bindPhone">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:src="@drawable/tel_pic_gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="48dp"
+            android:layout_marginStart="68dp"
+            android:text="028-87320551"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="22dp"
+            android:background="@color/colorInactive" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:background="@drawable/selector_full_white_r0"
+        app:layout_constraintTop_toBottomOf="@id/tel">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:src="@drawable/time_pic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="48dp"
+            android:layout_marginStart="68dp"
+            android:text="09:00 - 12:00    13:00 - 18:00"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="22dp"
+            android:background="@color/colorInactive" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/qq"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
+        android:background="@drawable/selector_full_white_r0"
+        app:layout_constraintTop_toBottomOf="@id/time">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="22dp"
+            android:src="@drawable/qq_pic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginLeft="48dp"
+            android:layout_marginStart="68dp"
+            android:text="QQ在线交流"
+            android:background="@drawable/bg_empty_green_r4"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="22dp"
+            android:background="@color/colorInactive" />
+
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

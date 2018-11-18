@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
@@ -38,6 +39,7 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+import static com.fnhelper.photo.interfaces.Constants.pageSize;
 
 
 /**
@@ -61,12 +63,13 @@ public class MyInterstFrafment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    @BindView(R.id.empty_page)
+    RelativeLayout emptyPage;
 
 
     private QuickAdapter<FollowListBean.DataBean.RowsBean> adapter;
     private boolean canLoadMore = false;
     private int pageNum = 1;
-    private int pageSize = 20;
     private EasyPopup mCirclePop;
     private String keyWord = "";
 
@@ -137,7 +140,7 @@ public class MyInterstFrafment extends Fragment {
             @Override
             public void onClick(View v) {
                 keyWord = searchEt.getText().toString().trim();
-                if (!TextUtils.isEmpty(keyWord)){
+                if (!TextUtils.isEmpty(keyWord)) {
                     getList(false);
                 }
             }
@@ -177,6 +180,7 @@ public class MyInterstFrafment extends Fragment {
                         Intent intent = new Intent(getContext(), PersonalCenterAc.class);
                         intent.putExtra("concernId", item.getSConcernId());
                         intent.putExtra("nickName", item.getSNickName());
+                        intent.putExtra("where", 100);
                         startActivity(intent);
                     }
                 });
@@ -239,6 +243,12 @@ public class MyInterstFrafment extends Fragment {
                                     } else {
                                         canLoadMore = false;
                                     }
+                                    emptyPage.setVisibility(View.GONE);
+                                }else {
+                                    if (!isLoadMore){
+                                        adapter.clear();
+                                        emptyPage.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             }
 
@@ -282,22 +292,6 @@ public class MyInterstFrafment extends Fragment {
     }
 
 
-    /**
-     * 取消关注
-     */
-    private void cancelFollow() {
-        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Follow("E3112B1193664750835C2BBAEEBEAF9C");
-        call.enqueue(new Callback<CheckCodeBean>() {
-            @Override
-            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
 
-            }
-
-            @Override
-            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
-
-            }
-        });
-    }
 
 }

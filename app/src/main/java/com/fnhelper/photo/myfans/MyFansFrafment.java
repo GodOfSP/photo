@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
@@ -40,6 +41,7 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
+import static com.fnhelper.photo.interfaces.Constants.pageSize;
 
 
 /**
@@ -62,12 +64,13 @@ public class MyFansFrafment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    @BindView(R.id.empty_page)
+    RelativeLayout emptyPage;
 
 
     private QuickAdapter<FansListBean.DataBean.RowsBean> adapter;
     private boolean canLoadMore = false;
     private int pageNum = 1;
-    private int pageSize = 20;
     private EasyPopup mCirclePop;
     private String nowId = "";
     private String keyWord = "";
@@ -135,18 +138,17 @@ public class MyFansFrafment extends Fragment {
     }
 
 
-    private void initSearch(){
+    private void initSearch() {
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 keyWord = searchEt.getText().toString().trim();
-                if (!TextUtils.isEmpty(keyWord)){
+                if (!TextUtils.isEmpty(keyWord)) {
                     getList(false);
                 }
             }
         });
-
 
 
     }
@@ -176,8 +178,8 @@ public class MyFansFrafment extends Fragment {
         mCirclePop.findViewById(R.id.set_markName).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(),SetRemarkNameAc.class);
-                intent.putExtra("id",nowId);
+                Intent intent = new Intent(getContext(), SetRemarkNameAc.class);
+                intent.putExtra("id", nowId);
                 startActivity(intent);
                 mCirclePop.dismiss();
             }
@@ -187,8 +189,8 @@ public class MyFansFrafment extends Fragment {
         mCirclePop.findViewById(R.id.set_auth).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(),SetFansPermissionsAc.class);
-                intent.putExtra("id",nowId);
+                Intent intent = new Intent(getContext(), SetFansPermissionsAc.class);
+                intent.putExtra("id", nowId);
                 startActivity(intent);
                 mCirclePop.dismiss();
             }
@@ -233,7 +235,7 @@ public class MyFansFrafment extends Fragment {
                 helper.setFrescoImageResource(R.id.head_pic, item.getSHeadImg());
 
                 helper.setText(R.id.expiry_date, item.getDExpireTime());
-             //   helper.setText(R.id.num, item.getNumber() + "");
+                //   helper.setText(R.id.num, item.getNumber() + "");
                 helper.setVisible(R.id.vip_logo, item.isBIsVip());
                 if (item.getSRemarkName() != null) {
                     helper.setText(R.id.user_name, item.getSNickName() + "(" + item.getSRemarkName() + ")");
@@ -313,6 +315,12 @@ public class MyFansFrafment extends Fragment {
                                     } else {
                                         canLoadMore = false;
                                     }
+                                    emptyPage.setVisibility(View.GONE);
+                                }else {
+                                    if (!isLoadMore){
+                                        adapter.clear();
+                                        emptyPage.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             }
 
@@ -330,8 +338,8 @@ public class MyFansFrafment extends Fragment {
                             showBottom(getContext(), response.body().getInfo());
                         }
                     }
-                        refresh.finishRefreshing();
-                        refresh.finishLoadmore();
+                    refresh.finishRefreshing();
+                    refresh.finishLoadmore();
 
 
                 }

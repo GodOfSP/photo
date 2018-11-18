@@ -12,8 +12,6 @@
         android:layout_height="wrap_content">
 
 
-
-
         <com.fnhelper.photo.diyviews.ClearEditText
             android:id="@+id/search_et"
             android:layout_width="0dp"
@@ -66,6 +64,16 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/empty_page"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/empty_view"/>
+
+        </RelativeLayout>
 
     </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>
 
