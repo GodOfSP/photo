@@ -55,7 +55,7 @@ public class BindSetNewPassWordActivity extends BaseActivity {
 
     private String sPhone = "";
     private String sCode = "";
-    private int which = 2;
+    private int which = 2; //2 代表忘记密码 v  //1 代表绑定手机
 
     @Override
     public void setContentView() {
