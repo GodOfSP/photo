@@ -1,5 +1,6 @@
 package com.fnhelper.photo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
@@ -8,6 +9,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 import com.fnhelper.photo.index.TestImageLoader;
+import com.fnhelper.photo.interfaces.Constants;
 import com.previewlibrary.ZoomMediaLoader;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
@@ -37,6 +39,7 @@ public class MyApplication extends MultiDexApplication {
 
         instance = this;
         packageName = this.getPackageName();
+        initStoken();
         // 初始化fresco
         ImagePipelineConfig config = ImagePipelineConfig.newBuilder(getContext())
                 .setDownsampleEnabled(true)
@@ -59,5 +62,13 @@ public class MyApplication extends MultiDexApplication {
         MultiDex.install(base);
     }
 
+
+    private void initStoken() {
+        Constants.ID = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getString("ID", "");
+        Constants.sToken = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getString("sToken", "");
+
+    }
 
 }

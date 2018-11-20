@@ -51,7 +51,6 @@
                     android:ellipsize="end"
                     android:maxEms="10"
                     android:maxLines="1"
-                    android:text="好疯狂的石头好疯狂的石头"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     app:layout_constraintLeft_toRightOf="@+id/head_pic"
@@ -68,7 +67,6 @@
                     android:ellipsize="end"
                     android:maxEms="11"
                     android:maxLines="1"
-                    android:text="12345678911"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@id/name"
@@ -87,9 +85,6 @@
                     android:drawablePadding="12dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:text="接口地址: /Concern/GetConcernListByPage
-请求方法: GET数据类型: X-WWW-FORM-URLENCODED接口地址: /Concern/GetConcernListByPage
-请求方法: GET数据类型: X-WWW-FORM-URLENCODED"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     app:layout_constraintLeft_toRightOf="@+id/head_pic"

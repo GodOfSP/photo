@@ -15,6 +15,7 @@ import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
 import com.fnhelper.photo.beans.NoticeBean;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
@@ -183,6 +184,7 @@ public class NoticeAc extends BaseActivity {
                             showBottom(NoticeAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(NoticeAc.this);
                             showBottom(NoticeAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结

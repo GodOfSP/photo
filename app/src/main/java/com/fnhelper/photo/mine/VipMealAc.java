@@ -19,6 +19,7 @@ import com.fnhelper.photo.beans.VipMealListBean;
 import com.fnhelper.photo.beans.VipMealOrderBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -151,6 +152,7 @@ public class VipMealAc extends BaseActivity {
                             //服务错误
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(VipMealAc.this);
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
                         }
@@ -237,6 +239,7 @@ public class VipMealAc extends BaseActivity {
                             showBottom(VipMealAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(VipMealAc.this);
                             showBottom(VipMealAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结

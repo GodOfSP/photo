@@ -23,6 +23,7 @@ import com.fnhelper.photo.diyviews.CustomViewPager;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.myfans.SetFansPermissionsAc;
 import com.fnhelper.photo.myfans.SetRemarkNameAc;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.zyyoona7.popup.EasyPopup;
 import com.zyyoona7.popup.XGravity;
 import com.zyyoona7.popup.YGravity;
@@ -260,6 +261,7 @@ public class PersonalCenterAc extends BaseActivity {
                             showBottom(PersonalCenterAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(PersonalCenterAc.this);
                             showBottom(PersonalCenterAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
@@ -323,6 +325,7 @@ public class PersonalCenterAc extends BaseActivity {
                             showBottom(PersonalCenterAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(PersonalCenterAc.this);
                             showBottom(PersonalCenterAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结

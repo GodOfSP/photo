@@ -75,7 +75,7 @@ public class SystemSettingAc extends BaseActivity {
     /**
      * 退出
      */
-    private void logOut(){
+    private void logOut() {
 
 
         DialogUtils.showLogoutDialog(SystemSettingAc.this, new DialogUtils.OnCommitListener() {
@@ -92,6 +92,10 @@ public class SystemSettingAc extends BaseActivity {
                 Constants.album_name = "";
                 Constants.vip_exi_time = "";
                 Constants.isVIP = false;
+
+                editor.putString("ID", "");
+                editor.putString("sToken", "");
+                editor.commit();
 
                 finishAll();
                 openActivity(LoginActivity.class);

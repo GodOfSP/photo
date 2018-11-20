@@ -12,6 +12,7 @@ import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.STokenUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -114,6 +115,7 @@ public class SetFansPermissionsAc extends BaseActivity {
                             showBottom(SetFansPermissionsAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(SetFansPermissionsAc.this);
                             showBottom(SetFansPermissionsAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结

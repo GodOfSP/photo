@@ -17,11 +17,11 @@ import android.widget.RelativeLayout;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
-import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.FollowListBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.PersonalCenterAc;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
@@ -169,7 +169,6 @@ public class MyInterstFrafment extends Fragment {
                     helper.setText(R.id.user_name, item.getSNickName());
                 }
 
-
                  /*
                  * 跳转到个人信息
                  */
@@ -268,6 +267,7 @@ public class MyInterstFrafment extends Fragment {
                             //登录过期
                             refresh.finishRefreshing();
                             refresh.finishLoadmore();
+                            STokenUtil.check(getActivity());
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结

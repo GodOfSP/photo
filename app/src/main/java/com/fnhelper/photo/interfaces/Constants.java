@@ -36,4 +36,7 @@ public class Constants {
     //分页参数
     public static int pageSize = 15;
 
+    // token 操作参数  是否正在检查
+    public static  boolean isCheckTokenNow = false;
+
 }

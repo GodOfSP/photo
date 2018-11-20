@@ -2,12 +2,9 @@ package com.fnhelper.photo;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,6 +35,7 @@ import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.GridImageAdapter;
 import com.fnhelper.photo.utils.ImageUtil;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -1021,6 +1019,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                             showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(AddNewPhotoWordActivity.this);
                             showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
@@ -1084,6 +1083,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                                 showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                             } else if (response.body().getCode() == CODE_TOKEN) {
                                 //登录过期
+                                STokenUtil.check(AddNewPhotoWordActivity.this);
                                 showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                             } else if (response.body().getCode() == CODE_TOKEN) {
                                 //账号冻结
@@ -1139,6 +1139,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                                 showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                             } else if (response.body().getCode() == CODE_TOKEN) {
                                 //登录过期
+                                STokenUtil.check(AddNewPhotoWordActivity.this);
                                 showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                             } else if (response.body().getCode() == CODE_TOKEN) {
                                 //账号冻结

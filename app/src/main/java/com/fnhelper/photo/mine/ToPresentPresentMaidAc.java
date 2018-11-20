@@ -18,6 +18,7 @@ import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.zyyoona7.popup.EasyPopup;
 import com.zyyoona7.popup.XGravity;
 import com.zyyoona7.popup.YGravity;
@@ -181,6 +182,7 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                             showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(ToPresentPresentMaidAc.this);
                             showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
@@ -266,6 +268,7 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                             showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(ToPresentPresentMaidAc.this);
                             showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结

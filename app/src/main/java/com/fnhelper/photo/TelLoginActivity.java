@@ -118,6 +118,10 @@ public class TelLoginActivity extends BaseActivity {
                             Constants.wx_num = response.body().getData().getsWeiXinNo();
                             Constants.album_introduce = response.body().getData().getsIntroduce();
                             Constants.album_name = response.body().getData().getsPhotoName();
+
+                            editor.putString("ID",Constants.ID);
+                            editor.putString("sToken",Constants.sToken);
+                            editor.commit();
                             openActivityAndCloseThis(MainActivity.class);
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败

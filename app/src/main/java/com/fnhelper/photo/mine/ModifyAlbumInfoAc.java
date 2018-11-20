@@ -15,6 +15,7 @@ import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.DensityUtil;
+import com.fnhelper.photo.utils.STokenUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -207,6 +208,7 @@ public class ModifyAlbumInfoAc extends BaseActivity {
                             showBottom(ModifyAlbumInfoAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(ModifyAlbumInfoAc.this);
                             showBottom(ModifyAlbumInfoAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结

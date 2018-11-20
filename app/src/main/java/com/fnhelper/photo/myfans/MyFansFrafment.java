@@ -22,6 +22,7 @@ import com.fnhelper.photo.beans.FansListBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.PersonalCenterAc;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
@@ -332,6 +333,7 @@ public class MyFansFrafment extends Fragment {
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(getActivity());
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结

@@ -16,6 +16,7 @@ import com.fnhelper.photo.R;
 import com.fnhelper.photo.beans.MyVipInfoBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.STokenUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -249,6 +250,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                             //服务错误
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(getActivity());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
                         }

@@ -38,6 +38,7 @@ import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.GridImageAdapter;
 import com.fnhelper.photo.utils.ImageUtil;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -1122,6 +1123,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
                             showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(ModifyPhotoWordActivity.this);
                             showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
@@ -1185,6 +1187,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
                                 showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
                             } else if (response.body().getCode() == CODE_TOKEN) {
                                 //登录过期
+                                STokenUtil.check(ModifyPhotoWordActivity.this);
                                 showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
                             } else if (response.body().getCode() == CODE_TOKEN) {
                                 //账号冻结
@@ -1240,6 +1243,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
                                 showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
                             } else if (response.body().getCode() == CODE_TOKEN) {
                                 //登录过期
+                                STokenUtil.check(ModifyPhotoWordActivity.this);
                                 showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
                             } else if (response.body().getCode() == CODE_TOKEN) {
                                 //账号冻结

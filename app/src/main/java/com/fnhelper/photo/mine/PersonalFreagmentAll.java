@@ -36,6 +36,7 @@ import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.DownloadUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.ImageUtil;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.previewlibrary.GPreviewBuilder;
 import com.previewlibrary.enitity.IThumbViewInfo;
@@ -716,6 +717,7 @@ public class PersonalFreagmentAll extends Fragment {
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(getActivity());
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结

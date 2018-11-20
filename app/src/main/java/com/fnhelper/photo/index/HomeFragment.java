@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -45,6 +44,8 @@ import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.utils.DownloadUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.ImageUtil;
+import com.fnhelper.photo.utils.STokenUtil;
+import com.fnhelper.photo.utils.TimeFormatUtils;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
@@ -65,10 +66,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -226,7 +223,7 @@ public class HomeFragment extends Fragment {
                 //用户名
                 helper.setText(R.id.user_name, item.getSNickName());
                 // 发布时间
-                helper.setText(R.id.date, item.getDInsertTime());
+                helper.setText(R.id.date, TimeFormatUtils.formatTime(item.getDInsertTime()));
                 //上次分享时间
                 if (item.getDShareTime() == null && TextUtils.isEmpty(item.getDInsertTime())) {
                     helper.setVisible(R.id.share_time, false);
@@ -467,6 +464,7 @@ public class HomeFragment extends Fragment {
                                     showBottom(getContext(), response.body().getInfo());
                                 } else if (response.body().getCode() == CODE_TOKEN) {
                                     //登录过期
+                                    STokenUtil.check(getActivity());
                                     showBottom(getContext(), response.body().getInfo());
                                 } else if (response.body().getCode() == CODE_TOKEN) {
                                     //账号冻结
@@ -510,6 +508,7 @@ public class HomeFragment extends Fragment {
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
+                            STokenUtil.check(getActivity());
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
@@ -933,6 +932,7 @@ public class HomeFragment extends Fragment {
                             //登录过期
                             refresh.finishRefreshing();
                             refresh.finishLoadmore();
+                            STokenUtil.check(getActivity());
                             showBottom(getContext(), response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
