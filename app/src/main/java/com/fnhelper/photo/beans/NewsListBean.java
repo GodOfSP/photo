@@ -172,6 +172,7 @@ public class NewsListBean implements Parcelable {
              * bIsDeleted : false
              * sHeadImg : http://thirdwx.qlogo.cn/mmopen/vi_32/qJdGU91ibBcvlCsBYnMNp0XLBeA2I4Fib4hDx2EickguIVBicPt4DQF4ldCLn0ALUF3t6QRQMVibwqCyQXlrBibnIJvA/132
              * sNickName : 好疯狂的石头
+             * sVideoImageUrl : ""
              * MaxRows : 4
              */
 
@@ -202,6 +203,7 @@ public class NewsListBean implements Parcelable {
             private String sHeadImg;
             private String sNickName;
             private int MaxRows;
+            private String sVideoImageUrl;
 
 
 
@@ -234,6 +236,7 @@ public class NewsListBean implements Parcelable {
                 sHeadImg = in.readString();
                 sNickName = in.readString();
                 MaxRows = in.readInt();
+                sVideoImageUrl = in.readString();
             }
 
             @Override
@@ -265,6 +268,7 @@ public class NewsListBean implements Parcelable {
                 dest.writeString(sHeadImg);
                 dest.writeString(sNickName);
                 dest.writeInt(MaxRows);
+                dest.writeString(sVideoImageUrl);
             }
 
             @Override
@@ -498,6 +502,14 @@ public class NewsListBean implements Parcelable {
 
             public void setMaxRows(int MaxRows) {
                 this.MaxRows = MaxRows;
+            }
+
+            public String getsVideoImageUrl() {
+                return sVideoImageUrl;
+            }
+
+            public void setsVideoImageUrl(String sVideoImageUrl) {
+                this.sVideoImageUrl = sVideoImageUrl;
             }
         }
     }

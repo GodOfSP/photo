@@ -2,15 +2,16 @@ package com.fnhelper.photo.beans;
 
 public class UpdateVdieoBean {
 
+
     /**
      * code : 100
      * info : 上传成功
-     * data : Material\EC5AD1D4674E4EB7AA68DD5939BC5BD6\Video\2018-11-07\5103357713487521688.mp4
+     * data : {"sVideoUrl":"http://153h79422m.imwork.net:10354/Material/3F170FA73E7F4682AA60BE20B342D908/Video/2018-11-22/5552010608722451990.mp4","sImageUrl":"http://153h79422m.imwork.net:10354/Material/3F170FA73E7F4682AA60BE20B342D908/Video/2018-11-22/5552010608722451990.jpg"}
      */
 
     private int code;
     private String info;
-    private String data;
+    private DataBean data;
 
     public int getCode() {
         return code;
@@ -28,11 +29,37 @@ public class UpdateVdieoBean {
         this.info = info;
     }
 
-    public String getData() {
+    public DataBean getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(DataBean data) {
         this.data = data;
+    }
+
+    public static class DataBean {
+        /**
+         * sVideoUrl : http://153h79422m.imwork.net:10354/Material/3F170FA73E7F4682AA60BE20B342D908/Video/2018-11-22/5552010608722451990.mp4
+         * sImageUrl : http://153h79422m.imwork.net:10354/Material/3F170FA73E7F4682AA60BE20B342D908/Video/2018-11-22/5552010608722451990.jpg
+         */
+
+        private String sVideoUrl;
+        private String sImageUrl;
+
+        public String getSVideoUrl() {
+            return sVideoUrl;
+        }
+
+        public void setSVideoUrl(String sVideoUrl) {
+            this.sVideoUrl = sVideoUrl;
+        }
+
+        public String getSImageUrl() {
+            return sImageUrl;
+        }
+
+        public void setSImageUrl(String sImageUrl) {
+            this.sImageUrl = sImageUrl;
+        }
     }
 }

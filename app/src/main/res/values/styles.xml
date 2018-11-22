@@ -63,7 +63,7 @@
     </style>
 
     <style name="BottomBarText">
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="SplashTheme" parent="AppTheme">

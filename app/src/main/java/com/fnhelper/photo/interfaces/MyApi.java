@@ -2,6 +2,7 @@ package com.fnhelper.photo.interfaces;
 
 import com.fnhelper.photo.beans.BalanceBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.beans.EmergeNoticeBean;
 import com.fnhelper.photo.beans.FansListBean;
 import com.fnhelper.photo.beans.FollowListBean;
 import com.fnhelper.photo.beans.GetCodeBean;
@@ -56,6 +57,14 @@ public interface MyApi {
      */
     @GET("Client/GetMobileCode")
     Call<GetCodeBean> GetMobileCode(@Query("sPhone") String sPhone, @Query("iType") int Type);
+
+    /** 获取紧急通告
+       /Notice/GetEmergeNotice
+     *
+     * @return
+     */
+    @GET("Notice/GetEmergeNotice")
+    Call<EmergeNoticeBean> GetEmergeNotice();
 
 
     /**
@@ -202,6 +211,7 @@ public interface MyApi {
                                         @Field("iPrivate") String iPrivate,
                                         @Field("sVideoUrl") String sVideoUrl,
                                         @Field("sImagesUrl") String sImagesUrl,
+                                        @Field("sImageUrl") String sImageUrl,
                                         @Field("iType") String iType
     );
 

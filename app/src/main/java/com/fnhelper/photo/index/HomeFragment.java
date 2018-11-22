@@ -222,6 +222,18 @@ public class HomeFragment extends Fragment {
                 //  helper.setVisible(R.id.vip_logo, item.isBIsVip());
                 //用户名
                 helper.setText(R.id.user_name, item.getSNickName());
+                //来源
+                if (item.getSClientId().equals(item.getSSourceId())){
+                    helper.setVisible(R.id.pic_source,true);
+                    helper.setOnClickListener(R.id.pic_source, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // TODO: 2018-11-22  跳到来源详情
+                        }
+                    });
+                }else {
+                    helper.setVisible(R.id.pic_source,false);
+                }
                 // 发布时间
                 helper.setText(R.id.date, TimeFormatUtils.formatTime(item.getDInsertTime()));
                 //上次分享时间
@@ -326,6 +338,7 @@ public class HomeFragment extends Fragment {
 
                     helper.setVisible(R.id.recycler, false);
                     helper.setVisible(R.id.video, true);
+                    helper.setImageByUrl(R.id.video,item.getsVideoImageUrl());
 
                   /*  MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                     Bitmap bitmap = null;

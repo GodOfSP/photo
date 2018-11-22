@@ -4,16 +4,24 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fnhelper.photo.base.BaseActivity;
+import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.beans.EmergeNoticeBean;
 import com.fnhelper.photo.index.HomeFragment;
+import com.fnhelper.photo.interfaces.Constants;
+import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.MineFragment;
+import com.fnhelper.photo.mine.ModifyAlbumInfoAc;
 import com.fnhelper.photo.mine.ScanCodeAc;
 import com.fnhelper.photo.myfans.MyFansFrafment;
 import com.fnhelper.photo.myinterst.MyInterstFrafment;
+import com.fnhelper.photo.utils.DialogUtils;
+import com.fnhelper.photo.utils.STokenUtil;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -21,6 +29,14 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static com.fnhelper.photo.interfaces.Constants.CODE_ERROR;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
+import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
+import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
 
 public class MainActivity extends BaseActivity {
 
@@ -54,7 +70,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        //   检查有无紧急通知
+        getEmergeNotice();
     }
 
     @Override
@@ -75,6 +92,50 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+
+    /**
+     * 检查有无紧急通知
+     */
+    private void getEmergeNotice(){
+
+
+        Call<EmergeNoticeBean> call = RetrofitService.createMyAPI().GetEmergeNotice();
+        call.enqueue(new Callback<EmergeNoticeBean>() {
+            @Override
+            public void onResponse(Call<EmergeNoticeBean> call, Response<EmergeNoticeBean> response) {
+                if (response!=null){
+                    if (response.body()!=null){
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            if (response.body().getData()!=null){
+                                if (!TextUtils.isEmpty(response.body().getData().getSTitle())){
+                                    DialogUtils.showAlertDialog(MainActivity.this,response.body().getData().getSTitle(),response.body().getData().getSContent());
+                                }
+                            }
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            STokenUtil.check(MainActivity.this);
+                            showBottom(MainActivity.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(MainActivity.this, response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<EmergeNoticeBean> call, Throwable t) {
+
+            }
+        });
+
+    }
 
 
     /**

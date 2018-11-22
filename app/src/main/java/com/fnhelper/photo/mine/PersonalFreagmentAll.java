@@ -267,6 +267,7 @@ public class PersonalFreagmentAll extends Fragment {
 
                     helper.setVisible(R.id.recycler, false);
                     helper.setVisible(R.id.video, true);
+                    helper.setImageByUrl(R.id.video,item.getsVideoImageUrl());
 
                   /*  MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                     Bitmap bitmap = null;

@@ -33,20 +33,35 @@ public class DialogUtils {
         return b;
     }
 
-    public static void showAlertDialog(Context context, String commitText, String content, final OnCommitListener onCommitListener) {
+    public static void showAlertDialog(Context context, String sTitle, String sContent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogU);
         final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        if (alertDialog.getWindow() != null) {
+            alertDialog.show();
+        }
         Window window = alertDialog.getWindow();
         if (window != null) {
-            window.setContentView(R.layout.dialog_alert);
+            window.setContentView(R.layout.dialog_login_tips);
             alertDialog.setCanceledOnTouchOutside(false);
-            TextView tv_content = (TextView) window.findViewById(R.id.tv_content);
             TextView cancel = (TextView) window.findViewById(R.id.tv_cancel);
             TextView commit = (TextView) window.findViewById(R.id.tv_commit);
-            commit.setText(commitText);
-            tv_content.setText(content);
+            TextView content = (TextView) window.findViewById(R.id.tv_content);
+            TextView tv_title = (TextView) window.findViewById(R.id.tv_title);
+            ImageView close = (ImageView) window.findViewById(R.id.close);
+
+            tv_title.setText(sTitle);
+            content.setText(sContent);
+            cancel.setText("取消");
+            commit.setText("确认");
+
+
             cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     alertDialog.dismiss();
@@ -55,7 +70,6 @@ public class DialogUtils {
             commit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommitListener.onCommit();
                     alertDialog.dismiss();
                 }
             });

@@ -1017,6 +1017,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
 
 
     private String vPath = ""; // 上传成功后的视频路径
+    private String vPPath = ""; // 上传成功后的视频路径
     private String pPath = ""; // 上传成功后的图片路径
 
 
@@ -1103,7 +1104,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
         sContext = word.getText().toString().trim();
 
         Call<CheckCodeBean> call = RetrofitService.createMyAPI().InsertAndUpdate("", Constants.ID, "",
-                dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath,iType);
+                dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath,vPPath,iType);
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
             public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
@@ -1174,7 +1175,8 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
                             if (response.body().getCode() == CODE_SUCCESS) {
                                 //成功
                                 if ("上传成功".equals(response.body().getInfo())) {
-                                    vPath = response.body().getData();
+                                    vPath = response.body().getData().getSVideoUrl();
+                                    vPPath = response.body().getData().getSImageUrl();
                                     commitOtherInfo("1");
                                 } else {
                                     showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
