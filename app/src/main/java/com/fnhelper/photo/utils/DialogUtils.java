@@ -105,7 +105,7 @@ public class DialogUtils {
     /**
      * 登录 --  需要绑定提示框
      */
-    public static void showLoginTips(Context context, final OnCommitListener onCommitListener) {
+    public static void showLoginTips(Context context, final OnCommitListener onCommitListener,final OnCancelListener onCancelListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogU);
         final AlertDialog alertDialog = builder.create();
         if (alertDialog.getWindow() != null) {
@@ -121,6 +121,7 @@ public class DialogUtils {
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    onCancelListener.onCancel();
                     alertDialog.dismiss();
                 }
             });

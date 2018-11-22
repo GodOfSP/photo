@@ -37,6 +37,7 @@ import com.fnhelper.photo.utils.DownloadUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.ImageUtil;
 import com.fnhelper.photo.utils.STokenUtil;
+import com.fnhelper.photo.utils.TimeFormatUtils;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.previewlibrary.GPreviewBuilder;
 import com.previewlibrary.enitity.IThumbViewInfo;
@@ -169,7 +170,7 @@ public class PersonalFreagmentAll extends Fragment {
 
                 //公共部分
                 // 发布时间
-                helper.setText(R.id.date, item.getDInsertTime());
+                helper.setText(R.id.date, TimeFormatUtils.formatTime(item.getDInsertTime()));
                 //货号
                 if (item.getSGoodsNo() == null || TextUtils.isEmpty(item.getSGoodsNo())) {
 

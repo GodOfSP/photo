@@ -21,7 +21,6 @@ import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
 import com.fnhelper.photo.beans.FansListBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.RetrofitService;
-import com.fnhelper.photo.mine.PersonalCenterAc;
 import com.fnhelper.photo.utils.STokenUtil;
 import com.fnhelper.photo.utils.TwinklingRefreshLayoutUtil;
 import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
@@ -244,9 +243,9 @@ public class MyFansFrafment extends Fragment {
                     helper.setText(R.id.user_name, item.getSNickName());
                 }
 
-                /*
+   /*             *//*  不让看粉丝动态
                  * 跳转到个人信息
-                 */
+                 *//*
 
                 helper.getConvertView().setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -256,7 +255,7 @@ public class MyFansFrafment extends Fragment {
                         intent.putExtra("nickName", item.getSNickName());
                         startActivity(intent);
                     }
-                });
+                });*/
 
             }
         };

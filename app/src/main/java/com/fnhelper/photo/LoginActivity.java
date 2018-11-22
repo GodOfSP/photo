@@ -188,10 +188,15 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                                         @Override
                                                         public void onCommit() {
                                                             //去绑定
-                                                            Intent i = new Intent(LoginActivity.this,BindInputTelActivity.class);
-                                                            i.putExtra("which",1);
+                                                            Intent i = new Intent(LoginActivity.this, BindInputTelActivity.class);
+                                                            i.putExtra("which", 1);
                                                             startActivity(i);
                                                             finish();
+                                                        }
+                                                    }, new DialogUtils.OnCancelListener() {
+                                                        @Override
+                                                        public void onCancel() {
+                                                            openActivityAndCloseThis(MainActivity.class);
                                                         }
                                                     });
                                                 }else {
