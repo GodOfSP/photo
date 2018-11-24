@@ -14,20 +14,10 @@
         swipe:rightEdgeSwipeOffset="0dp">
         <!--删除布局-->
         <LinearLayout
-            android:layout_width="96dp"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
             android:gravity="center"
             android:tag="Bottom3">
-
-            <TextView
-                android:id="@+id/modify"
-                android:layout_width="48dp"
-                android:layout_height="match_parent"
-                android:background="#FAE323"
-                android:gravity="center"
-                android:text="编辑"
-                android:textColor="#fff"
-                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/delete"
@@ -60,32 +50,36 @@
 
                 />
 
-            <TextView
+            <EditText
                 android:id="@+id/content"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:gravity="center"
-                android:text="￥23"
+                android:background="@null"
                 android:textColor="@color/text_black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/title"
+                swipe:layout_constraintRight_toLeftOf="@+id/open_state"
                 app:layout_constraintTop_toTopOf="parent"
 
                 />
 
-            <TextView
+            <Switch
                 android:id="@+id/open_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="12dp"
-                android:gravity="center"
+                android:layout_marginRight="6dp"
+                android:checked="true"
                 android:text="公开"
                 android:textColor="@color/text_black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 swipe:layout_constraintRight_toRightOf="parent"
+
                 />
+
+
 
         </android.support.constraint.ConstraintLayout>
     </com.daimajia.swipe.SwipeLayout>

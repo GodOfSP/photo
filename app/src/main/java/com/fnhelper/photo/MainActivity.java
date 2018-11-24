@@ -109,7 +109,7 @@ public class MainActivity extends BaseActivity {
                             //成功
                             if (response.body().getData()!=null){
                                 if (!TextUtils.isEmpty(response.body().getData().getSTitle())){
-                                    DialogUtils.showAlertDialog(MainActivity.this,response.body().getData().getSTitle(),response.body().getData().getSContent());
+                                    DialogUtils.showAlertDialog(MainActivity.this,response.body().getData().getSTitle(),response.body().getData().getSContent(),null,null);
                                 }
                             }
                         } else if (response.body().getCode() == CODE_ERROR) {

@@ -106,7 +106,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     private List<LocalMedia> selectList = new ArrayList<>();
     private int chooseMode = PictureMimeType.ofAll();
 
-    private MultiItemTypeAdapter marKListAdapter; //备注信息列表的adapter
+    private MyMulAdapter marKListAdapter; //备注信息列表的adapter
     private ArrayList<MarkListItemBean> markList;
 
     /**
@@ -208,7 +208,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         markRv.setLayoutManager(new LinearLayoutManager(AddNewPhotoWordActivity.this, LinearLayoutManager.VERTICAL, false));
         markList = new ArrayList<>();
         markList.add(new MarkListItemBean("", "", false, "", MARK_TYPE_NONE));
-        marKListAdapter = new MultiItemTypeAdapter(AddNewPhotoWordActivity.this, markList);
+        marKListAdapter = new MyMulAdapter(AddNewPhotoWordActivity.this, markList);
         marKListAdapter.addItemViewDelegate(new MarkNoneDelegate());
         marKListAdapter.addItemViewDelegate(new MarkMarkDelegate(this));
         marKListAdapter.addItemViewDelegate(new MarkNormalDelegate(this));
@@ -1170,7 +1170,6 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
      */
     @Override
     public void del(int position, int type) {
-        markList.remove(position);
 
         switch (type) {
             case MARK_TYPE_GOOD_NUM:
@@ -1192,15 +1191,15 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 markHaveFillList[5] = false;
                 break;
         }
-
+        marKListAdapter.remove(position);
         if (markList.size() == 0) {
             markList.add(new MarkListItemBean("", "", false, "", MARK_TYPE_NONE));
         }
 
-        marKListAdapter.notifyDataSetChanged();
+
     }
 
-    @Override
+/*    @Override
     public void modify(int type) {
 
         initMarkPop(type, false);
@@ -1208,18 +1207,17 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     }
 
 
-    /**
+    *//**
      * 备注列表normalItem侧滑中的点击事件 编辑
      *
-     * @param type item 类型
-     */
+     *//*
     @Override
     public void modify(int type, boolean isOpen) {
 
         initMarkPop(type, isOpen);
         showMarkPop();
 
-    }
+    }*/
 
     @Override
     protected void onDestroy() {

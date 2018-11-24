@@ -33,7 +33,7 @@ public class DialogUtils {
         return b;
     }
 
-    public static void showAlertDialog(Context context, String sTitle, String sContent) {
+    public static void showAlertDialog(Context context, String sTitle, String sContent, final OnCommitListener onCommitListener,final OnCancelListener onCancelListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.dialogU);
         final AlertDialog alertDialog = builder.create();
         if (alertDialog.getWindow() != null) {
@@ -58,18 +58,27 @@ public class DialogUtils {
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (onCancelListener!=null){
+                        onCancelListener.onCancel();
+                    }
                     alertDialog.dismiss();
                 }
             });
             close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (onCancelListener!=null){
+                        onCancelListener.onCancel();
+                    }
                     alertDialog.dismiss();
                 }
             });
             commit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (onCommitListener!=null){
+                        onCommitListener.onCommit();
+                    }
                     alertDialog.dismiss();
                 }
             });
@@ -148,6 +157,7 @@ public class DialogUtils {
             commit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     onCommitListener.onCommit();
                     alertDialog.dismiss();
                 }

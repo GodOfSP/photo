@@ -28,11 +28,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.fnhelper.photo.MainActivity;
 import com.fnhelper.photo.ModifyPhotoWordActivity;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
+import com.fnhelper.photo.beans.CanShareBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
+import com.fnhelper.photo.beans.EmergeNoticeBean;
 import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.PreviewItemBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
@@ -40,6 +43,7 @@ import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.MyCodeAc;
 import com.fnhelper.photo.mine.PersonalCenterAc;
+import com.fnhelper.photo.mine.VipMealAc;
 import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.utils.DownloadUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
@@ -429,7 +433,7 @@ public class HomeFragment extends Fragment {
                         } else {
                             nowWhich = 1;
                         }
-                        showSharePop();
+                      checkCanShare(item.getID());
                     }
                 });
 
@@ -448,6 +452,63 @@ public class HomeFragment extends Fragment {
         };
         recyclerView.setAdapter(adapter);
     }
+
+
+    /**
+     * 看能不能分享
+     */
+    private void checkCanShare(String id){
+
+
+
+        Call<CanShareBean> call = RetrofitService.createMyAPI().IsCanShare(id);
+        call.enqueue(new Callback<CanShareBean>() {
+            @Override
+            public void onResponse(Call<CanShareBean> call, Response<CanShareBean> response) {
+                if (response!=null){
+                    if (response.body()!=null){
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            if (response.body().getData()!=null){
+                                if (response.body().getData().isIsCanShare()){
+                                    showSharePop();
+                                }else {
+                                    DialogUtils.showAlertDialog(getContext(), "会员提示", "目前暂不能分享,是否去开通会员？确认？", new DialogUtils.OnCommitListener() {
+                                        @Override
+                                        public void onCommit() {
+                                            startActivity(new Intent(getContext(), VipMealAc.class));
+                                        }
+                                    },null);
+                                }
+
+                            }
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            STokenUtil.check(getActivity());
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(getContext(), response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CanShareBean> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+
 
 
     /**
@@ -543,7 +604,7 @@ public class HomeFragment extends Fragment {
     private IWXAPI wxAPI = null;
     private static final int THUMB_SIZE = 150;
     private EasyPopup mSharePop;
-    private int nowWhich = 0;
+    private int nowWhich = 0;  //当前分享类型
     private NewsListBean.DataBean.RowsBean nowItem = null;
     private ZLoadingDialog zLoadingDialog;
     private Handler handler = new Handler() {

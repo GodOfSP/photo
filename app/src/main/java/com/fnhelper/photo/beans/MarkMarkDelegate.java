@@ -83,20 +83,12 @@ public class MarkMarkDelegate implements ItemViewDelegate<MarkListItemBean> {
             }
         });
 
-        holder.setOnClickListener(R.id.modify, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onNormalItemThings.modify(markListItemBean.getType());
-            }
-        });
 
     }
 
 
     public interface onNormalItemThings {
         void del(int position,int t);
-
-        void modify(int type);
     }
 
 }

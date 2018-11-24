@@ -1,6 +1,7 @@
 package com.fnhelper.photo.interfaces;
 
 import com.fnhelper.photo.beans.BalanceBean;
+import com.fnhelper.photo.beans.CanShareBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.EmergeNoticeBean;
 import com.fnhelper.photo.beans.FansListBean;
@@ -65,6 +66,14 @@ public interface MyApi {
      */
     @GET("Notice/GetEmergeNotice")
     Call<EmergeNoticeBean> GetEmergeNotice();
+
+    /** 动态是否可以分享
+     ImageText/IsCanShare
+     *
+     * @return
+     */
+    @GET("ImageText/IsCanShare")
+    Call<CanShareBean> IsCanShare(@Query("sImageTextId") String sImageTextId);
 
 
     /**

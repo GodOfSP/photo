@@ -224,14 +224,8 @@ public class MyFansFrafment extends Fragment {
             @Override
             protected void convert(BaseAdapterHelper helper, final FansListBean.DataBean.RowsBean item, int position) {
 
+                helper.setVisible(R.id.auth_setting_btn,false);//权限，设置按钮 被要求隐藏
 
-                helper.setOnClickListener(R.id.auth_setting_btn, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        nowId = item.getSClientId();
-                        showAuthSettingPop();
-                    }
-                });
                 helper.setFrescoImageResource(R.id.head_pic, item.getSHeadImg());
 
                 helper.setText(R.id.expiry_date, item.getDExpireTime());
@@ -243,19 +237,15 @@ public class MyFansFrafment extends Fragment {
                     helper.setText(R.id.user_name, item.getSNickName());
                 }
 
-   /*             *//*  不让看粉丝动态
-                 * 跳转到个人信息
-                 *//*
 
+                //权限设置
                 helper.getConvertView().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), PersonalCenterAc.class);
-                        intent.putExtra("concernId", item.getSClientId());
-                        intent.putExtra("nickName", item.getSNickName());
-                        startActivity(intent);
+                        nowId = item.getSClientId();
+                        showAuthSettingPop();
                     }
-                });*/
+                });
 
             }
         };

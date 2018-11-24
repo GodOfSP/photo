@@ -28,11 +28,13 @@ import com.fnhelper.photo.ModifyPhotoWordActivity;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
+import com.fnhelper.photo.beans.CanShareBean;
 import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.PreviewItemBean;
 import com.fnhelper.photo.index.VideoPlayerDetailedActivity;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.utils.DownloadUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.ImageUtil;
@@ -337,7 +339,7 @@ public class PersonalFreagmentAll extends Fragment {
                         } else {
                             nowWhich = 1;
                         }
-                        showSharePop();
+                        checkCanShare(item.getID());
                     }
                 });
 
@@ -415,6 +417,64 @@ public class PersonalFreagmentAll extends Fragment {
     private void showSharePop() {
         mSharePop.showAtAnchorView(getActivity().findViewById(android.R.id.content), YGravity.ALIGN_BOTTOM, XGravity.CENTER, 0, 0);
     }
+
+
+
+    /**
+     * 看能不能分享
+     */
+    private void checkCanShare(String id){
+
+
+
+        Call<CanShareBean> call = RetrofitService.createMyAPI().IsCanShare(id);
+        call.enqueue(new Callback<CanShareBean>() {
+            @Override
+            public void onResponse(Call<CanShareBean> call, Response<CanShareBean> response) {
+                if (response!=null){
+                    if (response.body()!=null){
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            if (response.body().getData()!=null){
+                                if (response.body().getData().isIsCanShare()){
+                                    showSharePop();
+                                }else {
+                                    DialogUtils.showAlertDialog(getContext(), "会员提示", "目前暂不能分享,是否去开通会员？确认？", new DialogUtils.OnCommitListener() {
+                                        @Override
+                                        public void onCommit() {
+                                            startActivity(new Intent(getContext(), VipMealAc.class));
+                                        }
+                                    },null);
+                                }
+
+                            }
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            STokenUtil.check(getActivity());
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(getContext(), response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CanShareBean> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+
 
 
     /**

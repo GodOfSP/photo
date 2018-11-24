@@ -1304,7 +1304,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
         marKListAdapter.notifyDataSetChanged();
     }
 
-    @Override
+/*    @Override
     public void modify(int type) {
 
         initMarkPop(type, false);
@@ -1312,18 +1312,18 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
     }
 
 
-    /**
+    *//**
      * 备注列表normalItem侧滑中的点击事件 编辑
      *
      * @param type item 类型
-     */
+     *//*
     @Override
     public void modify(int type, boolean isOpen) {
 
         initMarkPop(type, isOpen);
         showMarkPop();
 
-    }
+    }*/
 
     @Override
     protected void onDestroy() {

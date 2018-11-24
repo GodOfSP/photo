@@ -1,6 +1,11 @@
 package com.fnhelper.photo.beans;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Switch;
 
 import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
@@ -19,7 +24,7 @@ public class MarkNormalDelegate implements ItemViewDelegate<MarkListItemBean> {
 
     private onNormalItemThings onNormalItemThings;
 
-    public MarkNormalDelegate( onNormalItemThings onNormalItemThings) {
+    public MarkNormalDelegate(onNormalItemThings onNormalItemThings) {
         this.onNormalItemThings = onNormalItemThings;
     }
 
@@ -37,15 +42,15 @@ public class MarkNormalDelegate implements ItemViewDelegate<MarkListItemBean> {
     }
 
     @Override
-    public void convert(ViewHolder holder, final MarkListItemBean markListItemBean, final int position) {
+    public void convert(final ViewHolder holder, final MarkListItemBean markListItemBean, final int position) {
 
 
-        holder.setText(R.id.title,markListItemBean.getTvTitle());
-        holder.setText(R.id.content,markListItemBean.getTvContent());
-        holder.setText(R.id.open_state,markListItemBean.isOpen()?"公开":"仅自己可见");
-        if (markListItemBean.getType() == MARK_TYPE_GOOD_NUM){
-            holder.setVisible(R.id.open_state,false);
-        }
+        holder.setText(R.id.title, markListItemBean.getTvTitle());
+        holder.setText(R.id.content, markListItemBean.getTvContent());
+        holder.setText(R.id.open_state, markListItemBean.isOpen() ? "公开" : "仅自己可见");
+        ((Switch) holder.getView(R.id.open_state)).setChecked(markListItemBean.isOpen());
+        holder.setVisible(R.id.open_state, markListItemBean.getType() != MARK_TYPE_GOOD_NUM);
+
         SwipeLayout swipeLayout = holder.getView(R.id.swipe);
         swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         swipeLayout.addSwipeListener(new SimpleSwipeListener() {
@@ -82,21 +87,48 @@ public class MarkNormalDelegate implements ItemViewDelegate<MarkListItemBean> {
         holder.setOnClickListener(R.id.delete, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onNormalItemThings.del(position,markListItemBean.getType());
+                onNormalItemThings.del(position, markListItemBean.getType());
             }
         });
-        holder.setOnClickListener(R.id.modify, new View.OnClickListener() {
+
+        ((Switch) holder.getView(R.id.open_state)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                onNormalItemThings.modify(markListItemBean.getType(),markListItemBean.isOpen());
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (((Switch) holder.getView(R.id.open_state)).isFocused()){
+                    if (isChecked) {
+                        buttonView.setText("公开");
+                        markListItemBean.setOpen(true);
+                    } else {
+                        buttonView.setText("仅自己可见");
+                        markListItemBean.setOpen(false);
+                    }
+                }
+
             }
         });
+        ((EditText) holder.getView(R.id.content)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if ( ((EditText) holder.getView(R.id.content)).isFocused()){
+                    markListItemBean.setTvContent(s.toString().trim());
+                }
+            }
+        });
+
     }
 
     public interface onNormalItemThings {
-        void del(int position,int type);
-
-        void modify(int type,boolean isOpen);
+        void del(int position, int type);
     }
 
 }
