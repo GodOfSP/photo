@@ -1,6 +1,7 @@
 package com.fnhelper.photo.mine;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
+import com.fnhelper.photo.WebViewAc;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
@@ -106,6 +108,26 @@ public class VipMealAc extends BaseActivity {
 
     @Override
     protected void initListener() {
+
+        vipTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //会员权益
+                Intent intent1 = new Intent(VipMealAc.this, WebViewAc.class);
+                intent1.putExtra("where", WebViewAc.clientPowerHtml);
+                startActivity(intent1);
+            }
+        });
+        presentAndMaidTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //如何提现 返佣
+                Intent intent1 = new Intent(VipMealAc.this, WebViewAc.class);
+                intent1.putExtra("where", WebViewAc.drawInstructionHtml);
+                startActivity(intent1);
+            }
+        });
+
 
     }
 

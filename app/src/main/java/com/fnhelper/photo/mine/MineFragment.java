@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
+import com.fnhelper.photo.WebViewAc;
 import com.fnhelper.photo.beans.MyVipInfoBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
@@ -189,11 +190,15 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.question:
                 //问题与反馈
-                startActivity(new Intent(getContext(), QuestionAndReportAc.class));
+                Intent intent = new Intent(getContext(), WebViewAc.class);
+                intent.putExtra("where", WebViewAc.linkHtml);
+                startActivity(intent);
                 break;
             case R.id.about_app:
                 //关于app
-                startActivity(new Intent(getContext(), AboutAppAc.class));
+                Intent intent1 = new Intent(getContext(), WebViewAc.class);
+                intent1.putExtra("where", WebViewAc.aboutHtml);
+                startActivity(intent1);
                 break;
         }
 

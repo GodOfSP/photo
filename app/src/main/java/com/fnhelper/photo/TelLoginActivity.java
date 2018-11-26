@@ -121,6 +121,12 @@ public class TelLoginActivity extends BaseActivity {
 
                             editor.putString("ID",Constants.ID);
                             editor.putString("sToken",Constants.sToken);
+                            //存入html文件
+                            editor.putString("aboutHtml",response.body().getData().getHtmlPageUrl().getAbout());
+                            editor.putString("clientPowerHtml",response.body().getData().getHtmlPageUrl().getClientPower());
+                            editor.putString("drawInstructionHtml",response.body().getData().getHtmlPageUrl().getDrawInstruction());
+                            editor.putString("linkHtml",response.body().getData().getHtmlPageUrl().getLink());
+                            editor.putString("userAgreementHtml",response.body().getData().getHtmlPageUrl().getUserAgreement());
                             editor.commit();
                             openActivityAndCloseThis(MainActivity.class);
                         } else if (response.body().getCode() == CODE_ERROR) {

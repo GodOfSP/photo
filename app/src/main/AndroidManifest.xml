@@ -50,9 +50,9 @@
         <activity
             android:name=".AddNewPhotoWordActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".LoginActivity"
-            android:launchMode="singleTask"
-            />
+        <activity
+            android:name=".LoginActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".TelLoginActivity" />
         <activity android:name=".mine.BindSetNewPassWordActivity" />
         <activity android:name=".mine.BindInputTelActivity" />
@@ -93,8 +93,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".mine.QuestionAndReportAc" />
-        <activity android:name=".mine.AboutAppAc"
-            android:theme="@style/AppThemeBlue"></activity>
+        <activity
+            android:name=".mine.AboutAppAc"
+            android:theme="@style/AppThemeBlue" />
+        <activity android:name=".WebViewAc"></activity>
     </application>
 
 </manifest>

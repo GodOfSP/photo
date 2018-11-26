@@ -43,7 +43,6 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.tencent.mm.opensdk.utils.Log;
-import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zyyoona7.popup.EasyPopup;
 import com.zyyoona7.popup.XGravity;
 import com.zyyoona7.popup.YGravity;
@@ -191,9 +190,9 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    whoCanSeeSw.setText("公开: 粉丝可见");
+                    whoCanSeeSw.setText("公开: 粉丝可见   ");
                 } else {
-                    whoCanSeeSw.setText("仅自己可见");
+                    whoCanSeeSw.setText("仅自己可见   ");
                 }
 
             }

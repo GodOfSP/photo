@@ -56,11 +56,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        setContentView();
         // xml的配置
         sp = this.getSharedPreferences("SystemPreferences",
                 Activity.MODE_PRIVATE);
         editor = sp.edit();
+        setContentView();
         // 将activity推入栈中
         listActivity.push(this);
         // 初始化ui

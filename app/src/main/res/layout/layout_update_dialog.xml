@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:background="#fff"
+        android:orientation="vertical"
+        android:animateLayoutChanges="true"
+        >
+
+
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="biaoti"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            card_view:layout_constraintLeft_toLeftOf="parent"
+            card_view:layout_constraintRight_toRightOf="parent" />
+
+
+        <TextView
+            android:id="@+id/note_tv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
+            android:lineSpacingExtra="6dp"
+            android:padding="12dp"
+            android:textColor="@color/text_gray_dark"
+            android:textSize="16sp"
+            card_view:layout_constraintTop_toBottomOf="@+id/title_tv"
+            card_view:layout_constraintBottom_toTopOf="@+id/cancel_btn"
+          />
+
+
+        <ProgressBar
+            android:id="@+id/seekBar"
+            style="@style/updateProgress"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="18dp"
+            android:visibility="gone"
+            card_view:layout_constraintLeft_toLeftOf="parent"
+            card_view:layout_constraintRight_toRightOf="parent"
+            card_view:layout_constraintTop_toTopOf="@+id/note_tv"
+            card_view:layout_constraintBottom_toBottomOf="@+id/note_tv"
+            />
+
+        <TextView
+            android:id="@+id/seekbar_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:text="0% "
+            android:visibility="gone"
+            card_view:layout_constraintLeft_toRightOf="@+id/seekBar"
+            card_view:layout_constraintTop_toTopOf="@+id/note_tv"
+            card_view:layout_constraintBottom_toBottomOf="@+id/note_tv"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp" />
+
+
+        <TextView
+            android:id="@+id/cancel_btn"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="#fff"
+            android:gravity="center"
+            android:text="退出"
+            android:textColor="@color/text_gray_dark"
+            android:textSize="14sp"
+            android:visibility="visible"
+            card_view:layout_constraintRight_toLeftOf="@+id/sure_btn"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/sure_btn"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="更新"
+            android:textColor="#fff"
+            android:textSize="15sp"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintRight_toRightOf="parent"
+            />
+    </android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>
+
+

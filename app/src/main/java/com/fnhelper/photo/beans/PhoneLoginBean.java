@@ -45,6 +45,11 @@ public class PhoneLoginBean {
     private String sWeiXinNo;
     private String sPhotoName;
     private String sIntroduce;
+        /**
+         * HtmlPageUrl : {"about":"http://153h79422m.imwork.net:10354/open/html/about","clientPower":"http://153h79422m.imwork.net:10354/open/html/clientPower","drawInstruction":"http://153h79422m.imwork.net:10354/open/html/drawInstruction","link":"http://153h79422m.imwork.net:10354/open/html/link","userAgreement":"http://153h79422m.imwork.net:10354/open/html/userAgreement"}
+         */
+
+        private HtmlPageUrlBean HtmlPageUrl;
 
         public String getsLinkPhone() {
             return sLinkPhone;
@@ -117,4 +122,68 @@ public class PhoneLoginBean {
     public void setsIntroduce(String sIntroduce) {
         this.sIntroduce = sIntroduce;
     }
-}}
+
+        public HtmlPageUrlBean getHtmlPageUrl() {
+            return HtmlPageUrl;
+        }
+
+        public void setHtmlPageUrl(HtmlPageUrlBean HtmlPageUrl) {
+            this.HtmlPageUrl = HtmlPageUrl;
+        }
+
+        public static class HtmlPageUrlBean {
+            /**
+             * about : http://153h79422m.imwork.net:10354/open/html/about
+             * clientPower : http://153h79422m.imwork.net:10354/open/html/clientPower
+             * drawInstruction : http://153h79422m.imwork.net:10354/open/html/drawInstruction
+             * link : http://153h79422m.imwork.net:10354/open/html/link
+             * userAgreement : http://153h79422m.imwork.net:10354/open/html/userAgreement
+             */
+
+            private String about;
+            private String clientPower;
+            private String drawInstruction;
+            private String link;
+            private String userAgreement;
+
+            public String getAbout() {
+                return about;
+            }
+
+            public void setAbout(String about) {
+                this.about = about;
+            }
+
+            public String getClientPower() {
+                return clientPower;
+            }
+
+            public void setClientPower(String clientPower) {
+                this.clientPower = clientPower;
+            }
+
+            public String getDrawInstruction() {
+                return drawInstruction;
+            }
+
+            public void setDrawInstruction(String drawInstruction) {
+                this.drawInstruction = drawInstruction;
+            }
+
+            public String getLink() {
+                return link;
+            }
+
+            public void setLink(String link) {
+                this.link = link;
+            }
+
+            public String getUserAgreement() {
+                return userAgreement;
+            }
+
+            public void setUserAgreement(String userAgreement) {
+                this.userAgreement = userAgreement;
+            }
+        }
+    }}

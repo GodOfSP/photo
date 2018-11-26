@@ -28,14 +28,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.fnhelper.photo.MainActivity;
 import com.fnhelper.photo.ModifyPhotoWordActivity;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
 import com.fnhelper.photo.beans.CanShareBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
-import com.fnhelper.photo.beans.EmergeNoticeBean;
 import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.PreviewItemBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
@@ -227,16 +225,16 @@ public class HomeFragment extends Fragment {
                 //用户名
                 helper.setText(R.id.user_name, item.getSNickName());
                 //来源
-                if (item.getSClientId().equals(item.getSSourceId())){
-                    helper.setVisible(R.id.pic_source,true);
+                if (item.getSClientId().equals(item.getSSourceId())) {
+                    helper.setVisible(R.id.pic_source, true);
                     helper.setOnClickListener(R.id.pic_source, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             // TODO: 2018-11-22  跳到来源详情
                         }
                     });
-                }else {
-                    helper.setVisible(R.id.pic_source,false);
+                } else {
+                    helper.setVisible(R.id.pic_source, false);
                 }
                 // 发布时间
                 helper.setText(R.id.date, TimeFormatUtils.formatTime(item.getDInsertTime()));
@@ -338,11 +336,13 @@ public class HomeFragment extends Fragment {
 
                     helper.setVisible(R.id.recycler, true);
                     helper.setVisible(R.id.video, false);
+                    helper.setVisible(R.id.play, false);
                 } else { // 视频
 
                     helper.setVisible(R.id.recycler, false);
                     helper.setVisible(R.id.video, true);
-                    helper.setImageByUrl(R.id.video,item.getsVideoImageUrl());
+                    helper.setVisible(R.id.play, true);
+                    helper.setFrescoImageResource(R.id.video, item.getsVideoImageUrl());
 
                   /*  MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                     Bitmap bitmap = null;
@@ -385,7 +385,7 @@ public class HomeFragment extends Fragment {
                 if (!isMyNews) {
                     helper.setVisible(R.id.delete, false);
                     helper.setVisible(R.id.toTop, false);
-                }else {
+                } else {
                     helper.setVisible(R.id.delete, true);
                     helper.setVisible(R.id.toTop, true);
                 }
@@ -396,13 +396,29 @@ public class HomeFragment extends Fragment {
                         delNews(item.getID());
                     }
                 });
-                //置顶
-                helper.setOnClickListener(R.id.toTop, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        toTop(item.getID());
-                    }
-                });
+
+                if (item.isBIsTop()){
+                    //如果已经置顶
+                    helper.setText(R.id.toTop,"取消置顶");
+                    //取消置顶
+                    helper.setOnClickListener(R.id.toTop, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            cancelToTop(item.getID());
+                        }
+                    });
+                }else {
+                    //不是置顶信息
+                    helper.setText(R.id.toTop,"置顶");
+                    //置顶
+                    helper.setOnClickListener(R.id.toTop, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            toTop(item.getID());
+                        }
+                    });
+                }
+
                 //下载
                 helper.setOnClickListener(R.id.download, new View.OnClickListener() {
                     @Override
@@ -561,6 +577,46 @@ public class HomeFragment extends Fragment {
     }
 
     /**
+     * 取消置顶动态
+     */
+    private void cancelToTop(String sImageTextId) {
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().CancelTop(sImageTextId);
+        call.enqueue(new Callback<CheckCodeBean>() {
+            @Override
+            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(getContext(), response.body().getInfo());
+                            refresh.startRefresh();
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            STokenUtil.check(getActivity());
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(getContext(), response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                showBottom(getContext(), "网络异常！");
+            }
+        });
+
+    }
+    /**
      * 置顶动态
      */
     private void toTop(String sImageTextId) {
@@ -618,7 +674,7 @@ public class HomeFragment extends Fragment {
                 getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
                 zLoadingDialog.dismiss();
                 showBottom(getContext(), "保存成功！");
-            }else if (msg.what ==3){
+            } else if (msg.what == 3) {
                 zLoadingDialog.dismiss();
                 showBottom(getContext(), "保存视频失败！");
             }
@@ -813,7 +869,7 @@ public class HomeFragment extends Fragment {
                     });
         }
 
-        ImageUtil.copyWord(getContext(),nowItem.getSContext());
+        ImageUtil.copyWord(getContext(), nowItem.getSContext());
 
     }
 
@@ -823,7 +879,6 @@ public class HomeFragment extends Fragment {
      * type 0图片 1 视频
      */
     private void downloadNews(final String data, final String type) {
-
 
 
         if ("0".equals(type)) {
@@ -873,6 +928,7 @@ public class HomeFragment extends Fragment {
 
 
     }
+
     /**
      * 文件下载
      *
@@ -880,7 +936,7 @@ public class HomeFragment extends Fragment {
      */
     public void downFile(String url) {
         final ProgressDialog
-        progressDialog = new ProgressDialog(getContext());
+                progressDialog = new ProgressDialog(getContext());
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("正在下载");
         progressDialog.setMessage("请稍后...");
@@ -888,26 +944,26 @@ public class HomeFragment extends Fragment {
         progressDialog.setMax(100);
         progressDialog.show();
         progressDialog.setCancelable(false);
-            DownloadUtil.get().download(url, new DownloadUtil.OnDownloadListener() {
-                @Override
-                public void onDownloadSuccess(File file) {
-                    if (progressDialog != null && progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                    //下载完成进行相关逻辑操作
-                    showBottom(getContext(),"保存成功！");
+        DownloadUtil.get().download(url, new DownloadUtil.OnDownloadListener() {
+            @Override
+            public void onDownloadSuccess(File file) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
                 }
+                //下载完成进行相关逻辑操作
+                showBottom(getContext(), "保存成功！");
+            }
 
-                @Override
-                public void onDownloading(int progress) {
-                    progressDialog.setProgress(progress);
-                }
+            @Override
+            public void onDownloading(int progress) {
+                progressDialog.setProgress(progress);
+            }
 
-                @Override
-                public void onDownloadFailed(Exception e) {
-                    //下载异常进行相关提示操作
-                }
-            });
+            @Override
+            public void onDownloadFailed(Exception e) {
+                //下载异常进行相关提示操作
+            }
+        });
     }
 
     /**

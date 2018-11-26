@@ -10,18 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fnhelper.photo.base.BaseActivity;
-import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.EmergeNoticeBean;
 import com.fnhelper.photo.index.HomeFragment;
-import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.mine.MineFragment;
-import com.fnhelper.photo.mine.ModifyAlbumInfoAc;
 import com.fnhelper.photo.mine.ScanCodeAc;
 import com.fnhelper.photo.myfans.MyFansFrafment;
 import com.fnhelper.photo.myinterst.MyInterstFrafment;
 import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.utils.STokenUtil;
+import com.fnhelper.photo.utils.UpdateAppUtils;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -72,6 +70,8 @@ public class MainActivity extends BaseActivity {
     protected void initData() {
         //   检查有无紧急通知
         getEmergeNotice();
+        // 检查更新
+        UpdateAppUtils.checkVersion(MainActivity.this);
     }
 
     @Override

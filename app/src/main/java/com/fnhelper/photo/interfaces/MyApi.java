@@ -15,6 +15,7 @@ import com.fnhelper.photo.beans.NoticeBean;
 import com.fnhelper.photo.beans.PersonalHeadBean;
 import com.fnhelper.photo.beans.PhoneLoginBean;
 import com.fnhelper.photo.beans.PresentRecordBean;
+import com.fnhelper.photo.beans.UpdateBean;
 import com.fnhelper.photo.beans.UpdatePicBean;
 import com.fnhelper.photo.beans.UpdateVdieoBean;
 import com.fnhelper.photo.beans.VipMealListBean;
@@ -58,6 +59,15 @@ public interface MyApi {
      */
     @GET("Client/GetMobileCode")
     Call<GetCodeBean> GetMobileCode(@Query("sPhone") String sPhone, @Query("iType") int Type);
+
+    /**
+     * /System/Update
+     * 类型   iType  1-绑定手机,2-找回密码
+     *
+     * @return
+     */
+    @GET("System/Update")
+    Call<UpdateBean> Update(@Query("sVersion") String sVersion);
 
     /** 获取紧急通告
        /Notice/GetEmergeNotice
@@ -220,8 +230,9 @@ public interface MyApi {
                                         @Field("iPrivate") String iPrivate,
                                         @Field("sVideoUrl") String sVideoUrl,
                                         @Field("sImagesUrl") String sImagesUrl,
-                                        @Field("sImageUrl") String sImageUrl,
+                                        @Field("sVideoImageUrl") String sVideoImageUrl,
                                         @Field("iType") String iType
+
     );
 
     /**
@@ -266,7 +277,17 @@ public interface MyApi {
     Call<CheckCodeBean> SetTop(@Field("sImageTextId") String sImageTextId);
 
     /**
-     * 分享动态/ImageText/SetTop  sImageTextId
+     * 取消置顶动态/ImageText/CancelTop
+     * dDrawMoney
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("ImageText/CancelTop")
+    Call<CheckCodeBean> CancelTop(@Field("sImageTextId") String sImageTextId);
+
+    /**
+     * 分享动态 sImageTextId
      * /ImageText/Share
      * 接口状态: 有效
      * 接口描述
@@ -313,6 +334,9 @@ public interface MyApi {
      */
     @GET("ImageText/GetImageTextList")
     Call<NewsListBean> GetImageTextList(@Query("keyword") String keyword, @Query("rows") int rows, @Query("page") int page);
+
+
+
 
     /**
      * 分页获取动态 GetConcernImageTextList

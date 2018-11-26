@@ -179,6 +179,11 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
 
                                                 editor.putString("ID",Constants.ID);
                                                 editor.putString("sToken",Constants.sToken);
+                                                editor.putString("aboutHtml",response.body().getData().getHtmlPageUrl().getAbout());
+                                                editor.putString("clientPowerHtml",response.body().getData().getHtmlPageUrl().getClientPower());
+                                                editor.putString("drawInstructionHtml",response.body().getData().getHtmlPageUrl().getDrawInstruction());
+                                                editor.putString("linkHtml",response.body().getData().getHtmlPageUrl().getLink());
+                                                editor.putString("userAgreementHtml",response.body().getData().getHtmlPageUrl().getUserAgreement());
                                                 editor.commit();
 
                                                 if (response.body().getData().getSPhone()==null || TextUtils.isEmpty(response.body().getData().getSPhone())){
