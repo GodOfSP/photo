@@ -139,7 +139,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 final AlertDialog.Builder normalDialog =
                         new AlertDialog.Builder(AddNewPhotoWordActivity.this);
                 normalDialog.setTitle("提示");
-                normalDialog.setMessage("退出此次编辑？?");
+                normalDialog.setMessage("退出此次编辑？");
                 normalDialog.setPositiveButton("退出",
                         new DialogInterface.OnClickListener() {
                             @Override
