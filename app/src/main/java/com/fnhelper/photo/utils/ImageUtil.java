@@ -16,7 +16,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.binaryresource.FileBinaryResource;
@@ -29,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -221,7 +219,13 @@ public class ImageUtil {
 
         Bitmap bitmap = null;
         FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainFileCache().getResource(new SimpleCacheKey(uri.toString()));
+        if (resource == null){
+            return null;
+        }
         File file = resource.getFile();
+        if (file == null){
+            return null;
+        }
         bitmap = BitmapFactory.decodeFile(file.getPath());
         return bitmap;
 

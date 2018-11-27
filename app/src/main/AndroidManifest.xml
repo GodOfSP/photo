@@ -96,7 +96,8 @@
         <activity
             android:name=".mine.AboutAppAc"
             android:theme="@style/AppThemeBlue" />
-        <activity android:name=".WebViewAc"></activity>
+        <activity android:name=".WebViewAc" />
+        <activity android:name=".index.NewsDeatilAc"></activity>
     </application>
 
 </manifest>

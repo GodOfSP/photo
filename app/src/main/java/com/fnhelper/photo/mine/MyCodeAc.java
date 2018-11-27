@@ -21,7 +21,8 @@ import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.utils.ImageUtil;
-import com.luck.picture.lib.permissions.RxPermissions;
+import com.tbruyelle.rxpermissions2.Permission;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXImageObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
@@ -91,11 +92,12 @@ public class MyCodeAc extends BaseActivity {
 
 
         //请求权限
-        new RxPermissions(MyCodeAc.this).request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
-                .subscribe(new Consumer<Boolean>() {
+        new RxPermissions(MyCodeAc.this).requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Permission>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean) {
+                    public void accept(Permission permission) throws Exception {
+                        if (permission.granted) {
+                            // 用户已经同意该权限
                             //获取头衔bitmap
                             Uri uri = Uri.parse(Constants.sHeadImg);
                             Bitmap bitmap = ImageUtil.returnBitmap(uri);
@@ -104,8 +106,11 @@ public class MyCodeAc extends BaseActivity {
                             myCode.setImageURI(Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), mCodeBitmap, null, null)));
                             //初始化pop
                             initSharePop();
+                        } else if (permission.shouldShowRequestPermissionRationale) {
+                            // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
+
                         } else {
-                            Toast.makeText(MyCodeAc.this, "请打开读写权限!", Toast.LENGTH_SHORT).show();
+                            // 用户拒绝了该权限，并且选中『不再询问』
                         }
                     }
                 });
@@ -251,7 +256,9 @@ public class MyCodeAc extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mCodeBitmap.recycle();
+        if (mCodeBitmap!=null){
+            mCodeBitmap.recycle();
+        }
     }
 
     public void saveBitmap(Bitmap bitmap) {

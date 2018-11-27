@@ -94,5 +94,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.5.0'
     //
     implementation 'com.ycjiang:VideoPlayModule-Lite:2.1.80'
+    //
+    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
 
 }

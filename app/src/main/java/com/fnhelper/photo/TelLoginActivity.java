@@ -121,6 +121,8 @@ public class TelLoginActivity extends BaseActivity {
 
                             editor.putString("ID",Constants.ID);
                             editor.putString("sToken",Constants.sToken);
+                            editor.putString("sHeadImg",Constants.sHeadImg);
+                            editor.putString("sTsNickNameoken",Constants.sTsNickNameoken);
                             //存入html文件
                             editor.putString("aboutHtml",response.body().getData().getHtmlPageUrl().getAbout());
                             editor.putString("clientPowerHtml",response.body().getData().getHtmlPageUrl().getClientPower());

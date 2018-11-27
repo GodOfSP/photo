@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.fnhelper.photo.R;
+import com.fnhelper.photo.WebViewAc;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.BalanceBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
@@ -150,6 +151,16 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                 tx();
             }
         });
+
+        rhhdtxTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //如何提现 返佣
+                Intent intent1 = new Intent(ToPresentPresentMaidAc.this, WebViewAc.class);
+                intent1.putExtra("where", WebViewAc.drawInstructionHtml);
+                startActivity(intent1);
+            }
+        });
     }
 
     @Override
@@ -258,6 +269,7 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                             //成功
                             if ("提现成功".equals(response.body().getInfo())){
                                 getBalance();
+                                startActivity(new Intent(ToPresentPresentMaidAc.this,PresentRecordAc.class));
                             }
                             showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_ERROR) {

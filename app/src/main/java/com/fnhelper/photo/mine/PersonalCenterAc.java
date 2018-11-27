@@ -3,13 +3,18 @@ package com.fnhelper.photo.mine;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,6 +24,7 @@ import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.PersonalHeadBean;
+import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.diyviews.CustomViewPager;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.myfans.SetFansPermissionsAc;
@@ -74,6 +80,10 @@ public class PersonalCenterAc extends BaseActivity {
     TabLayout tablayout;
     @BindView(R.id.viewPager)
     CustomViewPager viewPager;
+    @BindView(R.id.search_et)
+    ClearEditText searchEt;
+    @BindView(R.id.search_btn)
+    Button searchBtn;
 
 
     private String mConcernId = "";
@@ -84,6 +94,10 @@ public class PersonalCenterAc extends BaseActivity {
     private int where = 0;
 
     private EasyPopup mCirclePop;
+
+    private PersonalFreagmentAll personalFreagmentAll1;
+    private PersonalFreagmentAll PersonalFreagmentAll2;
+    private PersonalFreagmentAll PersonalFreagmentAll3;
 
     @Override
     public void setContentView() {
@@ -103,9 +117,10 @@ public class PersonalCenterAc extends BaseActivity {
 
         mConcernId = getIntent().getStringExtra("concernId");
         nickName = getIntent().getStringExtra("nickName");
-        where = getIntent().getIntExtra("where",0);
+        where = getIntent().getIntExtra("where", 0);
         getData();
         initPop();
+        initSearch();
         initViewPagerAndTabLayout();
 
     }
@@ -139,6 +154,13 @@ public class PersonalCenterAc extends BaseActivity {
         fragmentList = new ArrayList<>();
         list_Title = new ArrayList<>();
 
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 
 
@@ -218,7 +240,7 @@ public class PersonalCenterAc extends BaseActivity {
             }
         });
         //取消关注
-        if (where == 100){  //从我的关注进来的
+        if (where == 100) {  //从我的关注进来的
             mCirclePop.findViewById(R.id.cancel_gz).setVisibility(View.VISIBLE);
         }
         mCirclePop.findViewById(R.id.cancel_gz).setOnClickListener(new View.OnClickListener() {
@@ -227,8 +249,8 @@ public class PersonalCenterAc extends BaseActivity {
                 cancelFollow();
                 mCirclePop.dismiss();
             }
-        });   
-        
+        });
+
         //取消
         mCirclePop.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,7 +273,7 @@ public class PersonalCenterAc extends BaseActivity {
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                            showBottom(PersonalCenterAc.this,response.body().getInfo());
+                            showBottom(PersonalCenterAc.this, response.body().getInfo());
                             finish();
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
@@ -277,6 +299,53 @@ public class PersonalCenterAc extends BaseActivity {
         });
     }
 
+    private void initSearch() {
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String keyWord = searchEt.getText().toString().trim();
+                if (!TextUtils.isEmpty(keyWord)) {
+                    if (personalFreagmentAll1 != null) {
+                        personalFreagmentAll1.search(keyWord);
+                    }
+                    if (PersonalFreagmentAll2 != null) {
+                        PersonalFreagmentAll2.search(keyWord);
+                    }
+                    if (PersonalFreagmentAll3 != null) {
+                        PersonalFreagmentAll3.search(keyWord);
+                    }
+                }
+            }
+        });
+        searchEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s.toString())) {
+                    if (personalFreagmentAll1 != null) {
+                        personalFreagmentAll1.search("");
+                    }
+                    if (PersonalFreagmentAll2 != null) {
+                        PersonalFreagmentAll2.search("");
+                    }
+                    if (PersonalFreagmentAll3 != null) {
+                        PersonalFreagmentAll3.search("");
+                    }
+
+                }
+            }
+        });
+    }
+
     /**
      * 权限设置
      */
@@ -291,7 +360,7 @@ public class PersonalCenterAc extends BaseActivity {
      */
     private void getHeadInfo(String sConcernId) {
 
-        retrofit2.Call<PersonalHeadBean> call = RetrofitService.createMyAPI().GetConcernUserInfo(sConcernId);
+        Call<PersonalHeadBean> call = RetrofitService.createMyAPI().GetConcernUserInfo(sConcernId);
         call.enqueue(new Callback<PersonalHeadBean>() {
             @Override
             public void onResponse(Call<PersonalHeadBean> call, Response<PersonalHeadBean> response) {
@@ -312,9 +381,13 @@ public class PersonalCenterAc extends BaseActivity {
                             list_Title.add("动态");
                             list_Title.add("图文(" + response.body().getData().getImageCount() + ")");
                             list_Title.add("视频(" + response.body().getData().getVideoCount() + ")");
-                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId, "-1"));
-                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId, "0"));
-                            fragmentList.add(PersonalFreagmentAll.newInstance(mConcernId, "1"));
+                            personalFreagmentAll1 = PersonalFreagmentAll.newInstance(mConcernId, "-1");
+                            PersonalFreagmentAll2 = PersonalFreagmentAll.newInstance(mConcernId, "0");
+                            PersonalFreagmentAll3 = PersonalFreagmentAll.newInstance(mConcernId, "1");
+                            fragmentList.add(personalFreagmentAll1);
+                            fragmentList.add(PersonalFreagmentAll2);
+                            fragmentList.add(PersonalFreagmentAll3);
+
                             viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), PersonalCenterAc.this, fragmentList, list_Title));
                             tablayout.setupWithViewPager(viewPager);//此方法就是让tablayout和ViewPager联动
                         } else if (response.body().getCode() == CODE_ERROR) {

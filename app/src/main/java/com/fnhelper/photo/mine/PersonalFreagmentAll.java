@@ -81,14 +81,15 @@ public class PersonalFreagmentAll extends Fragment {
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+    @BindView(R.id.empty_page)
+    RelativeLayout emptyPage;
     //  @BindView(R.id.refresh)
     //  TwinklingRefreshLayout refresh;
     Unbinder unbinder;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    @BindView(R.id.empty_page)
-    RelativeLayout emptyPage;
+
     private QuickAdapter<NewsListBean.DataBean.RowsBean> adapter;
     private boolean canLoadMore = false;
     private int pageNum = 1;
@@ -121,6 +122,7 @@ public class PersonalFreagmentAll extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -129,11 +131,9 @@ public class PersonalFreagmentAll extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_personal_all, container, false);
         unbinder = ButterKnife.bind(this, view);
-
         //   initTklRefreshLayout();
         initRecyclerView();
         initSharePop();
-
 
         return view;
     }
@@ -265,11 +265,13 @@ public class PersonalFreagmentAll extends Fragment {
 
                     helper.setVisible(R.id.recycler, true);
                     helper.setVisible(R.id.video, false);
+                    helper.setVisible(R.id.play, false);
                 } else { // 视频
 
                     helper.setVisible(R.id.recycler, false);
                     helper.setVisible(R.id.video, true);
-                    helper.setFrescoImageResource(R.id.video,item.getsVideoImageUrl());
+                    helper.setVisible(R.id.play, true);
+                    helper.setFrescoImageResource(R.id.video, item.getsVideoImageUrl());
 
                   /*  MediaMetadataRetriever retriever = new MediaMetadataRetriever();
                     Bitmap bitmap = null;
@@ -738,6 +740,19 @@ public class PersonalFreagmentAll extends Fragment {
             }
         });
     }*/
+
+    /**
+     * 提供给Activity使用
+     * @param keyWord
+     */
+    public void search(String keyWord){
+        if (adapter!=null && recyclerView!=null && emptyPage!=null){
+            this.keyWord = keyWord;
+            getList(false);
+        }
+
+    }
+
     private void getList(final boolean isLoadMore) {
 
 

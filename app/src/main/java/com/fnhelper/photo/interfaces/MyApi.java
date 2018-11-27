@@ -69,6 +69,15 @@ public interface MyApi {
     @GET("System/Update")
     Call<UpdateBean> Update(@Query("sVersion") String sVersion);
 
+    /**
+     * /ImageText/GetImageText
+     * 类型   iType  1-绑定手机,2-找回密码
+     *
+     * @return
+     */
+    @GET("ImageText/GetImageText")
+    Call<NewsListBean> GetImageText(@Query("sSourceId") String sSourceId);
+
     /** 获取紧急通告
        /Notice/GetEmergeNotice
      *
