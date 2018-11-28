@@ -1008,9 +1008,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
                             showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
-                            if ("发布成功".equals(response.body().getInfo())) {
                                 finish();
-                            }
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
                             showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());

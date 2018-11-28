@@ -97,7 +97,8 @@
             android:name=".mine.AboutAppAc"
             android:theme="@style/AppThemeBlue" />
         <activity android:name=".WebViewAc" />
-        <activity android:name=".index.NewsDeatilAc"></activity>
+        <activity android:name=".index.NewsDeatilAc"/>
+        <activity android:name=".ModifyPhotoWordDetailActivity"/>
     </application>
 
 </manifest>

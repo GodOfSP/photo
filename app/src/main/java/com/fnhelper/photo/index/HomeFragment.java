@@ -246,7 +246,7 @@ public class HomeFragment extends Fragment {
                 //用户名
                 helper.setText(R.id.user_name, item.getSNickName());
                 //来源
-                if (item.getSClientId().equals(item.getSSourceId())) {
+                if (!item.getID().equals(item.getSSourceId())) {
                     helper.setVisible(R.id.pic_source, true);
                     helper.setOnClickListener(R.id.pic_source, new View.OnClickListener() {
                         @Override
@@ -266,6 +266,7 @@ public class HomeFragment extends Fragment {
                 if (item.getDShareTime() == null && TextUtils.isEmpty(item.getDInsertTime())) {
                     helper.setVisible(R.id.share_time, false);
                 } else {
+                    helper.setVisible(R.id.share_time, true);
                     helper.setText(R.id.share_time, item.getDShareTime());
                 }
                 //货号
@@ -274,30 +275,35 @@ public class HomeFragment extends Fragment {
                     helper.setVisible(R.id.good_num, false);
                     helper.setVisible(R.id.good_num_title, false);
                 } else {
+                    helper.setVisible(R.id.good_num, true);
                     helper.setText(R.id.good_num, item.getSGoodsNo());
                 }
                 //拿货价
                 if (item.getDCommodityPrices() == null || TextUtils.isEmpty(item.getDCommodityPrices()) || "1".equals(item.getICommodityPricesPrivate())) {
                     helper.setVisible(R.id.get_price, false);
                 } else {
+                    helper.setVisible(R.id.get_price, true);
                     helper.setText(R.id.get_price, "拿货价:" + item.getDCommodityPrices());
                 }
                 //零售
                 if (item.getDRetailprices() == null || TextUtils.isEmpty(item.getDRetailprices()) || "1".equals(item.getIRetailpricesPrivate())) {
                     helper.setVisible(R.id.sale_price, false);
                 } else {
+                    helper.setVisible(R.id.sale_price, true);
                     helper.setText(R.id.sale_price, "零售价:" + item.getDRetailprices());
                 }
                 //批发价
                 if (item.getDTradePrices() == null || TextUtils.isEmpty(item.getDTradePrices()) || "1".equals(item.getITradePricesPrivate())) {
                     helper.setVisible(R.id.pf_price, false);
                 } else {
+                    helper.setVisible(R.id.pf_price, true);
                     helper.setText(R.id.pf_price, "批发价:" + item.getDTradePrices());
                 }
                 //打包价
                 if (item.getDPackPrices() == null || TextUtils.isEmpty(item.getDPackPrices()) || "1".equals(item.getIPackPricesPrivate())) {
                     helper.setVisible(R.id.pack_price, false);
                 } else {
+                    helper.setVisible(R.id.pack_price, true);
                     helper.setText(R.id.pack_price, "打包价:" + item.getDPackPrices());
                 }
 
@@ -312,6 +318,7 @@ public class HomeFragment extends Fragment {
                 if (item.getSRemark() == null || TextUtils.isEmpty(item.getSRemark())) {
                     helper.setVisible(R.id.mark, false);
                 } else {
+                    helper.setVisible(R.id.mark, true);
                     helper.setText(R.id.mark, item.getSRemark());
                 }
 
@@ -319,6 +326,7 @@ public class HomeFragment extends Fragment {
                 if (item.getSContext() == null || TextUtils.isEmpty(item.getSContext())) {
                     helper.setVisible(R.id.content, false);
                 } else {
+                    helper.setVisible(R.id.content, true);
                     helper.setText(R.id.content, item.getSContext());
                 }
 
@@ -344,7 +352,7 @@ public class HomeFragment extends Fragment {
                                 @Override
                                 public void onClick(View v) {
 
-
+                                    //预览
                                     GPreviewBuilder.from(getActivity())//activity实例必须
                                             .setData(pics)//集合
                                             .setCurrentIndex(position)
@@ -794,18 +802,27 @@ public class HomeFragment extends Fragment {
 
                                         try {
 
-
                                             ArrayList<File> files = new ArrayList<>();
 
                                             try {
-
                                                 for (int i = 0; i < nowItem.getSImagesUrl().split(",").length; i++) {
-
-                                                    if (i == 0)
+                                                    if (i == 0 && !t){
                                                         files.add(ImageUtil.saveImageToSdCard(getContext(), nowItem.getSImagesUrl().split(",")[i]));
+                                                    }
                                                 }
 
-                                                Intent intent = new Intent(Intent.ACTION_SEND);
+                                                Intent intent = new Intent();
+                                                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+                                                ArrayList<Uri> imageUris = new ArrayList<Uri>();
+                                                for (File f : files) {
+                                                    imageUris.add(ImageUtil.getImageContentUri(f, getContext()));
+                                                }
+
+                                                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                                                intent.setType("image/*");
                                                 ComponentName comp;
 
                                                 if (t) {
@@ -815,17 +832,11 @@ public class HomeFragment extends Fragment {
                                                     intent.putExtra("Kdescription", "分享朋友圈的图片说明");
                                                 }
                                                 intent.setComponent(comp);
-                                                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                intent.setType("image/*");
 
-                                                ArrayList<Uri> imageUris = new ArrayList<Uri>();
-                                                for (File f : files) {
-                                                    imageUris.add(ImageUtil.getImageContentUri(f, getContext()));
-                                                }
 
-                                                intent.putExtra(Intent.EXTRA_STREAM, imageUris);
-                                                startActivity(intent);
+
+                                                startActivity(Intent.createChooser(intent,"分享图片"));
+
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }

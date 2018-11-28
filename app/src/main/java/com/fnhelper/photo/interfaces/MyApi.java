@@ -10,6 +10,7 @@ import com.fnhelper.photo.beans.GetCodeBean;
 import com.fnhelper.photo.beans.LoginBean;
 import com.fnhelper.photo.beans.MadiRecordBean;
 import com.fnhelper.photo.beans.MyVipInfoBean;
+import com.fnhelper.photo.beans.NewDetailBean;
 import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.NoticeBean;
 import com.fnhelper.photo.beans.PersonalHeadBean;
@@ -76,7 +77,7 @@ public interface MyApi {
      * @return
      */
     @GET("ImageText/GetImageText")
-    Call<NewsListBean> GetImageText(@Query("sSourceId") String sSourceId);
+    Call<NewDetailBean> GetImageText(@Query("sSourceId") String sSourceId);
 
     /** 获取紧急通告
        /Notice/GetEmergeNotice

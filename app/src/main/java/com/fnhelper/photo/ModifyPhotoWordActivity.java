@@ -180,11 +180,18 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
     }
 
 
+    private String ID = "";
+    private String sourceID = "" ;
+    private String cilentID = "" ;
     @Override
     protected void initData() {
 
         //初始数据
         NewsListBean.DataBean.RowsBean rowsBean = getIntent().getParcelableExtra("data");
+
+        ID = rowsBean.getID();
+        sourceID = rowsBean.getSSourceId();
+        cilentID = rowsBean.getSClientId();
         if (rowsBean.getSVideoUrl() == null || TextUtils.isEmpty(rowsBean.getSVideoUrl()) || "".equals(rowsBean.getSVideoUrl())) {
             //图片
             chooseMode = PictureMimeType.ofImage();
@@ -1103,7 +1110,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
 
         sContext = word.getText().toString().trim();
 
-        Call<CheckCodeBean> call = RetrofitService.createMyAPI().InsertAndUpdate("", Constants.ID, "",
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().InsertAndUpdate(ID, cilentID, sourceID,
                 dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath,vPPath,iType);
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
@@ -1113,9 +1120,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
                             showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());
-                            if ("发布成功".equals(response.body().getInfo())) {
                                 finish();
-                            }
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
                             showBottom(ModifyPhotoWordActivity.this, response.body().getInfo());

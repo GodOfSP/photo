@@ -371,13 +371,30 @@ public class PersonalCenterAc extends BaseActivity {
                             //头像
                             headPic.setImageURI(response.body().getData().getSHeadImg());
                             //微信号
-                            name.setText(response.body().getData().getSWeiXinNo());
+                            if (response.body().getData().getSWeiXinNo() == null || TextUtils.isEmpty(response.body().getData().getSWeiXinNo()))
+                            {
+                                name.setText("未填写");
+                            }else {
+                                name.setText(response.body().getData().getSWeiXinNo());
+                            }
                             //title
                             comTitle.setText(nickName);
                             //电话
-                            phone.setText(response.body().getData().getSLinkPhone());
+                            if (response.body().getData().getSLinkPhone() == null || TextUtils.isEmpty(response.body().getData().getSLinkPhone()))
+                            {
+                                phone.setText("未填写");
+                            }else {
+                                phone.setText(response.body().getData().getSLinkPhone());
+                            }
+
                             //介绍
-                            content.setText(response.body().getData().getSIntroduce());
+                            if (response.body().getData().getSIntroduce() == null || TextUtils.isEmpty(response.body().getData().getSIntroduce()))
+                            {
+                                content.setText("未填写");
+                            }else {
+                                content.setText(response.body().getData().getSIntroduce());
+                            }
+
                             list_Title.add("动态");
                             list_Title.add("图文(" + response.body().getData().getImageCount() + ")");
                             list_Title.add("视频(" + response.body().getData().getVideoCount() + ")");

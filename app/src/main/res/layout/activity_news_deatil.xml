@@ -1,9 +1,343 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".index.NewsDeatilAc">
 
-</android.support.constraint.ConstraintLayout>
+
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+>
+
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/head_pic"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="12dp"
+            app:actualImageScaleType="centerCrop"
+            app:failureImage="@drawable/bg_blue_full_r_top"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundAsCircle="true" />
+
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="12dp"
+            android:text="name"
+            android:textColor="@color/text_blue"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toRightOf="@+id/head_pic"
+            app:layout_constraintTop_toTopOf="@+id/head_pic" />
+
+        <TextView
+            android:id="@+id/pic_source"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:drawableRight="@drawable/lock"
+            android:padding="12dp"
+            android:text="图片来源"
+            android:textColor="@color/text_blue"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/head_pic" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="一小时前"
+            android:textColor="@color/text_gray_dark"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="@+id/user_name"
+            app:layout_constraintTop_toBottomOf="@+id/user_name" />
+
+
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="12dp"
+            android:text="dfasfasfsasadsadddddddddddddddddddddddddddddddddddddd"
+            android:textColor="@color/text_black"
+            app:layout_constraintLeft_toLeftOf="@id/date"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+
+            />
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            android:foregroundGravity="center_horizontal"
+            android:overScrollMode="never"
+            app:layout_constraintLeft_toLeftOf="@id/date"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/content" />
+
+
+
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@id/video"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/colorInactive"
+            android:visibility="gone"
+            app:actualImageScaleType="centerCrop"
+            app:failureImage="@drawable/ic_video_play"
+            app:layout_constraintLeft_toLeftOf="@id/date"
+            app:layout_constraintTop_toBottomOf="@+id/content" />
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:src="@drawable/ic_video_play"
+            app:layout_constraintLeft_toLeftOf="@+id/video"
+            app:layout_constraintRight_toRightOf="@+id/video"
+            app:layout_constraintTop_toTopOf="@+id/video"
+            app:layout_constraintBottom_toBottomOf="@+id/video"
+            />
+
+        <View
+            android:id="@+id/div_l"
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:background="@color/colorInactive"
+            app:layout_constraintBottom_toBottomOf="@id/mark_title"
+            app:layout_constraintLeft_toLeftOf="@id/date"
+            app:layout_constraintRight_toLeftOf="@+id/mark_title"
+            app:layout_constraintTop_toTopOf="@+id/mark_title" />
+
+        <TextView
+            android:id="@+id/mark_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="备注"
+            app:layout_constraintLeft_toLeftOf="@+id/recycler"
+            app:layout_constraintRight_toRightOf="@id/recycler"
+            app:layout_constraintTop_toBottomOf="@+id/recycler"
+            app:layout_goneMarginTop="120dp" />
+
+        <View
+            android:id="@+id/div_2"
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:background="@color/colorInactive"
+            app:layout_constraintBottom_toBottomOf="@id/mark_title"
+            app:layout_constraintLeft_toRightOf="@id/mark_title"
+            app:layout_constraintRight_toRightOf="@+id/content"
+            app:layout_constraintTop_toTopOf="@+id/mark_title" />
+
+
+        <TextView
+            android:id="@+id/good_num_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="货号:"
+            android:textColor="@color/text_black"
+            app:layout_constraintLeft_toLeftOf="@id/div_l"
+            app:layout_constraintTop_toBottomOf="@+id/mark_title" />
+
+        <TextView
+            android:id="@+id/good_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:text="1232713"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintBottom_toBottomOf="@+id/good_num_title"
+            app:layout_constraintLeft_toRightOf="@+id/good_num_title"
+
+            />
+
+
+        <TextView
+            android:id="@+id/first_tag"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_full_white_green"
+            android:gravity="center"
+            android:text="拿货价: 213213"
+            android:textColor="@color/text_gray_dark"
+            android:visibility="invisible"
+            app:layout_constraintLeft_toLeftOf="@id/div_l"
+            app:layout_constraintTop_toBottomOf="@+id/good_num_title" />
+
+        <TextView
+            android:id="@+id/get_price"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_full_white_green"
+            android:gravity="center"
+            android:text="拿货价: 213213"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintLeft_toLeftOf="@id/div_l"
+            app:layout_constraintTop_toBottomOf="@+id/good_num_title" />
+
+        <TextView
+            android:id="@+id/sale_price"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_full_white_green"
+            android:gravity="center"
+            android:text="零售价: 213213"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintRight_toRightOf="@id/div_2"
+            app:layout_constraintTop_toBottomOf="@+id/good_num_title" />
+
+
+        <TextView
+            android:id="@+id/pf_price"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_full_white_green"
+            android:gravity="center"
+            android:text="批发价: 213213"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintLeft_toLeftOf="@id/div_l"
+            app:layout_constraintTop_toBottomOf="@+id/first_tag" />
+
+        <TextView
+            android:id="@+id/second_tag"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_full_white_green"
+            android:gravity="center"
+            android:text="批发价: 213213"
+            android:textColor="@color/text_gray_dark"
+            android:visibility="invisible"
+            app:layout_constraintLeft_toLeftOf="@id/div_l"
+            app:layout_constraintTop_toBottomOf="@+id/first_tag" />
+
+        <TextView
+            android:id="@+id/pack_price"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_full_white_green"
+            android:gravity="center"
+            android:text="包装价: 213213"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintRight_toRightOf="@id/div_2"
+            app:layout_constraintTop_toBottomOf="@+id/first_tag" />
+
+
+        <TextView
+            android:id="@+id/mark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@color/colorWindowBackgroundDark"
+            android:maxHeight="120dp"
+            android:padding="8dp"
+            android:text="请你去就是肯定会加快速度"
+            app:layout_constraintLeft_toLeftOf="@id/div_l"
+            app:layout_constraintRight_toRightOf="@id/div_2"
+            app:layout_constraintTop_toBottomOf="@+id/second_tag" />
+
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:text="删除"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintLeft_toLeftOf="@id/div_l"
+            app:layout_constraintTop_toBottomOf="@+id/mark" />
+
+        <TextView
+            android:id="@+id/toTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:text="置顶"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintLeft_toRightOf="@+id/delete"
+            app:layout_constraintTop_toBottomOf="@+id/mark" />
+
+        <TextView
+            android:id="@+id/download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:text="下载"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintLeft_toRightOf="@+id/toTop"
+            app:layout_constraintTop_toBottomOf="@+id/mark" />
+
+        <TextView
+            android:id="@+id/modify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            android:text="编辑"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintLeft_toRightOf="@+id/download"
+            app:layout_constraintTop_toBottomOf="@+id/mark" />
+
+        <TextView
+            android:id="@+id/share_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2分钟前分想过"
+            android:textColor="@color/text_gray_dark"
+            app:layout_constraintBottom_toBottomOf="@id/delete"
+            app:layout_constraintRight_toRightOf="@id/div_2"
+            app:layout_constraintTop_toTopOf="@+id/delete" />
+
+        <TextView
+            android:id="@+id/one_share"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:background="@drawable/bg_full_white_green_r6"
+            android:gravity="center"
+            android:text="一键分享"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintLeft_toLeftOf="@id/div_l"
+            app:layout_constraintRight_toRightOf="@id/div_2"
+            app:layout_constraintTop_toBottomOf="@+id/modify" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/colorInactive"
+            app:layout_constraintTop_toBottomOf="@+id/one_share" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</ScrollView>

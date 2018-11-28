@@ -20,11 +20,15 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintTop_toBottomOf="@+id/head">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="70dp"
+            >
 
             <EditText
                 android:id="@+id/word"
@@ -153,26 +157,25 @@
                 app:layout_constraintTop_toBottomOf="@+id/mark_tag"
                 />
 
-            <Button
-                android:id="@+id/save_btn"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_margin="40dp"
-                android:background="@drawable/selector_full_green_r4"
-                android:text="保存"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mark_rv"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
-
 
         </android.support.constraint.ConstraintLayout>
 
 
     </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/save_btn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/selector_full_green_r4"
+        android:text="保存"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 
 </android.support.constraint.ConstraintLayout>
