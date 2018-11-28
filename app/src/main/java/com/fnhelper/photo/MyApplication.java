@@ -45,6 +45,7 @@ public class MyApplication extends MultiDexApplication {
                 .setDownsampleEnabled(true)
                 .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())
                 .build();
+
         Fresco.initialize(this, config);
 
 
@@ -72,6 +73,20 @@ public class MyApplication extends MultiDexApplication {
                 Activity.MODE_PRIVATE).getString("sHeadImg", "");
         Constants.sTsNickNameoken = getSharedPreferences("SystemPreferences",
                 Activity.MODE_PRIVATE).getString("sTsNickNameoken", "");
+        Constants.wx_num = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getString("wx_num", "");
+        Constants.album_introduce = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getString("album_introduce", "");
+        Constants.album_name = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getString("album_name", "");
+        Constants.sPhone = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getString("sPhone", "");
+        Constants.sLinkPhone = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getString("sLinkPhone", "");
+        Constants.vip_exi_time = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getString("vip_exi_time", "");
+        Constants.isVIP = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getBoolean("isVIP", false);
 
     }
 

@@ -1,7 +1,9 @@
 package com.fnhelper.photo.myfans;
 
 import android.support.constraint.ConstraintLayout;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -87,6 +89,26 @@ public class SetRemarkNameAc extends BaseActivity {
             @Override
             public void onClick(View v) {
                 setRemarkName();
+            }
+        });
+
+        setContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length() > 10) {
+                    setContent.setText(s.toString().substring(0,10));
+                    showBottom(SetRemarkNameAc.this,"备注名不能超过10位");
+                }
             }
         });
 

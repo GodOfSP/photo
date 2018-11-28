@@ -53,6 +53,7 @@ public class ModifyAlbumInfoAc extends BaseActivity {
     public static final int M_CONNECT_TEL = 2; //联系电话
     public static final int M_WX_NUM = 3; //微信号
     public static final int M_ALBUM_INTRODUCE = 4; //相册介绍
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_modify_album_info);
@@ -94,15 +95,15 @@ public class ModifyAlbumInfoAc extends BaseActivity {
                 content.setText(Constants.album_introduce);
                 title.setVisibility(View.GONE);
                 wordNum.setVisibility(View.VISIBLE);
-                wordNum.setText(content.getText().toString().length()+"");
+                wordNum.setText(content.getText().toString().length() + "");
 
-                ConstraintLayout.LayoutParams params=new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(ModifyAlbumInfoAc.this,100));
+                ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(ModifyAlbumInfoAc.this, 100));
 
-                params.bottomToBottom =  ((ConstraintLayout.LayoutParams)cl.getLayoutParams()).bottomToBottom;
-                params.topToBottom =  ((ConstraintLayout.LayoutParams)cl.getLayoutParams()).topToBottom;
-                params.topToTop =  ((ConstraintLayout.LayoutParams)cl.getLayoutParams()).topToTop;
-                params.leftToLeft =  ((ConstraintLayout.LayoutParams)cl.getLayoutParams()).leftToLeft;
-                params.rightToRight =  ((ConstraintLayout.LayoutParams)cl.getLayoutParams()).rightToRight;
+                params.bottomToBottom = ((ConstraintLayout.LayoutParams) cl.getLayoutParams()).bottomToBottom;
+                params.topToBottom = ((ConstraintLayout.LayoutParams) cl.getLayoutParams()).topToBottom;
+                params.topToTop = ((ConstraintLayout.LayoutParams) cl.getLayoutParams()).topToTop;
+                params.leftToLeft = ((ConstraintLayout.LayoutParams) cl.getLayoutParams()).leftToLeft;
+                params.rightToRight = ((ConstraintLayout.LayoutParams) cl.getLayoutParams()).rightToRight;
                 cl.setLayoutParams(params);
                 break;
         }
@@ -120,15 +121,15 @@ public class ModifyAlbumInfoAc extends BaseActivity {
         comRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(content.getText().toString().trim())){
-                    showCenter(ModifyAlbumInfoAc.this,"内容为空！");
-                }else {
+                if (TextUtils.isEmpty(content.getText().toString().trim())) {
+                    showCenter(ModifyAlbumInfoAc.this, "内容为空！");
+                } else {
                     save();
                 }
             }
         });
 
-        if (getIntent().getIntExtra("which",1)==M_ALBUM_INTRODUCE){
+        if (getIntent().getIntExtra("which", 1) == M_ALBUM_INTRODUCE) { //相册介绍
 
             content.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -145,17 +146,87 @@ public class ModifyAlbumInfoAc extends BaseActivity {
                 @Override
                 public void afterTextChanged(Editable s) {
 
-                    wordNum.setText(content.getText().toString().length()+"");
+                    if (s.toString().length() > 50) {
+                        content.setText(s.toString().substring(0,50));
+                        showBottom(ModifyAlbumInfoAc.this,"相册介绍不能超过50字");
+                    }
+                    wordNum.setText(content.getText().toString().length() + "");
                 }
             });
 
+        }else if (getIntent().getIntExtra("which", 1) == M_CONNECT_TEL){// = 2; //联系电话
+            content.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                    if (s.toString().length() > 11) {
+                        content.setText(s.toString().substring(0,11));
+                        showBottom(ModifyAlbumInfoAc.this,"联系电话不能超过11位");
+                    }
+                }
+            });
+        }else if (getIntent().getIntExtra("which", 1) == M_WX_NUM){// M_WX_NUM = 3; //微信号
+            content.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                    if (s.toString().length() > 10) {
+                        content.setText(s.toString().substring(0,10));
+                        showBottom(ModifyAlbumInfoAc.this,"微信号不能超过10位");
+                    }
+                }
+            });
+        }else if (getIntent().getIntExtra("which", 1) == M_ALBUM_NAME){// M_ALBUM_NAME = 3; //相册名
+            content.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                    if (s.toString().length() > 10) {
+                        content.setText(s.toString().substring(0,10));
+                        showBottom(ModifyAlbumInfoAc.this,"相册名不能超过10位");
+                    }
+                }
+            });
         }
     }
 
 
-    String s1="",s2="",s3="",s4 ="";
+    String s1 = "", s2 = "", s3 = "", s4 = "";
 
-    private void save(){
+    private void save() {
 
 
         switch (getIntent().getIntExtra("which", 1)) {
@@ -174,30 +245,34 @@ public class ModifyAlbumInfoAc extends BaseActivity {
         }
 
 
-
-        Call<CheckCodeBean> call = RetrofitService.createMyAPI().UpdatePersonalInfo(s1,s2,s3,s4);
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().UpdatePersonalInfo(s1, s2, s3, s4);
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
             public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
-                if (response!=null){
-                    if (response.body()!=null){
+                if (response != null) {
+                    if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
 
                             switch (getIntent().getIntExtra("which", 1)) {
                                 case M_ALBUM_NAME:
                                     Constants.album_name = s1;
+                                    editor.putString("album_name",Constants.album_name);
                                     break;
                                 case M_CONNECT_TEL:
                                     Constants.sLinkPhone = s3;
+                                    editor.putString("sLinkPhone",Constants.sLinkPhone);
                                     break;
                                 case M_WX_NUM:
                                     Constants.wx_num = s2;
+                                    editor.putString("wx_num",Constants.wx_num);
                                     break;
                                 case M_ALBUM_INTRODUCE:
                                     Constants.album_introduce = s4;
+                                    editor.putString("album_introduce",Constants.album_introduce);
                                     break;
                             }
+                            editor.commit();
                             showBottom(ModifyAlbumInfoAc.this, response.body().getInfo());
                             finish();
                         } else if (response.body().getCode() == CODE_ERROR) {

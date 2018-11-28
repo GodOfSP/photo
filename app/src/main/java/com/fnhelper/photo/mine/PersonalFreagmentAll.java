@@ -521,7 +521,7 @@ public class PersonalFreagmentAll extends Fragment {
                                             ArrayList<File> files = new ArrayList<>();
                                             try {
                                                 for (int i = 0; i < nowItem.getSImagesUrl().split(",").length; i++) {
-                                                    if (i == 0) {
+                                                    if (i == 0 || t){
                                                         files.add(ImageUtil.saveImageToSdCard(getContext(), nowItem.getSImagesUrl().split(",")[i]));
                                                     }
                                                 }

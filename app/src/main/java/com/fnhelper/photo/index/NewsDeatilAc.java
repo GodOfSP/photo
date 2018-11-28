@@ -573,8 +573,7 @@ initSharePop();
                                             try {
 
                                                 for (int i = 0; i < nowItem.getSImagesUrl().split(",").length; i++) {
-
-                                                    if (i == 0 &&!t)
+                                                    if (i == 0 || t)
                                                         files.add(ImageUtil.saveImageToSdCard(NewsDeatilAc.this, nowItem.getSImagesUrl().split(",")[i]));
                                                 }
 

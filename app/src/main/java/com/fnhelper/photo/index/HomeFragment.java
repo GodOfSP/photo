@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +26,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -33,6 +35,7 @@ import android.widget.Toast;
 import com.fnhelper.photo.ModifyPhotoWordActivity;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
+import com.fnhelper.photo.base.recyclerviewadapter.BaseQuickAdapter;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
 import com.fnhelper.photo.beans.CanShareBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
@@ -225,7 +228,6 @@ public class HomeFragment extends Fragment {
         });
     }
 
-
     /**
      * 初始化recyclerView
      */
@@ -333,18 +335,18 @@ public class HomeFragment extends Fragment {
 
                 if (item.getSVideoUrl() == null || TextUtils.isEmpty(item.getSVideoUrl()) || "".equals(item.getSVideoUrl())) { //图片
 
-                    final ArrayList<IThumbViewInfo> pics = new ArrayList<>();
+                    final ArrayList<PreviewItemBean> pics = new ArrayList<>();
                     String[] p = item.getSImagesUrl().split(",");
 
                     for (int i = 0; i < p.length; i++) {
                         pics.add(new PreviewItemBean(p[i]));
                     }
 
-                    RecyclerView recyclerView = helper.getView(R.id.recycler);
+                    final RecyclerView recyclerView = helper.getView(R.id.recycler);
                     recyclerView.setLayoutManager(new FullyGridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false));
-                    recyclerView.setAdapter(new QuickAdapter<IThumbViewInfo>(getContext(), R.layout.item_news_pic, pics) {
+                    recyclerView.setAdapter(new QuickAdapter<PreviewItemBean>(getContext(), R.layout.item_news_pic, pics) {
                         @Override
-                        protected void convert(BaseAdapterHelper helper, final IThumbViewInfo item, final int position) {
+                        protected void convert(BaseAdapterHelper helper, final PreviewItemBean item, final int position) {
 
                             helper.setFrescoImageResource(R.id.pic, item.getUrl());
 
@@ -356,7 +358,7 @@ public class HomeFragment extends Fragment {
                                     GPreviewBuilder.from(getActivity())//activity实例必须
                                             .setData(pics)//集合
                                             .setCurrentIndex(position)
-                                            .setSingleFling(false)//是否在黑屏区域点击返回
+                                            .setSingleFling(true)//是否在黑屏区域点击返回
                                             .setDrag(false)//是否禁用图片拖拽返回
                                             .setType(GPreviewBuilder.IndicatorType.Dot)//指示器类型
                                             .start();//启动
@@ -365,6 +367,10 @@ public class HomeFragment extends Fragment {
                             });
                         }
                     });
+
+
+
+
 
                     helper.setVisible(R.id.recycler, true);
                     helper.setVisible(R.id.video, false);
@@ -806,7 +812,7 @@ public class HomeFragment extends Fragment {
 
                                             try {
                                                 for (int i = 0; i < nowItem.getSImagesUrl().split(",").length; i++) {
-                                                    if (i == 0 && !t){
+                                                    if (i == 0 || t){
                                                         files.add(ImageUtil.saveImageToSdCard(getContext(), nowItem.getSImagesUrl().split(",")[i]));
                                                     }
                                                 }
@@ -822,7 +828,7 @@ public class HomeFragment extends Fragment {
                                                 }
 
                                                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-                                                intent.setType("image/*");
+                                                intent.setType("image");
                                                 ComponentName comp;
 
                                                 if (t) {

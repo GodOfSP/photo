@@ -177,10 +177,19 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                                 Constants.album_introduce = response.body().getData().getSIntroduce();
                                                 Constants.album_name = response.body().getData().getSPhotoName();
 
+                                                //存入静态变量
                                                 editor.putString("ID",Constants.ID);
                                                 editor.putString("sToken",Constants.sToken);
                                                 editor.putString("sHeadImg",Constants.sHeadImg);
                                                 editor.putString("sTsNickNameoken",Constants.sTsNickNameoken);
+                                                editor.putString("wx_num",Constants.wx_num);
+                                                editor.putString("album_introduce",Constants.album_introduce);
+                                                editor.putString("album_name",Constants.album_name);
+                                                editor.putString("sPhone",Constants.sPhone);
+                                                editor.putString("sLinkPhone",Constants.sLinkPhone);
+                                                editor.putString("vip_exi_time",Constants.vip_exi_time);
+                                                editor.putBoolean("isVIP",Constants.isVIP);
+                                                //存入html文件
                                                 editor.putString("aboutHtml",response.body().getData().getHtmlPageUrl().getAbout());
                                                 editor.putString("clientPowerHtml",response.body().getData().getHtmlPageUrl().getClientPower());
                                                 editor.putString("drawInstructionHtml",response.body().getData().getHtmlPageUrl().getDrawInstruction());
