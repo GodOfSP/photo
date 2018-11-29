@@ -1,9 +1,15 @@
 package com.fnhelper.photo;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
 import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.diyviews.ProgressWebView;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  *   html 专用网页
@@ -61,4 +67,6 @@ public class WebViewAc extends BaseActivity {
     protected void initListener() {
 
     }
+
+
 }

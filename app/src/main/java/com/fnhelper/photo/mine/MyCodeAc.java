@@ -102,7 +102,7 @@ public class MyCodeAc extends BaseActivity {
                             Uri uri = Uri.parse(Constants.sHeadImg);
                             Bitmap bitmap = ImageUtil.returnBitmap(uri);
                             //生成二维码
-                            mCodeBitmap = CodeUtils.createImage(Constants.ID, 400, 400, bitmap);
+                            mCodeBitmap = CodeUtils.createImage(Constants.shareLink+Constants.ID, 400, 400, bitmap);
                             myCode.setImageURI(Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), mCodeBitmap, null, null)));
                             //初始化pop
                             initSharePop();

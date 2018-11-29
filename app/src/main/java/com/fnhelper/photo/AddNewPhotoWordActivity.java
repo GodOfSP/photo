@@ -36,6 +36,7 @@ import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.GridImageAdapter;
 import com.fnhelper.photo.utils.ImageUtil;
 import com.fnhelper.photo.utils.STokenUtil;
+import com.fnhelper.photo.utils.WxShareUtils;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -123,6 +124,9 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     //备注类型是否已经填写完成
     private Boolean[] markHaveFillList = new Boolean[]{false, false, false, false, false, false};
 
+
+    private WxShareUtils wxShareUtils = null;
+
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_add_new_photo_word);
@@ -163,7 +167,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 
         comTitle.setText("添加图文");
 
-        comRight.setVisibility(View.GONE);
+
 
         initChooseMediaPop();
 
@@ -177,7 +181,14 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 
     @Override
     protected void initData() {
-
+        wxShareUtils = new WxShareUtils(this,"");
+        comRight.setVisibility(View.VISIBLE);
+        comRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                save(true);
+            }
+        });
     }
 
     @Override
@@ -898,16 +909,24 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 break;
 
             case R.id.save_btn:
-                if (selectList.size() == 0) {
-                    showCenter(AddNewPhotoWordActivity.this, "请选择照片或图片!");
-                } else if (TextUtils.isEmpty(word.getText().toString().trim())) {
-                    showCenter(AddNewPhotoWordActivity.this, "请添加文字内容!");
-                } else {
-                    commit();
-                }
+                save(false);
                 break;
         }
 
+    }
+
+    /**
+     * 保存提交动态
+     * @param needShare  是否需要完成后  调用分享
+     */
+    public void save(boolean needShare){
+        if (selectList.size() == 0) {
+            showCenter(AddNewPhotoWordActivity.this, "请选择照片或图片!");
+        } else if (TextUtils.isEmpty(word.getText().toString().trim())) {
+            showCenter(AddNewPhotoWordActivity.this, "请添加文字内容!");
+        } else {
+            commit(needShare);
+        }
     }
 
 
@@ -919,7 +938,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     /**
      * 提交其它动态信息
      */
-    private void commitOtherInfo(String iType) {
+    private void commitOtherInfo(String iType, final boolean needShare) {
 
 
         String dRetailprices = ""; // 零售价
@@ -1007,8 +1026,12 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                            showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
+                            if (needShare){
+                                wxShareUtils.showSharePop();
+                            }else {
+                                showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                                 finish();
+                            }
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
                             showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
@@ -1041,7 +1064,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     /**
      * 提交图片或者视频 成功后再提交信息
      */
-    private void commit() {
+    private void commit(final boolean needShare) {
 
         loadingDialog.setHintText("上传中");
         loadingDialog.show();
@@ -1070,7 +1093,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                                 if ("上传成功".equals(response.body().getInfo())) {
                                     vPath = response.body().getData().getSVideoUrl();
                                     vPPath = response.body().getData().getSImageUrl();
-                                    commitOtherInfo("1");
+                                    commitOtherInfo("1",needShare);
                                 } else {
                                     showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                                 }
@@ -1104,12 +1127,16 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
             //如果是图片
 
             StringBuffer stringBuffer = new StringBuffer();
+            ArrayList<File> files = new ArrayList<>();
             for (int i = 0; i < selectList.size(); i++) {
                 stringBuffer.append(ImageUtil.getBase64(selectList.get(i).getCompressPath()));
+                files.add(new File(selectList.get(i).getCompressPath()));
                 if (i != selectList.size() - 1) {
                     stringBuffer.append(",");
                 }
             }
+
+            wxShareUtils.setPath(files);
 
             Call<UpdatePicBean> call = RetrofitService.createMyAPI().UploadImage(stringBuffer.toString());
             call.enqueue(new Callback<UpdatePicBean>() {
@@ -1126,7 +1153,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                                             pPath += ",";
                                         }
                                     }
-                                    commitOtherInfo("0");
+                                    commitOtherInfo("0",needShare);
                                 } else {
                                     showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                                 }

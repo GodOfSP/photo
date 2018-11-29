@@ -3,10 +3,15 @@ package com.fnhelper.photo.diyviews;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -19,6 +24,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fnhelper.photo.R;
+
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +59,23 @@ public class ProgressWebView extends LinearLayout {
 //	public void refresh() {
 //		Toast.makeText(mContext, "js 调用方法", Toast.LENGTH_SHORT).show();
 //	}
+
+
+    public static final String PACK_NAME = "com.tencent.mobileqq";//qq包名
+    @JavascriptInterface
+    public boolean isInstallApp() {
+        final PackageManager packageManager = mContext.getPackageManager();// 获取packagemanager
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);// 获取所有已安装程序的包信息
+        if (pinfo != null) {
+            for (int i = 0; i < pinfo.size(); i++) {
+                String pn = pinfo.get(i).packageName.toLowerCase(Locale.ENGLISH);
+                if (pn.equals(PACK_NAME)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 
     public ProgressWebView(Context context) {
@@ -127,10 +152,16 @@ public class ProgressWebView extends LinearLayout {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // 使用自己的WebView组件来响应Url加载事件，而不是使用默认浏览器器加载页面
-                view.loadUrl(url);
-                // 相应完成返回true
-                return true;
                 // return super.shouldOverrideUrlLoading(view, url);
+
+                if(url.startsWith("http:") || url.startsWith("https:") ) {
+                    view.loadUrl(url);
+                    return false;
+                }else{
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    mContext.startActivity(intent);
+                    return true;
+                }
             }
 
             // 页面开始加载
@@ -169,9 +200,6 @@ public class ProgressWebView extends LinearLayout {
                 return super.onJsAlert(view, url, message, result);
             }
 
-            ;
-
-
             // 设置程序的Title
             @Override
             public void onReceivedTitle(WebView view, String title) {
@@ -185,15 +213,11 @@ public class ProgressWebView extends LinearLayout {
                 return super.onJsConfirm(view, url, message, result);
             }
 
-            ;
-
             @Override
             // 处理javascript中的prompt
             public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final JsPromptResult result) {
                 return super.onJsPrompt(view, url, message, defaultValue, result);
             }
-
-            ;
 
             // 设置网页加载的进度条
             @Override

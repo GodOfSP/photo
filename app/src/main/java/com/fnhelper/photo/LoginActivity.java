@@ -167,6 +167,7 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                         if (response != null && response.body() != null) {
                                             if (response.body().getCode() == CODE_SUCCESS) {
                                                 //成功
+                                                Constants.shareLink =response.body().getData().getShareLink();
                                                 Constants.ID = response.body().getData().getID();
                                                 Constants.sToken = response.body().getData().getSToken();
                                                 Constants.sHeadImg = response.body().getData().getSHeadImg();
@@ -179,6 +180,7 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
 
                                                 //存入静态变量
                                                 editor.putString("ID",Constants.ID);
+                                                editor.putString("shareLink",Constants.shareLink);
                                                 editor.putString("sToken",Constants.sToken);
                                                 editor.putString("sHeadImg",Constants.sHeadImg);
                                                 editor.putString("sTsNickNameoken",Constants.sTsNickNameoken);

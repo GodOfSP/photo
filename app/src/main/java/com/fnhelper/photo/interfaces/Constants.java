@@ -22,6 +22,7 @@ public class Constants {
 
     //用户信息
     public  static String ID ="";
+    public  static String shareLink ="";
     public  static String sToken ="";
     public  static String sTsNickNameoken ="";
     public  static String sPhone ="";

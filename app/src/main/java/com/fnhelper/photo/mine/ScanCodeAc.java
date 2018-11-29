@@ -131,12 +131,13 @@ public class ScanCodeAc extends BaseActivity {
             @Override
             public void onAnalyzeSuccess(Bitmap mBitmap, String result) {
                 // 扫码成功拿到字符串截取出 bizId  跳转到店铺页面
-              if (result.length()!=32){
+                String realRe = getRealResulet(result);
+              if (realRe.length()!=32){
                   showBottom(ScanCodeAc.this, "不能用该二维码进行关注操作！"); 
               }else {
                   loadingDialog.setHintText("处理中");
                   loadingDialog.show();
-                  follow(result);
+                  follow(realRe);
               }
             }
 
@@ -200,12 +201,13 @@ public class ScanCodeAc extends BaseActivity {
                         @Override
                         public void onAnalyzeSuccess(Bitmap mBitmap, String result) {
                             // 扫码成功拿到字符串截取出 bizId  跳转到店铺页面
-                            if (result.length()!=32){
+                            String realRe = getRealResulet(result);
+                            if (realRe.length()!=32){
                                 showBottom(ScanCodeAc.this, "不能用该二维码进行关注操作！");
                             }else {
                                 loadingDialog.setHintText("处理中");
                                 loadingDialog.show();
-                                follow(result);
+                                follow(realRe);
                             }
                         }
 
@@ -261,5 +263,9 @@ public class ScanCodeAc extends BaseActivity {
         });
     }
 
+    private String getRealResulet(String old){
+        String[] s = old.split("//");
+        return s[s.length-1];
+    }
 
 }

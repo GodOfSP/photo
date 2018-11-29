@@ -67,6 +67,8 @@ public class MyApplication extends MultiDexApplication {
     private void initStoken() {
         Constants.ID = getSharedPreferences("SystemPreferences",
                 Activity.MODE_PRIVATE).getString("ID", "");
+        Constants.shareLink = getSharedPreferences("SystemPreferences",
+                Activity.MODE_PRIVATE).getString("shareLink", "");
         Constants.sToken = getSharedPreferences("SystemPreferences",
                 Activity.MODE_PRIVATE).getString("sToken", "");
         Constants.sHeadImg = getSharedPreferences("SystemPreferences",
