@@ -32,6 +32,7 @@ import com.fnhelper.photo.beans.UpdateVdieoBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.FnFileUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.GridImageAdapter;
 import com.fnhelper.photo.utils.ImageUtil;
@@ -836,12 +837,12 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 .enableCrop(false)// 是否裁剪
                 .compress(true)// 是否压缩
                 .synOrAsy(true)//同步true或异步false 压缩 默认同步
-                //.compressSavePath(getPath())//压缩图片保存地址
+                .compressSavePath(FnFileUtil.getPath())//压缩图片保存地址
                 .sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
                 .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                 .withAspectRatio(16, 9)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
                 .hideBottomControls(true)// 是否显示uCrop工具栏，默认不显示
-                .isGif(true)// 是否显示gif图片
+                .isGif(false)// 是否显示gif图片
                 .freeStyleCropEnabled(true)// 裁剪框是否可拖拽
                 .circleDimmedLayer(false)// 是否圆形裁剪
                 .showCropFrame(true)// 是否显示裁剪矩形边框 圆形裁剪时建议设为false
@@ -852,7 +853,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 //                        .videoMaxSecond(15)
 //                        .videoMinSecond(10)
                 .previewEggs(true)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                .cropCompressQuality(90)// 裁剪压缩质量 默认100
+                .cropCompressQuality(80)// 裁剪压缩质量 默认100
                 .minimumCompressSize(100)// 小于100kb的图片不压缩
                 //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                 //.rotateEnabled(true) // 裁剪是否可旋转图片
@@ -1069,8 +1070,12 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         loadingDialog.setHintText("上传中");
         loadingDialog.show();
 
+        wxShareUtils.setWord(word.getText().toString().trim());
+
         //如果是视频的话
         if (PictureMimeType.isPictureType(selectList.get(0).getPictureType()) == PictureConfig.TYPE_VIDEO) {
+
+            wxShareUtils.setnowWhich(1);
 
             //构建要上传的文件
             File file = new File(selectList.get(0).getPath());   // 需要上传的文件
@@ -1080,6 +1085,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 
             MultipartBody.Part body =
                     MultipartBody.Part.createFormData("aFile", file.getName(), requestFile);
+
 
 
             Call<UpdateVdieoBean> call = RetrofitService.createMyAPI().uploadFile(body, getExtensionName(file.getAbsolutePath()));
@@ -1093,6 +1099,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                                 if ("上传成功".equals(response.body().getInfo())) {
                                     vPath = response.body().getData().getSVideoUrl();
                                     vPPath = response.body().getData().getSImageUrl();
+                                    wxShareUtils.setVideoUrl(vPath);
                                     commitOtherInfo("1",needShare);
                                 } else {
                                     showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
@@ -1125,6 +1132,8 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 
         } else {
             //如果是图片
+
+            wxShareUtils.setnowWhich(0);
 
             StringBuffer stringBuffer = new StringBuffer();
             ArrayList<File> files = new ArrayList<>();

@@ -42,11 +42,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <activity
             android:name=".AddNewPhotoWordActivity"
             android:screenOrientation="portrait" />
@@ -83,6 +79,7 @@
         <activity
             android:name=".wxapi.WXPayEntryActivity"
             android:exported="true"
+
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -92,6 +89,14 @@
                 <data android:scheme="wx04ff3ceebc3fc690" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:launchMode="singleTop"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity android:name=".mine.QuestionAndReportAc" />
         <activity
             android:name=".mine.AboutAppAc"

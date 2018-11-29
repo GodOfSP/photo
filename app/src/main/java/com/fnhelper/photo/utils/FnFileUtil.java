@@ -1,6 +1,8 @@
 package com.fnhelper.photo.utils;
 
 
+import android.os.Environment;
+
 import java.io.File;
 
 
@@ -28,5 +30,13 @@ public class FnFileUtil {
 
     public static void createPicDirs(){
         fileUtil.createDir(new File(getPhotoFullDir()));
+    }
+
+    public static String getPath(){
+        File appDir = new File(Environment.getExternalStorageDirectory(), "蜂鸟微商相册");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        return appDir.getAbsolutePath();
     }
 }

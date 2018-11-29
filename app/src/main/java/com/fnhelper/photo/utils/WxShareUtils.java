@@ -56,7 +56,9 @@ public class WxShareUtils {
     private Activity activity;
     private String sImageTextId ; //动态id
     private ArrayList<File> mFiles; // 文件列表
-    
+    private String word = "" ; // 图文的文字
+    private String videoUrl = "" ; // 视频路径
+
     public WxShareUtils(Activity activity,String sImageTextId) {
         this.activity = activity;
         this.sImageTextId = sImageTextId;
@@ -67,7 +69,6 @@ public class WxShareUtils {
     private static final int THUMB_SIZE = 150;
     private EasyPopup mSharePop;
     private int nowWhich = 0;  //当前分享类型
-    private NewsListBean.DataBean.RowsBean nowItem = null;
     private ZLoadingDialog zLoadingDialog;
     private Handler handler = new Handler() {
         @Override
@@ -89,7 +90,7 @@ public class WxShareUtils {
 
     public void initSharePop() {
 
-        zLoadingDialog = new ZLoadingDialog(activity.getApplicationContext());
+        zLoadingDialog = new ZLoadingDialog(activity);
         zLoadingDialog.setLoadingBuilder(DOUBLE_CIRCLE)//设置类型
                 .setLoadingColor(activity.getResources().getColor(R.color.colorPrimaryDark))//颜色
                 .setHintText("加载中...")
@@ -97,7 +98,7 @@ public class WxShareUtils {
                 .setHintTextColor(activity.getResources().getColor(R.color.text_gray));  // 设置字体颜色
 
         mSharePop = EasyPopup.create()
-                .setContentView(activity, R.layout.share_pop)
+                .setContentView(activity.getApplicationContext(), R.layout.share_pop)
                 .setAnimationStyle(R.style.BottomPopAnim)
                 //是否允许点击PopupWindow之外的地方消失
                 .setFocusAndOutsideEnable(true)
@@ -244,12 +245,12 @@ public class WxShareUtils {
 
 
                                 WXVideoObject video = new WXVideoObject();
-                                video.videoUrl = nowItem.getSVideoUrl();
+                                video.videoUrl = videoUrl;
 
 
                                 WXMediaMessage msg = new WXMediaMessage(video);
-                                msg.title = nowItem.getSNickName();
-                                msg.description = nowItem.getSContext();
+                                msg.title = "蜂鸟";
+                                msg.description = "视频分享";
                                 Bitmap thumb = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_video_play);
                                 /**
                                  * 测试过程中会出现这种情况，会有个别手机会出现调不起微信客户端的情况。造成这种情况的原因是微信对缩略图的大小、title、description等参数的大小做了限制，所以有可能是大小超过了默认的范围。
@@ -272,7 +273,7 @@ public class WxShareUtils {
                     });
         }
 
-        ImageUtil.copyWord(activity, nowItem.getSContext());
+        ImageUtil.copyWord(activity.getApplicationContext(), word);
 
     }
 
@@ -324,6 +325,18 @@ public class WxShareUtils {
 
     public void setPath(ArrayList<File> files){
         mFiles = files;
+    }
+
+    public void setWord(String word){
+        this.word = word;
+    }
+
+    public void setVideoUrl(String videoUrl){
+        this.videoUrl = videoUrl;
+    }
+
+    public void setnowWhich(int nowWhich){
+        this.nowWhich = nowWhich;
     }
 
 }
