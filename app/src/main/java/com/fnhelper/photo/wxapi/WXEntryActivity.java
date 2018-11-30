@@ -13,7 +13,6 @@ import com.fnhelper.photo.interfaces.Constants;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
-import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -82,6 +81,8 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
                         break;
                     case 2: //SendMessageToWX
                         Log.d("fn", "分享视频成功");
+                        Constants.isFinishShare = true;
+                        finish();
                         break;
                 }
 

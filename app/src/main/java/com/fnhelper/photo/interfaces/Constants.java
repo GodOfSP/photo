@@ -40,4 +40,7 @@ public class Constants {
     // token 操作参数  是否正在检查
     public static  boolean isCheckTokenNow = false;
 
+    // 分享操作是否完成
+    public static boolean isFinishShare =false;
+
 }

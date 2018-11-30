@@ -33,12 +33,12 @@ import com.fnhelper.photo.beans.NewDetailBean;
 import com.fnhelper.photo.beans.UpdatePicBean;
 import com.fnhelper.photo.beans.UpdateVdieoBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
-import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.GridImageAdapter;
 import com.fnhelper.photo.utils.ImageUtil;
 import com.fnhelper.photo.utils.STokenUtil;
+import com.fnhelper.photo.utils.WxShareUtils;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.config.PictureMimeType;
@@ -126,7 +126,7 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
     public static final int MARK_TYPE_NONE = 607; //没有
     //备注类型是否已经填写完成
     private Boolean[] markHaveFillList = new Boolean[]{false, false, false, false, false, false};
-
+    private WxShareUtils wxShareUtils = null;
     @Override
     public void setContentView() {
         setContentView(R.layout.activity_add_new_photo_word);
@@ -179,11 +179,36 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
 
     }
 
+
+    /**
+     * 保存提交动态
+     * @param needShare  是否需要完成后  调用分享
+     */
+    public void save(boolean needShare){
+        if (selectList.size() == 0) {
+            showCenter(ModifyPhotoWordDetailActivity.this, "请选择照片或图片!");
+        } else if (TextUtils.isEmpty(word.getText().toString().trim())) {
+            showCenter(ModifyPhotoWordDetailActivity.this, "请添加文字内容!");
+        } else {
+            commit(needShare);
+        }
+    }
+
     private String ID = "";
     private String sourceID = "" ;
     private String cilentID = "" ;
     @Override
     protected void initData() {
+
+        wxShareUtils = new WxShareUtils(this,"");
+        wxShareUtils.setNeedFinishThis(true);
+        comRight.setVisibility(View.VISIBLE);
+        comRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                save(true);
+            }
+        });
 
         //初始数据
         NewDetailBean.DataBean rowsBean = getIntent().getParcelableExtra("data");
@@ -194,7 +219,7 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
             //图片
             chooseMode = PictureMimeType.ofImage();
             for (int i = 0; i < rowsBean.getSImagesUrl().split(",").length; i++) {
-                selectList.add(new LocalMedia(ImageUtil.returnFile(Uri.parse(rowsBean.getSImagesUrl().split(",")[i])).getPath(), 200, PictureMimeType.ofImage(), "image/jpeg"));
+                selectList.add(new LocalMedia(ImageUtil.getCachedImageOnDisk(Uri.parse(rowsBean.getSImagesUrl().split(",")[i]),ModifyPhotoWordDetailActivity.this).getPath(), 200, PictureMimeType.ofImage(), "image/jpeg"));
             }
 
         } else {
@@ -916,9 +941,9 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
                 //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
                 //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
                 .enableCrop(false)// 是否裁剪
-                .compress(true)// 是否压缩
+               // .compress(true)// 是否压缩
                 .synOrAsy(true)//同步true或异步false 压缩 默认同步
-                //.compressSavePath(getPath())//压缩图片保存地址
+            //    .compressSavePath(FnFileUtil.getPath())//压缩图片保存地址
                 .sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
                 .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                 .withAspectRatio(16, 9)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
@@ -1008,13 +1033,7 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
                 break;
 
             case R.id.save_btn:
-                if (selectList.size() == 0) {
-                    showCenter(ModifyPhotoWordDetailActivity.this, "请选择照片或图片!");
-                }else if (TextUtils.isEmpty(word.getText().toString().trim())) {
-                    showCenter(ModifyPhotoWordDetailActivity.this, "请添加文字内容!");
-                } else {
-                    commit();
-                }
+                save(false);
                 break;
         }
 
@@ -1029,7 +1048,7 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
     /**
      * 提交其它动态信息
      */
-    private void commitOtherInfo(String iType) {
+    private void commitOtherInfo(String iType, final boolean needShare) {
 
 
         String dRetailprices = ""; // 零售价
@@ -1117,8 +1136,12 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                            showBottom(ModifyPhotoWordDetailActivity.this, response.body().getInfo());
+                            if (needShare){
+                                wxShareUtils.showSharePop();
+                            }else {
+                                showBottom(ModifyPhotoWordDetailActivity.this, response.body().getInfo());
                                 finish();
+                            }
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
                             showBottom(ModifyPhotoWordDetailActivity.this, response.body().getInfo());
@@ -1151,14 +1174,14 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
     /**
      * 提交图片或者视频 成功后再提交信息
      */
-    private void commit() {
+    private void commit(final boolean needShare) {
 
         loadingDialog.setHintText("上传中");
         loadingDialog.show();
-
+        wxShareUtils.setWord(word.getText().toString().trim());
         //如果是视频的话
         if (PictureMimeType.isPictureType(selectList.get(0).getPictureType()) == PictureConfig.TYPE_VIDEO) {
-
+            wxShareUtils.setnowWhich(1);
             //构建要上传的文件
             File file = new File(selectList.get(0).getPath());   // 需要上传的文件
 
@@ -1180,7 +1203,8 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
                                 if ("上传成功".equals(response.body().getInfo())) {
                                     vPath = response.body().getData().getSVideoUrl();
                                     vPPath = response.body().getData().getSImageUrl();
-                                    commitOtherInfo("1");
+                                    wxShareUtils.setVideoUrl(vPath);
+                                    commitOtherInfo("1",needShare);
                                 } else {
                                     showBottom(ModifyPhotoWordDetailActivity.this, response.body().getInfo());
                                 }
@@ -1213,13 +1237,20 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
         } else {
             //如果是图片
 
+
+            wxShareUtils.setnowWhich(0);
+
             StringBuffer stringBuffer = new StringBuffer();
+            ArrayList<File> files = new ArrayList<>();
             for (int i = 0; i < selectList.size(); i++) {
                 stringBuffer.append(ImageUtil.getBase64(selectList.get(i).getPath()));
+                files.add(new File(selectList.get(i).getPath()));
                 if (i != selectList.size() - 1) {
                     stringBuffer.append(",");
                 }
             }
+
+            wxShareUtils.setPath(files);
 
             Call<UpdatePicBean> call = RetrofitService.createMyAPI().UploadImage(stringBuffer.toString());
             call.enqueue(new Callback<UpdatePicBean>() {
@@ -1236,7 +1267,7 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
                                             pPath += ",";
                                         }
                                     }
-                                    commitOtherInfo("0");
+                                    commitOtherInfo("0",needShare);
                                 } else {
                                     showBottom(ModifyPhotoWordDetailActivity.this, response.body().getInfo());
                                 }
@@ -1318,7 +1349,6 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
     *//**
      * 备注列表normalItem侧滑中的点击事件 编辑
      *
-     * @param type item 类型
      *//*
     @Override
     public void modify(int type, boolean isOpen) {

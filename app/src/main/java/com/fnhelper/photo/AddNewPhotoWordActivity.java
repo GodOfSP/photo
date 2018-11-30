@@ -32,7 +32,6 @@ import com.fnhelper.photo.beans.UpdateVdieoBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
-import com.fnhelper.photo.utils.FnFileUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.GridImageAdapter;
 import com.fnhelper.photo.utils.ImageUtil;
@@ -169,7 +168,6 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         comTitle.setText("添加图文");
 
 
-
         initChooseMediaPop();
 
         initMarkList();
@@ -183,6 +181,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     @Override
     protected void initData() {
         wxShareUtils = new WxShareUtils(this,"");
+        wxShareUtils.setNeedFinishThis(true);
         comRight.setVisibility(View.VISIBLE);
         comRight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -835,9 +834,9 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
                 //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
                 .enableCrop(false)// 是否裁剪
-                .compress(true)// 是否压缩
+                .compress(false)// 是否压缩
                 .synOrAsy(true)//同步true或异步false 压缩 默认同步
-                .compressSavePath(FnFileUtil.getPath())//压缩图片保存地址
+             //   .compressSavePath(FnFileUtil.getPath())//压缩图片保存地址
                 .sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
                 .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                 .withAspectRatio(16, 9)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
@@ -1138,8 +1137,8 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
             StringBuffer stringBuffer = new StringBuffer();
             ArrayList<File> files = new ArrayList<>();
             for (int i = 0; i < selectList.size(); i++) {
-                stringBuffer.append(ImageUtil.getBase64(selectList.get(i).getCompressPath()));
-                files.add(new File(selectList.get(i).getCompressPath()));
+                stringBuffer.append(ImageUtil.getBase64(selectList.get(i).getPath()));
+                files.add(new File(selectList.get(i).getPath()));
                 if (i != selectList.size() - 1) {
                     stringBuffer.append(",");
                 }

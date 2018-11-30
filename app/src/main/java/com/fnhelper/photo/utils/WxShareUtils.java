@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.beans.CheckCodeBean;
-import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.luck.picture.lib.permissions.RxPermissions;
@@ -58,6 +57,7 @@ public class WxShareUtils {
     private ArrayList<File> mFiles; // 文件列表
     private String word = "" ; // 图文的文字
     private String videoUrl = "" ; // 视频路径
+    private boolean needFinishThis = false; // 需要关闭当前页面吗?
 
     public WxShareUtils(Activity activity,String sImageTextId) {
         this.activity = activity;
@@ -84,6 +84,11 @@ public class WxShareUtils {
             } else if (msg.what == 3) {
                 zLoadingDialog.dismiss();
                 showBottom(activity, "保存视频失败！");
+            }else if (msg.what == 200){
+                zLoadingDialog.dismiss();
+                if (needFinishThis){
+                    activity.finish();
+                }
             }
         }
     };
@@ -186,7 +191,7 @@ public class WxShareUtils {
 
                                                 ArrayList<Uri> imageUris = new ArrayList<Uri>();
                                                 for (File f : mFiles) {
-                                                    imageUris.add(ImageUtil.getImageContentUri(f, activity));
+                                                imageUris.add(ImageUtil.getImageContentUri(f, activity));
                                                 }
 
                                                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
@@ -209,7 +214,6 @@ public class WxShareUtils {
                                                 e.printStackTrace();
                                             }
 
-                                            zLoadingDialog.dismiss();
                                             handler.sendEmptyMessage(1);
 
                                         } catch (Exception e) {
@@ -275,9 +279,29 @@ public class WxShareUtils {
 
         ImageUtil.copyWord(activity.getApplicationContext(), word);
 
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    while (true){
+                        if (Constants.isFinishShare)
+                        {
+                            handler.sendEmptyMessage(200);
+                            Constants.isFinishShare = false;
+                            break;
+                        }
+                    }
+
+                }
+            }).start();
+
     }
 
 
+    public void setNeedFinishThis(boolean needFinishThis){
+        this.needFinishThis = needFinishThis;
+    }
     /**
      * 调用服务器分享接口
      */

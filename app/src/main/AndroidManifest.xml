@@ -95,7 +95,7 @@
             android:launchMode="singleTop"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <activity android:name=".mine.QuestionAndReportAc" />
         <activity
