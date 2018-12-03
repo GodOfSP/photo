@@ -1,11 +1,13 @@
 package com.fnhelper.photo.utils;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +17,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.widget.Toast;
 
@@ -26,6 +30,12 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.fnhelper.photo.base.BaseActivity;
+import com.fnhelper.photo.interfaces.Constants;
+import com.fnhelper.photo.mine.MyCodeAc;
+import com.tbruyelle.rxpermissions2.Permission;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -33,8 +43,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by little fly on 2018-11-1.
@@ -226,6 +239,9 @@ public class ImageUtil {
 
     //return file or null
     public static File getCachedImageOnDisk(Uri loadUri, Context context) {
+
+
+
         File localFile = null;
         if (loadUri != null) {
             CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(ImageRequest.fromUri(loadUri), context);
@@ -238,23 +254,61 @@ public class ImageUtil {
             }
         }
         if (localFile.getName().contains(".cnt")) {
-           boolean isf =  localFile.isFile();
+            boolean isf = localFile.isFile();
             String n = localFile.getName();
-            String newoldName = n.substring(0, localFile.getName().lastIndexOf(".")) + ".jpg";
+            String newoldName = n.substring(0, n.lastIndexOf(".")) + loadUri.toString().substring(loadUri.toString().lastIndexOf("."), loadUri.toString().length());
             File newFile = new File(FnFileUtil.getPath(), newoldName);
-            if (!newFile.exists()) {
-                newFile.mkdir();
+            if (!newFile.getParentFile().exists()) {
+                newFile.getParentFile().mkdirs();
             }
-            boolean isf2 =  newFile.isFile();
-            if (isf ==isf2){
+            //判断文件是否存在，存在就删除
+            if (newFile.exists()) {
+                newFile.delete();
+            }
+            try {
+                //创建文件
+                newFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            boolean isf2 = newFile.isFile();
+            if (isf == isf2) {
 
             }
-            boolean flag = localFile.renameTo(newFile);
-            if (flag) {
+            int s = CopySdcardFile(localFile.getPath(), newFile.getPath());
+            if (s==0){
                 return newFile;
             }
+          /*  boolean flag = localFile.renameTo(newFile);
+            if (flag) {
+                return newFile;
+            }*/
         }
         return localFile;
+    }
+
+
+    //文件拷贝
+    //要复制的目录下的所有非子目录(文件夹)文件拷贝
+    public static int CopySdcardFile(String fromFile, String toFile) {
+
+        try {
+            InputStream fosfrom = new FileInputStream(fromFile);
+            OutputStream fosto = new FileOutputStream(toFile);
+            byte bt[] = new byte[1024];
+            int c;
+            while ((c = fosfrom.read(bt)) > 0) {
+                fosto.write(bt, 0, c);
+            }
+            fosfrom.close();
+            fosto.close();
+            return 0;
+
+        } catch (Exception ex) {
+            System.out.print(ex.getMessage());
+            return -1;
+        }
     }
 
 

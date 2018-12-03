@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,9 @@ import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
 import com.luck.picture.lib.permissions.RxPermissions;
+import com.tbruyelle.rxpermissions2.Permission;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXImageObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXVideoObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -52,17 +55,35 @@ import static com.zyao89.view.zloading.Z_TYPE.DOUBLE_CIRCLE;
  */
 public class WxShareUtils {
 
-    private Activity activity;
-    private String sImageTextId ; //动态id
+    private Activity mActivity;
+    private String msImageTextId; //动态id
     private ArrayList<File> mFiles; // 文件列表
-    private String word = "" ; // 图文的文字
-    private String videoUrl = "" ; // 视频路径
+    private String word = ""; // 图文的文字
+    private String videoUrl = ""; // 视频路径
     private boolean needFinishThis = false; // 需要关闭当前页面吗?
 
-    public WxShareUtils(Activity activity,String sImageTextId) {
-        this.activity = activity;
-        this.sImageTextId = sImageTextId;
-        initSharePop();
+    public WxShareUtils(final Activity activity, final String sImageTextId) {
+
+        //请求权限
+        new com.tbruyelle.rxpermissions2.RxPermissions((FragmentActivity) activity).requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Permission>() {
+                    @Override
+                    public void accept(Permission permission) throws Exception {
+                        if (permission.granted) {
+                            // 用户已经同意该权限
+                            mActivity = activity;
+                            msImageTextId = sImageTextId;
+                            initSharePop();
+
+                        } else if (permission.shouldShowRequestPermissionRationale) {
+                            // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
+
+                        } else {
+                            // 用户拒绝了该权限，并且选中『不再询问』
+                        }
+                    }
+                });
+
     }
 
     private IWXAPI wxAPI = null;
@@ -75,19 +96,19 @@ public class WxShareUtils {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 1) {
-                Toast.makeText(activity, "除第一张图片之外的需要您手动点击添加哦 ~", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "除第一张图片之外的需要您手动点击添加哦 ~", Toast.LENGTH_LONG).show();
             } else if (msg.what == 2) {
                 // 最后通知图库更新
-                activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+                mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
                 zLoadingDialog.dismiss();
-                showBottom(activity, "保存成功！");
+                showBottom(mActivity, "保存成功！");
             } else if (msg.what == 3) {
                 zLoadingDialog.dismiss();
-                showBottom(activity, "保存视频失败！");
-            }else if (msg.what == 200){
+                showBottom(mActivity, "保存视频失败！");
+            } else if (msg.what == 200) {
                 zLoadingDialog.dismiss();
-                if (needFinishThis){
-                    activity.finish();
+                if (needFinishThis) {
+                    mActivity.finish();
                 }
             }
         }
@@ -95,15 +116,15 @@ public class WxShareUtils {
 
     public void initSharePop() {
 
-        zLoadingDialog = new ZLoadingDialog(activity);
+        zLoadingDialog = new ZLoadingDialog(mActivity);
         zLoadingDialog.setLoadingBuilder(DOUBLE_CIRCLE)//设置类型
-                .setLoadingColor(activity.getResources().getColor(R.color.colorPrimaryDark))//颜色
+                .setLoadingColor(mActivity.getResources().getColor(R.color.colorPrimaryDark))//颜色
                 .setHintText("加载中...")
                 .setHintTextSize(16) // 设置字体大小 dp
-                .setHintTextColor(activity.getResources().getColor(R.color.text_gray));  // 设置字体颜色
+                .setHintTextColor(mActivity.getResources().getColor(R.color.text_gray));  // 设置字体颜色
 
         mSharePop = EasyPopup.create()
-                .setContentView(activity.getApplicationContext(), R.layout.share_pop)
+                .setContentView(mActivity.getApplicationContext(), R.layout.share_pop)
                 .setAnimationStyle(R.style.BottomPopAnim)
                 //是否允许点击PopupWindow之外的地方消失
                 .setFocusAndOutsideEnable(true)
@@ -115,7 +136,7 @@ public class WxShareUtils {
                 //变暗的背景颜色
                 .setDimColor(Color.BLACK)
                 //指定任意 ViewGroup 背景变暗
-                .setDimView((ViewGroup) activity.findViewById(android.R.id.content))
+                .setDimView((ViewGroup) mActivity.findViewById(android.R.id.content))
                 .apply();
 
 
@@ -125,20 +146,54 @@ public class WxShareUtils {
         friend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareNews(true);
+                //请求权限
+                new com.tbruyelle.rxpermissions2.RxPermissions((FragmentActivity) mActivity).requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        .subscribe(new Consumer<Permission>() {
+                            @Override
+                            public void accept(Permission permission) throws Exception {
+                                if (permission.granted) {
+                                    // 用户已经同意该权限
+                                    if (mSharePop.isShowing())
+                                        shareNews(true);
+                                } else if (permission.shouldShowRequestPermissionRationale) {
+                                    // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
+
+                                } else {
+                                    // 用户拒绝了该权限，并且选中『不再询问』
+                                }
+                            }
+                        });
+
             }
         });
 
         cicler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareNews(false);
+                //请求权限
+                new com.tbruyelle.rxpermissions2.RxPermissions((FragmentActivity) mActivity).requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        .subscribe(new Consumer<Permission>() {
+                            @Override
+                            public void accept(Permission permission) throws Exception {
+                                if (permission.granted) {
+                                    // 用户已经同意该权限
+                                    if (mSharePop.isShowing())
+                                    shareNews(false);
+                                } else if (permission.shouldShowRequestPermissionRationale) {
+                                    // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
+
+                                } else {
+                                    // 用户拒绝了该权限，并且选中『不再询问』
+                                }
+                            }
+                        });
+
             }
         });
     }
 
     public void showSharePop() {
-        mSharePop.showAtAnchorView(activity.findViewById(android.R.id.content), YGravity.ALIGN_BOTTOM, XGravity.CENTER, 0, 0);
+        mSharePop.showAtAnchorView(mActivity.findViewById(android.R.id.content), YGravity.ALIGN_BOTTOM, XGravity.CENTER, 0, 0);
     }
 
     /**
@@ -157,17 +212,17 @@ public class WxShareUtils {
         if (nowWhich == 0) {
             //图文
             //请求权限
-            new RxPermissions(activity).request(Manifest.permission.READ_PHONE_STATE)
+            new RxPermissions(mActivity).request(Manifest.permission.READ_PHONE_STATE)
                     .subscribe(new Consumer<Boolean>() {
                         @Override
                         public void accept(Boolean aBoolean) throws Exception {
                             if (aBoolean) {
                                 //初始化微信
                                 if (wxAPI == null) {
-                                    wxAPI = WXAPIFactory.createWXAPI(activity, Constants.WECHAT_APPID, true);
+                                    wxAPI = WXAPIFactory.createWXAPI(mActivity, Constants.WECHAT_APPID, true);
                                 }
                                 if (!wxAPI.isWXAppInstalled()) {//检查是否安装了微信
-                                    showBottom(activity, "没有安装微信");
+                                    showBottom(mActivity, "没有安装微信");
                                     return;
                                 }
                                 wxAPI.registerApp(Constants.WECHAT_APPID);
@@ -181,34 +236,39 @@ public class WxShareUtils {
                                     public void run() {
                                         //这一步一定要clear,不然分享了朋友圈马上分享好友图片就会翻倍
 
-                                        try {
 
                                             try {
 
-                                                Intent intent = new Intent();
+                                                Intent intent = new Intent(Intent.ACTION_SEND);
                                                 intent.setAction(Intent.ACTION_SEND_MULTIPLE);
                                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                                                ArrayList<Uri> imageUris = new ArrayList<Uri>();
-                                                for (File f : mFiles) {
-                                                imageUris.add(ImageUtil.getImageContentUri(f, activity));
-                                                }
 
-                                                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-                                                intent.setType("image");
                                                 ComponentName comp;
 
                                                 if (t) {
+                                                    ArrayList<Uri> imageUris = new ArrayList<Uri>();
+                                                    for (File f : mFiles) {
+                                                        imageUris.add(ImageUtil.getImageContentUri(f, mActivity));
+                                                    }
+
+                                                    intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                                                    intent.setType("image");
                                                     comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI");
                                                 } else {
+                                                    ArrayList<Uri> imageUris = new ArrayList<Uri>();
+                                                    imageUris.add(ImageUtil.getImageContentUri(mFiles.get(0), mActivity));
+                                                    intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                                                    intent.setType("image");
                                                     comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
                                                     intent.putExtra("Kdescription", "分享朋友圈的图片说明");
+
+
                                                 }
                                                 intent.setComponent(comp);
 
 
-
-                                                activity.startActivity(Intent.createChooser(intent,"分享图片"));
+                                                mActivity.startActivity(Intent.createChooser(intent, "分享图片"));
 
                                             } catch (Exception e) {
                                                 e.printStackTrace();
@@ -216,15 +276,12 @@ public class WxShareUtils {
 
                                             handler.sendEmptyMessage(1);
 
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
                                     }
                                 }).start();
 
 
                             } else {
-                                Toast.makeText(activity, "请打开权限!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, "请打开权限!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -232,17 +289,17 @@ public class WxShareUtils {
             //视频
 
             //请求权限
-            new RxPermissions(activity).request(Manifest.permission.READ_PHONE_STATE)
+            new RxPermissions(mActivity).request(Manifest.permission.READ_PHONE_STATE)
                     .subscribe(new Consumer<Boolean>() {
                         @Override
                         public void accept(Boolean aBoolean) throws Exception {
                             if (aBoolean) {
                                 //初始化微信
                                 if (wxAPI == null) {
-                                    wxAPI = WXAPIFactory.createWXAPI(activity, Constants.WECHAT_APPID, true);
+                                    wxAPI = WXAPIFactory.createWXAPI(mActivity, Constants.WECHAT_APPID, true);
                                 }
                                 if (!wxAPI.isWXAppInstalled()) {//检查是否安装了微信
-                                    showBottom(activity, "没有安装微信");
+                                    showBottom(mActivity, "没有安装微信");
                                     return;
                                 }
                                 wxAPI.registerApp(Constants.WECHAT_APPID);
@@ -255,7 +312,7 @@ public class WxShareUtils {
                                 WXMediaMessage msg = new WXMediaMessage(video);
                                 msg.title = "蜂鸟";
                                 msg.description = "视频分享";
-                                Bitmap thumb = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_video_play);
+                                Bitmap thumb = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.ic_video_play);
                                 /**
                                  * 测试过程中会出现这种情况，会有个别手机会出现调不起微信客户端的情况。造成这种情况的原因是微信对缩略图的大小、title、description等参数的大小做了限制，所以有可能是大小超过了默认的范围。
                                  * 一般情况下缩略图超出比较常见。Title、description都是文本，一般不会超过。
@@ -271,48 +328,48 @@ public class WxShareUtils {
                                 wxAPI.sendReq(req);
 
                             } else {
-                                Toast.makeText(activity, "请打开权限!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, "请打开权限!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
         }
 
-        ImageUtil.copyWord(activity.getApplicationContext(), word);
+        ImageUtil.copyWord(mActivity.getApplicationContext(), word);
 
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-                    while (true){
-                        if (Constants.isFinishShare)
-                        {
-                            handler.sendEmptyMessage(200);
-                            Constants.isFinishShare = false;
-                            break;
-                        }
+                while (true) {
+                    if (Constants.isFinishShare) {
+                        handler.sendEmptyMessage(200);
+                        Constants.isFinishShare = false;
+                        break;
                     }
-
                 }
-            }).start();
+
+            }
+        }).start();
 
     }
 
 
-    public void setNeedFinishThis(boolean needFinishThis){
+    public void setNeedFinishThis(boolean needFinishThis) {
         this.needFinishThis = needFinishThis;
     }
+
     /**
      * 调用服务器分享接口
      */
-    private void shareToOurSystem(){
+    private void shareToOurSystem() {
 
         //如果动态id为空 说明现在是创建动态
-        if (TextUtils.isEmpty(sImageTextId)){
+        if (TextUtils.isEmpty(msImageTextId)) {
             return;
         }
 
-        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Share(sImageTextId);
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Share(msImageTextId);
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
             public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
@@ -320,20 +377,20 @@ public class WxShareUtils {
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                            showBottom(activity, response.body().getInfo());
+                            showBottom(mActivity, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败
-                            showBottom(activity, response.body().getInfo());
+                            showBottom(mActivity, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
                             //服务错误
-                            showBottom(activity, response.body().getInfo());
+                            showBottom(mActivity, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //登录过期
-                            STokenUtil.check(activity);
-                            showBottom(activity, response.body().getInfo());
+                            STokenUtil.check(mActivity);
+                            showBottom(mActivity, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_TOKEN) {
                             //账号冻结
-                            showBottom(activity, response.body().getInfo());
+                            showBottom(mActivity, response.body().getInfo());
                         }
                     }
                 }
@@ -342,24 +399,24 @@ public class WxShareUtils {
 
             @Override
             public void onFailure(Call<CheckCodeBean> call, Throwable t) {
-                showBottom(activity, "网络异常！");
+                showBottom(mActivity, "网络异常！");
             }
         });
     }
 
-    public void setPath(ArrayList<File> files){
+    public void setPath(ArrayList<File> files) {
         mFiles = files;
     }
 
-    public void setWord(String word){
+    public void setWord(String word) {
         this.word = word;
     }
 
-    public void setVideoUrl(String videoUrl){
+    public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
     }
 
-    public void setnowWhich(int nowWhich){
+    public void setnowWhich(int nowWhich) {
         this.nowWhich = nowWhich;
     }
 
