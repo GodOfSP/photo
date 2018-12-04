@@ -19,13 +19,14 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.fnhelper.photo.R;
+import com.fnhelper.photo.beans.CanShareBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.mine.VipMealAc;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.opensdk.modelmsg.WXImageObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXVideoObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -178,7 +179,7 @@ public class WxShareUtils {
                                 if (permission.granted) {
                                     // 用户已经同意该权限
                                     if (mSharePop.isShowing())
-                                    shareNews(false);
+                                        shareNews(false);
                                 } else if (permission.shouldShowRequestPermissionRationale) {
                                     // 用户拒绝了该权限，没有选中『不再询问』（Never ask again）,那么下次再次启动时，还会提示请求权限的对话框
 
@@ -192,8 +193,61 @@ public class WxShareUtils {
         });
     }
 
+
+    /**
+     * 看能不能分享
+     */
+    private void checkCanShare(String id) {
+
+        Call<CanShareBean> call = RetrofitService.createMyAPI().IsCanShare(id);
+        call.enqueue(new Callback<CanShareBean>() {
+            @Override
+            public void onResponse(Call<CanShareBean> call, Response<CanShareBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            if (response.body().getData() != null) {
+                                if (response.body().getData().isIsCanShare()) {
+                                    mSharePop.showAtAnchorView(mActivity.findViewById(android.R.id.content), YGravity.ALIGN_BOTTOM, XGravity.CENTER, 0, 0);
+                                } else {
+                                    DialogUtils.showAlertDialog(mActivity, "会员提示", "目前暂不能分享,是否去开通会员？确认？", new DialogUtils.OnCommitListener() {
+                                        @Override
+                                        public void onCommit() {
+                                            mActivity.startActivity(new Intent(mActivity, VipMealAc.class));
+                                        }
+                                    }, null);
+                                }
+
+                            }
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            STokenUtil.check(mActivity);
+                            showBottom(mActivity.getApplicationContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(mActivity.getApplicationContext(), response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CanShareBean> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
     public void showSharePop() {
-        mSharePop.showAtAnchorView(mActivity.findViewById(android.R.id.content), YGravity.ALIGN_BOTTOM, XGravity.CENTER, 0, 0);
+        checkCanShare(msImageTextId);
     }
 
     /**
@@ -237,44 +291,44 @@ public class WxShareUtils {
                                         //这一步一定要clear,不然分享了朋友圈马上分享好友图片就会翻倍
 
 
-                                            try {
+                                        try {
 
-                                                Intent intent = new Intent(Intent.ACTION_SEND);
-                                                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-
-                                                ComponentName comp;
-
-                                                if (t) {
-                                                    ArrayList<Uri> imageUris = new ArrayList<Uri>();
-                                                    for (File f : mFiles) {
-                                                        imageUris.add(ImageUtil.getImageContentUri(f, mActivity));
-                                                    }
-
-                                                    intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-                                                    intent.setType("image");
-                                                    comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI");
-                                                } else {
-                                                    ArrayList<Uri> imageUris = new ArrayList<Uri>();
-                                                    imageUris.add(ImageUtil.getImageContentUri(mFiles.get(0), mActivity));
-                                                    intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-                                                    intent.setType("image");
-                                                    comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
-                                                    intent.putExtra("Kdescription", "分享朋友圈的图片说明");
+                                            Intent intent = new Intent(Intent.ACTION_SEND);
+                                            intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 
+                                            ComponentName comp;
+
+                                            if (t) {
+                                                ArrayList<Uri> imageUris = new ArrayList<Uri>();
+                                                for (File f : mFiles) {
+                                                    imageUris.add(ImageUtil.getImageContentUri(f, mActivity));
                                                 }
-                                                intent.setComponent(comp);
+
+                                                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                                                intent.setType("image");
+                                                comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI");
+                                            } else {
+                                                ArrayList<Uri> imageUris = new ArrayList<Uri>();
+                                                imageUris.add(ImageUtil.getImageContentUri(mFiles.get(0), mActivity));
+                                                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                                                intent.setType("image");
+                                                comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
+                                                intent.putExtra("Kdescription", "分享朋友圈的图片说明");
 
 
-                                                mActivity.startActivity(Intent.createChooser(intent, "分享图片"));
-
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
                                             }
+                                            intent.setComponent(comp);
 
-                                            handler.sendEmptyMessage(1);
+
+                                            mActivity.startActivity(Intent.createChooser(intent, "分享图片"));
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        handler.sendEmptyMessage(1);
 
                                     }
                                 }).start();
@@ -341,8 +395,10 @@ public class WxShareUtils {
             @Override
             public void run() {
 
+                int s = 0;
                 while (true) {
-                    if (Constants.isFinishShare) {
+                    s++;
+                    if (Constants.isFinishShare || s > 1000) {
                         handler.sendEmptyMessage(200);
                         Constants.isFinishShare = false;
                         break;
@@ -414,6 +470,10 @@ public class WxShareUtils {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public void setMsImageTextId(String id) {
+        this.msImageTextId = id;
     }
 
     public void setnowWhich(int nowWhich) {

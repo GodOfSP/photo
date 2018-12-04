@@ -3,7 +3,9 @@ package com.fnhelper.photo.mine;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -140,6 +142,29 @@ public class ToPresentPresentMaidAc extends BaseActivity {
             }
         });
 
+        //
+        moneyEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!"".equals(s.toString()) && !TextUtils.isEmpty(s.toString())) {
+                    double m = Double.parseDouble(s.toString().trim());
+                    if (m > Double.parseDouble(ktxMoney.getText().toString())) {
+                        moneyEt.setText(ktxMoney.getText());
+                    }
+                }
+            }
+        });
+
         /**
          * 全部提现
          */
@@ -267,9 +292,9 @@ public class ToPresentPresentMaidAc extends BaseActivity {
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                            if ("提现成功".equals(response.body().getInfo())){
+                            if ("提现成功".equals(response.body().getInfo())) {
                                 getBalance();
-                                startActivity(new Intent(ToPresentPresentMaidAc.this,PresentRecordAc.class));
+                                startActivity(new Intent(ToPresentPresentMaidAc.this, PresentRecordAc.class));
                             }
                             showBottom(ToPresentPresentMaidAc.this, response.body().getInfo());
                         } else if (response.body().getCode() == CODE_ERROR) {
@@ -298,7 +323,7 @@ public class ToPresentPresentMaidAc extends BaseActivity {
         });
     }
 
-    public void wxPay(final BaseActivity activity,String order_id,String payType){
+    public void wxPay(final BaseActivity activity, String order_id, String payType) {
                  /*       PayReq req = new PayReq();//待修改
 
                         req.appId = Constants.WECHAT_APPID;

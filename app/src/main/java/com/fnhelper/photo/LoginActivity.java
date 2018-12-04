@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,8 +12,6 @@ import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.beans.LoginBean;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
-import com.fnhelper.photo.mine.BindInputTelActivity;
-import com.fnhelper.photo.utils.DialogUtils;
 import com.fnhelper.photo.wxapi.AccessBean;
 import com.fnhelper.photo.wxapi.WeiXin;
 import com.fnhelper.photo.wxapi.WxUserInfoBean;
@@ -199,7 +196,7 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                                 editor.putString("userAgreementHtml",response.body().getData().getHtmlPageUrl().getUserAgreement());
                                                 editor.commit();
 
-                                                if (response.body().getData().getSPhone()==null || TextUtils.isEmpty(response.body().getData().getSPhone())){
+                                      /*          if (response.body().getData().getSPhone()==null || TextUtils.isEmpty(response.body().getData().getSPhone())){
                                                     //如果绑定手机号返回为空 说明未绑定  -- 弹出提示框
                                                     //未绑定手机号提示
                                                     DialogUtils.showLoginTips(LoginActivity.this, new DialogUtils.OnCommitListener() {
@@ -219,7 +216,8 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                                     });
                                                 }else {
                                                     openActivityAndCloseThis(MainActivity.class);
-                                                }
+                                                }*/
+                                                openActivityAndCloseThis(MainActivity.class);
                                             } else if (response.body().getCode() == CODE_ERROR) {
                                                 //失败
                                                 showBottom(LoginActivity.this, response.body().getInfo());

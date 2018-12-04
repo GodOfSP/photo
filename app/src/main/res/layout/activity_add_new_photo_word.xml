@@ -14,7 +14,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <include layout="@layout/com_toolbar" />
+        <include layout="@layout/com_toolbar_tv" />
     </RelativeLayout>
 
     <android.support.v4.widget.NestedScrollView

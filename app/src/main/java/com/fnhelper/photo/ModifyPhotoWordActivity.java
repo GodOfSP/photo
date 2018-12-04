@@ -82,7 +82,7 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
     @BindView(R.id.com_title)
     TextView comTitle;
     @BindView(R.id.com_right)
-    ImageView comRight;
+    TextView comRight;
     @BindView(R.id.head)
     RelativeLayout head;
     @BindView(R.id.word)

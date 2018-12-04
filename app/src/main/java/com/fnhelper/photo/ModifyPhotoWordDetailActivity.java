@@ -82,7 +82,7 @@ public class ModifyPhotoWordDetailActivity extends BaseActivity implements View.
     @BindView(R.id.com_title)
     TextView comTitle;
     @BindView(R.id.com_right)
-    ImageView comRight;
+    TextView comRight;
     @BindView(R.id.head)
     RelativeLayout head;
     @BindView(R.id.word)

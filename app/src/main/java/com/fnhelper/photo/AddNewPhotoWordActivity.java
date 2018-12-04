@@ -79,7 +79,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     @BindView(R.id.com_title)
     TextView comTitle;
     @BindView(R.id.com_right)
-    ImageView comRight;
+    TextView comRight;
     @BindView(R.id.head)
     RelativeLayout head;
     @BindView(R.id.word)
@@ -1027,6 +1027,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
                             if (needShare){
+                                wxShareUtils.setMsImageTextId(response.body().getData());
                                 wxShareUtils.showSharePop();
                             }else {
                                 showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
