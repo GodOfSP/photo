@@ -230,24 +230,27 @@ public class MineFragment extends Fragment implements View.OnClickListener {
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                            Constants.isVIP = response.body().getData().isBIsVip();
-                            if (response.body().getData().isBIsVip()) {
-                                Constants.vip_exi_time = response.body().getData().getDExpireTime();
-                                expiryDate.setText(response.body().getData().getDExpireTime());
-                                expiryDate.setVisibility(View.VISIBLE);
-                                expiryDateTitle.setVisibility(View.VISIBLE);
-                                moreDetail.setVisibility(View.VISIBLE);
-                                vipType.setVisibility(View.VISIBLE);
-                                expiryDateTitle.setText("会员有效期:");
-                                moreDetail.setText("详情");
-                            } else {
-                                expiryDateTitle.setText("暂未开通会员");
-                                moreDetail.setText("开通会员");
-                                moreDetail.setVisibility(View.VISIBLE);
-                                expiryDate.setVisibility(View.GONE);
-                                expiryDateTitle.setVisibility(View.VISIBLE);
-                                vipType.setVisibility(View.GONE);
+                            if (response.body()!=null && response.body().getData()!=null){
+                                Constants.isVIP = response.body().getData().isBIsVip();
+                                if (response.body().getData().isBIsVip()) {
+                                    Constants.vip_exi_time = response.body().getData().getDExpireTime();
+                                    expiryDate.setText(response.body().getData().getDExpireTime());
+                                    expiryDate.setVisibility(View.VISIBLE);
+                                    expiryDateTitle.setVisibility(View.VISIBLE);
+                                    moreDetail.setVisibility(View.VISIBLE);
+                                    vipType.setVisibility(View.VISIBLE);
+                                    expiryDateTitle.setText("会员有效期:");
+                                    moreDetail.setText("详情");
+                                } else {
+                                    expiryDateTitle.setText("暂未开通会员");
+                                    moreDetail.setText("开通会员");
+                                    moreDetail.setVisibility(View.VISIBLE);
+                                    expiryDate.setVisibility(View.GONE);
+                                    expiryDateTitle.setVisibility(View.VISIBLE);
+                                    vipType.setVisibility(View.GONE);
+                                }
                             }
+
 
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败

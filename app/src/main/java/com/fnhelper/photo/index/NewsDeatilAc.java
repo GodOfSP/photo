@@ -29,6 +29,7 @@ import com.fnhelper.photo.base.BaseActivity;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
 import com.fnhelper.photo.beans.CanShareBean;
+import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.NewDetailBean;
 import com.fnhelper.photo.beans.PreviewItemBean;
 import com.fnhelper.photo.interfaces.Constants;
@@ -425,6 +426,48 @@ initSharePop();
             }
         }
     };
+
+    /**
+     * 调用服务器分享接口
+     */
+    private void shareToOurSystem(String msImageTextId) {
+
+
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Share(msImageTextId);
+        call.enqueue(new Callback<CheckCodeBean>() {
+            @Override
+            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(NewsDeatilAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(NewsDeatilAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(NewsDeatilAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            STokenUtil.check(NewsDeatilAc.this);
+                            showBottom(NewsDeatilAc.this, response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(NewsDeatilAc.this, response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                showBottom(NewsDeatilAc.this, "网络异常！");
+            }
+        });
+    }
+
     /**
      * 看能不能分享
      */
@@ -666,7 +709,7 @@ initSharePop();
         }
 
         ImageUtil.copyWord(NewsDeatilAc.this, nowItem.getSContext());
-
+        shareToOurSystem(nowItem.getID());
     }
 
 

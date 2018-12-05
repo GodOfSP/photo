@@ -12,9 +12,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -82,8 +83,7 @@ public class PersonalCenterAc extends BaseActivity {
     CustomViewPager viewPager;
     @BindView(R.id.search_et)
     ClearEditText searchEt;
-    @BindView(R.id.search_btn)
-    Button searchBtn;
+
 
 
     private String mConcernId = "";
@@ -300,23 +300,33 @@ public class PersonalCenterAc extends BaseActivity {
     }
 
     private void initSearch() {
-        searchBtn.setOnClickListener(new View.OnClickListener() {
+
+
+        //搜索框回车键监听
+        searchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                String keyWord = searchEt.getText().toString().trim();
-                if (!TextUtils.isEmpty(keyWord)) {
-                    if (personalFreagmentAll1 != null) {
-                        personalFreagmentAll1.search(keyWord);
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
+                    String keyWord = searchEt.getText().toString().trim();
+                    if (!TextUtils.isEmpty(keyWord)) {
+                        if (personalFreagmentAll1 != null) {
+                            personalFreagmentAll1.search(keyWord);
+                        }
+                        if (PersonalFreagmentAll2 != null) {
+                            PersonalFreagmentAll2.search(keyWord);
+                        }
+                        if (PersonalFreagmentAll3 != null) {
+                            PersonalFreagmentAll3.search(keyWord);
+                        }
                     }
-                    if (PersonalFreagmentAll2 != null) {
-                        PersonalFreagmentAll2.search(keyWord);
-                    }
-                    if (PersonalFreagmentAll3 != null) {
-                        PersonalFreagmentAll3.search(keyWord);
-                    }
+
+                    return true;
                 }
+                return false;
             }
         });
+
         searchEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

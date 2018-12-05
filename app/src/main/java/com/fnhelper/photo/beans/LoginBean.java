@@ -50,7 +50,7 @@ public class LoginBean{
          */
 
         private String ID;
-        private String shareLink;
+
         private String sToken;
         private String sNickName;
         private String sPhone;
@@ -63,13 +63,6 @@ public class LoginBean{
          * HtmlPageUrl : {"about":"http://153h79422m.imwork.net:10354/open/html/about","clientPower":"http://153h79422m.imwork.net:10354/open/html/clientPower","drawInstruction":"http://153h79422m.imwork.net:10354/open/html/drawInstruction","link":"http://153h79422m.imwork.net:10354/open/html/link","userAgreement":"http://153h79422m.imwork.net:10354/open/html/userAgreement"}
          */
 
-        public String getShareLink() {
-            return shareLink;
-        }
-
-        public void setShareLink(String shareLink) {
-            this.shareLink = shareLink;
-        }
 
         private HtmlPageUrlBean HtmlPageUrl;
 
@@ -167,7 +160,14 @@ public class LoginBean{
             private String drawInstruction;
             private String link;
             private String userAgreement;
+            private String shareLink;
+            public String getShareLink() {
+                return shareLink;
+            }
 
+            public void setShareLink(String shareLink) {
+                this.shareLink = shareLink;
+            }
             public String getAbout() {
                 return about;
             }

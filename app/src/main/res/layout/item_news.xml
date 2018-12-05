@@ -155,7 +155,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
-        android:text="1232713"
         android:textColor="@color/text_gray_dark"
         app:layout_constraintBottom_toBottomOf="@+id/good_num_title"
         app:layout_constraintLeft_toRightOf="@+id/good_num_title"
@@ -305,10 +304,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2分钟前分想过"
+        android:textSize="10sp"
         android:textColor="@color/text_gray_dark"
-        app:layout_constraintBottom_toBottomOf="@id/delete"
+        app:layout_constraintBottom_toBottomOf="@id/download"
         app:layout_constraintRight_toRightOf="@id/div_2"
-        app:layout_constraintTop_toTopOf="@+id/delete" />
+        app:layout_constraintTop_toTopOf="@+id/download" />
 
     <TextView
         android:id="@+id/one_share"

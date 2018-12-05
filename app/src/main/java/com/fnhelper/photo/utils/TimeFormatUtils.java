@@ -24,6 +24,9 @@ public class TimeFormatUtils {
     }
 
     public static String formatTime(String dateStr){
+        if (dateStr!=null){
+
+        }
 
         Date date = null;
         try {

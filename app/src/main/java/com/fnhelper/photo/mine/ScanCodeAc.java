@@ -264,7 +264,7 @@ public class ScanCodeAc extends BaseActivity {
     }
 
     private String getRealResulet(String old){
-        String[] s = old.split("//");
+        String[] s = old.split("/");
         return s[s.length-1];
     }
 

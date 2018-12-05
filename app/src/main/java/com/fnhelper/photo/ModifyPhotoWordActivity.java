@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -99,7 +102,8 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
     Button saveBtn;
     @BindView(R.id.who_can_see_sw)
     Switch whoCanSeeSw;
-
+    @BindView(R.id.scrollView)
+    NestedScrollView scrollView;
 
     private EasyPopup mCirclePop;
     private EasyPopup mMarkPop;
@@ -804,6 +808,12 @@ public class ModifyPhotoWordActivity extends BaseActivity implements View.OnClic
 
                 mMarkPop.dismiss();
                 marKListAdapter.notifyDataSetChanged();
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
             }
         });
 

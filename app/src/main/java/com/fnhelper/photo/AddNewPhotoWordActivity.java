@@ -5,7 +5,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,6 +100,10 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     Button saveBtn;
     @BindView(R.id.who_can_see_sw)
     Switch whoCanSeeSw;
+    @BindView(R.id.who_can_see_tag)
+    View whoCanSeeTag;
+    @BindView(R.id.scrollView)
+    NestedScrollView scrollView;
 
 
     private EasyPopup mCirclePop;
@@ -180,7 +188,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 
     @Override
     protected void initData() {
-        wxShareUtils = new WxShareUtils(this,"");
+        wxShareUtils = new WxShareUtils(this, "");
         wxShareUtils.setNeedFinishThis(true);
         comRight.setVisibility(View.VISIBLE);
         comRight.setOnClickListener(new View.OnClickListener() {
@@ -697,6 +705,12 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 
                 mMarkPop.dismiss();
                 marKListAdapter.notifyDataSetChanged();
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
             }
         });
 
@@ -836,7 +850,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 .enableCrop(false)// 是否裁剪
                 .compress(false)// 是否压缩
                 .synOrAsy(true)//同步true或异步false 压缩 默认同步
-             //   .compressSavePath(FnFileUtil.getPath())//压缩图片保存地址
+                //   .compressSavePath(FnFileUtil.getPath())//压缩图片保存地址
                 .sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
                 .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                 .withAspectRatio(16, 9)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
@@ -917,9 +931,10 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
 
     /**
      * 保存提交动态
-     * @param needShare  是否需要完成后  调用分享
+     *
+     * @param needShare 是否需要完成后  调用分享
      */
-    public void save(boolean needShare){
+    public void save(boolean needShare) {
         if (selectList.size() == 0) {
             showCenter(AddNewPhotoWordActivity.this, "请选择照片或图片!");
         } else if (TextUtils.isEmpty(word.getText().toString().trim())) {
@@ -1018,7 +1033,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         sContext = word.getText().toString().trim();
 
         Call<CheckCodeBean> call = RetrofitService.createMyAPI().InsertAndUpdate("", Constants.ID, "",
-                dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath,vPPath, iType);
+                dRetailprices, iTradePricesPrivate, sContext, sGoodsNo, dCommodityPrices, iCommodityPricesPrivate, dPackPrices, iRetailpricesPrivate, iPackPricesPrivate, dTradePrices, sRemark, iPrivate, vPath, pPath, vPPath, iType);
         call.enqueue(new Callback<CheckCodeBean>() {
             @Override
             public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
@@ -1026,10 +1041,10 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                     if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                            if (needShare){
+                            if (needShare) {
                                 wxShareUtils.setMsImageTextId(response.body().getData());
                                 wxShareUtils.showSharePop();
-                            }else {
+                            } else {
                                 showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                                 finish();
                             }
@@ -1087,7 +1102,6 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                     MultipartBody.Part.createFormData("aFile", file.getName(), requestFile);
 
 
-
             Call<UpdateVdieoBean> call = RetrofitService.createMyAPI().uploadFile(body, getExtensionName(file.getAbsolutePath()));
             call.enqueue(new Callback<UpdateVdieoBean>() {
                 @Override
@@ -1100,7 +1114,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                                     vPath = response.body().getData().getSVideoUrl();
                                     vPPath = response.body().getData().getSImageUrl();
                                     wxShareUtils.setVideoUrl(vPath);
-                                    commitOtherInfo("1",needShare);
+                                    commitOtherInfo("1", needShare);
                                 } else {
                                     showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                                 }
@@ -1162,7 +1176,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                                             pPath += ",";
                                         }
                                     }
-                                    commitOtherInfo("0",needShare);
+                                    commitOtherInfo("0", needShare);
                                 } else {
                                     showBottom(AddNewPhotoWordActivity.this, response.body().getInfo());
                                 }
@@ -1240,9 +1254,10 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
     }
 
 
-    *//**
+    */
+
+    /**
      * 备注列表normalItem侧滑中的点击事件 编辑
-     *
      *//*
     @Override
     public void modify(int type, boolean isOpen) {
@@ -1251,11 +1266,16 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
         showMarkPop();
 
     }*/
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         clearCash();
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }

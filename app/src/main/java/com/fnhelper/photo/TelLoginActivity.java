@@ -28,6 +28,9 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
 
+/**
+ * 手机号登录
+ */
 public class TelLoginActivity extends BaseActivity {
 
     @BindView(R.id.phone)
@@ -109,7 +112,7 @@ public class TelLoginActivity extends BaseActivity {
                     if (response.body()!=null){
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                            Constants.shareLink =response.body().getData().getShareLink();
+                            Constants.shareLink =response.body().getData().getHtmlPageUrl().getShareLink();
                             Constants.ID =response.body().getData().getID();
                             Constants.sToken =response.body().getData().getsToken();
                             Constants.sHeadImg = response.body().getData().getsHeadImg();

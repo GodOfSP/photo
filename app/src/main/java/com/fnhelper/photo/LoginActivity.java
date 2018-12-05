@@ -164,7 +164,7 @@ public class LoginActivity extends BaseActivity implements IWXAPIEventHandler {
                                         if (response != null && response.body() != null) {
                                             if (response.body().getCode() == CODE_SUCCESS) {
                                                 //成功
-                                                Constants.shareLink =response.body().getData().getShareLink();
+                                                Constants.shareLink =response.body().getData().getHtmlPageUrl().getShareLink();
                                                 Constants.ID = response.body().getData().getID();
                                                 Constants.sToken = response.body().getData().getSToken();
                                                 Constants.sHeadImg = response.body().getData().getSHeadImg();

@@ -5,6 +5,7 @@
     <color name="colorPrimaryBlue">#A3CFF2</color>
     <color name="colorPrimaryDarkMore">#507816</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorOrange">#f58e3a</color>
     <color name="colorWindowBackground">#f0edee</color>
     <color name="colorWindowBackgroundDark">#dddadb</color>
     <color name="colorInactive">#d5ced0</color>

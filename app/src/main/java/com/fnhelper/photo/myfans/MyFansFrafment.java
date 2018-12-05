@@ -11,11 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
@@ -54,8 +56,6 @@ public class MyFansFrafment extends Fragment {
 
     @BindView(R.id.search_et)
     ClearEditText searchEt;
-    @BindView(R.id.search_btn)
-    Button searchBtn;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.refresh)
@@ -141,16 +141,24 @@ public class MyFansFrafment extends Fragment {
 
 
     private void initSearch() {
-
-        searchBtn.setOnClickListener(new View.OnClickListener() {
+        //搜索框回车键监听
+        searchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                keyWord = searchEt.getText().toString().trim();
-                if (!TextUtils.isEmpty(keyWord)) {
-                    getList(false);
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    if (!TextUtils.isEmpty(keyWord)) {
+                        keyWord = searchEt.getText().toString().trim();
+                        if (!TextUtils.isEmpty(keyWord)) {
+                            getList(false);
+                        }
+                    }
+
+                    return true;
                 }
+                return false;
             }
         });
+
         searchEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

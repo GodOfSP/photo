@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,19 +22,19 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fnhelper.photo.ModifyPhotoWordActivity;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
-import com.fnhelper.photo.base.recyclerviewadapter.BaseQuickAdapter;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
 import com.fnhelper.photo.beans.CanShareBean;
 import com.fnhelper.photo.beans.CheckCodeBean;
@@ -58,7 +57,6 @@ import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.previewlibrary.GPreviewBuilder;
-import com.previewlibrary.enitity.IThumbViewInfo;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXVideoObject;
@@ -106,8 +104,6 @@ public class HomeFragment extends Fragment {
     ConstraintLayout shareMyPics;
     @BindView(R.id.search_et)
     ClearEditText searchEt;
-    @BindView(R.id.search_btn)
-    Button searchBtn;
     @BindView(R.id.search_cl)
     ConstraintLayout searchCl;
     @BindView(R.id.recycler_view)
@@ -198,15 +194,24 @@ public class HomeFragment extends Fragment {
 
 
     private void initSearch() {
-        searchBtn.setOnClickListener(new View.OnClickListener() {
+
+        //搜索框回车键监听
+        searchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View v) {
-                keyWord = searchEt.getText().toString().trim();
-                if (!TextUtils.isEmpty(keyWord)) {
-                    getList(false);
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    if (!TextUtils.isEmpty(searchEt.getText().toString().trim())) {
+                        keyWord = searchEt.getText().toString().trim();
+                        if (!TextUtils.isEmpty(keyWord)) {
+                            getList(false);
+                        }
+                    }
+                    return true;
                 }
+                return false;
             }
         });
+
         searchEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -265,11 +270,11 @@ public class HomeFragment extends Fragment {
                 // 发布时间
                 helper.setText(R.id.date, TimeFormatUtils.formatTime(item.getDInsertTime()));
                 //上次分享时间
-                if (item.getDShareTime() == null && TextUtils.isEmpty(item.getDInsertTime())) {
+                if (item.getDShareTime() == null || TextUtils.isEmpty(item.getDInsertTime())) {
                     helper.setVisible(R.id.share_time, false);
                 } else {
                     helper.setVisible(R.id.share_time, true);
-                    helper.setText(R.id.share_time, item.getDShareTime());
+                    helper.setText(R.id.share_time, TimeFormatUtils.formatTime(item.getDShareTime())+"分享过");
                 }
                 //货号
                 if (item.getSGoodsNo() == null || TextUtils.isEmpty(item.getSGoodsNo())) {
@@ -278,6 +283,7 @@ public class HomeFragment extends Fragment {
                     helper.setVisible(R.id.good_num_title, false);
                 } else {
                     helper.setVisible(R.id.good_num, true);
+                    helper.setVisible(R.id.good_num_title, true);
                     helper.setText(R.id.good_num, item.getSGoodsNo());
                 }
                 //拿货价
@@ -312,9 +318,13 @@ public class HomeFragment extends Fragment {
 
                 if (helper.getTextView(R.id.get_price).getVisibility() == View.GONE && helper.getTextView(R.id.sale_price).getVisibility() == View.GONE) {
                     helper.setVisible(R.id.first_tag, false);
+                }else {
+                    helper.setVisible(R.id.first_tag, true);
                 }
                 if (helper.getTextView(R.id.pf_price).getVisibility() == View.GONE && helper.getTextView(R.id.pack_price).getVisibility() == View.GONE) {
                     helper.setVisible(R.id.second_tag, false);
+                }else {
+                    helper.setVisible(R.id.second_tag, true);
                 }
                 //备注
                 if (item.getSRemark() == null || TextUtils.isEmpty(item.getSRemark())) {
@@ -367,10 +377,6 @@ public class HomeFragment extends Fragment {
                             });
                         }
                     });
-
-
-
-
 
                     helper.setVisible(R.id.recycler, true);
                     helper.setVisible(R.id.video, false);
@@ -508,11 +514,53 @@ public class HomeFragment extends Fragment {
     }
 
 
+
+    /**
+     * 调用服务器分享接口
+     */
+    private void shareToOurSystem(String msImageTextId) {
+
+
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Share(msImageTextId);
+        call.enqueue(new Callback<CheckCodeBean>() {
+            @Override
+            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            STokenUtil.check(getActivity());
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(getContext(), response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                showBottom(getContext(), "网络异常！");
+            }
+        });
+    }
+
+
     /**
      * 看能不能分享
      */
     private void checkCanShare(String id){
-
 
 
         Call<CanShareBean> call = RetrofitService.createMyAPI().IsCanShare(id);
@@ -558,12 +606,7 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
-
     }
-
-
-
 
     /**
      * 删除动态
@@ -610,7 +653,6 @@ public class HomeFragment extends Fragment {
                 });
             }
         });
-
 
     }
 
@@ -911,7 +953,7 @@ public class HomeFragment extends Fragment {
         }
 
         ImageUtil.copyWord(getContext(), nowItem.getSContext());
-
+        shareToOurSystem(nowItem.getID());
     }
 
 

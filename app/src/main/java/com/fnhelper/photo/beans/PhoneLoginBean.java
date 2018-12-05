@@ -36,7 +36,7 @@ public class PhoneLoginBean {
     }
 
     public static class DataBean {
-    private String shareLink;
+
     private String ID;
     private String sToken;
     private String sNickName;
@@ -64,13 +64,7 @@ public class PhoneLoginBean {
         return ID;
     }
 
-        public String getShareLink() {
-            return shareLink;
-        }
 
-        public void setShareLink(String shareLink) {
-            this.shareLink = shareLink;
-        }
 
         public void setID(String ID) {
         this.ID = ID;
@@ -154,7 +148,14 @@ public class PhoneLoginBean {
             private String drawInstruction;
             private String link;
             private String userAgreement;
+            private String shareLink;
+            public String getShareLink() {
+                return shareLink;
+            }
 
+            public void setShareLink(String shareLink) {
+                this.shareLink = shareLink;
+            }
             public String getAbout() {
                 return about;
             }

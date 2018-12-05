@@ -29,6 +29,7 @@ import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
 import com.fnhelper.photo.base.recyclerviewadapter.QuickAdapter;
 import com.fnhelper.photo.beans.CanShareBean;
+import com.fnhelper.photo.beans.CheckCodeBean;
 import com.fnhelper.photo.beans.NewsListBean;
 import com.fnhelper.photo.beans.PreviewItemBean;
 import com.fnhelper.photo.index.VideoPlayerDetailedActivity;
@@ -607,10 +608,49 @@ public class PersonalFreagmentAll extends Fragment {
                     });
         }
         ImageUtil.copyWord(getContext(),nowItem.getSContext());
-
+        shareToOurSystem(nowItem.getID());
     }
 
+    /**
+     * 调用服务器分享接口
+     */
+    private void shareToOurSystem(String msImageTextId) {
 
+
+        Call<CheckCodeBean> call = RetrofitService.createMyAPI().Share(msImageTextId);
+        call.enqueue(new Callback<CheckCodeBean>() {
+            @Override
+            public void onResponse(Call<CheckCodeBean> call, Response<CheckCodeBean> response) {
+                if (response != null) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == CODE_SUCCESS) {
+                            //成功
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_ERROR) {
+                            //失败
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_SERIVCE_LOSE) {
+                            //服务错误
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //登录过期
+                            STokenUtil.check(getActivity());
+                            showBottom(getContext(), response.body().getInfo());
+                        } else if (response.body().getCode() == CODE_TOKEN) {
+                            //账号冻结
+                            showBottom(getContext(), response.body().getInfo());
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CheckCodeBean> call, Throwable t) {
+                showBottom(getContext(), "网络异常！");
+            }
+        });
+    }
     /**
      * 下载动态
      */
