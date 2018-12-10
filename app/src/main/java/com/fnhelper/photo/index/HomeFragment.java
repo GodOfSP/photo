@@ -963,7 +963,6 @@ public class HomeFragment extends Fragment {
      */
     private void downloadNews(final String data, final String type) {
 
-
         if ("0".equals(type)) {
 
             zLoadingDialog.setHintText("保存中...");
@@ -978,9 +977,9 @@ public class HomeFragment extends Fragment {
                         Bitmap bitmap = ImageUtil.returnBitmap(Uri.parse(strings[i]));
                         File appDir = new File(Environment.getExternalStorageDirectory(), "蜂鸟微商相册");
                         if (!appDir.exists()) {
-                            appDir.mkdir();
+                            appDir.mkdirs();
                         }
-                        String fileName = System.currentTimeMillis() + ".jpg";
+                        String fileName = System.currentTimeMillis() +data.substring(data.lastIndexOf("."), data.length());
                         File file = new File(appDir, fileName);
                         try {
                             FileOutputStream fos = new FileOutputStream(file);
@@ -1008,7 +1007,6 @@ public class HomeFragment extends Fragment {
 
             downFile(data);
         }
-
 
     }
 
@@ -1057,7 +1055,6 @@ public class HomeFragment extends Fragment {
         new TwinklingRefreshLayoutUtil().getUpdateAndLoadMoreTwinkling(getActivity(), refresh);
         refresh.setOnRefreshListener(new RefreshListenerAdapter() {
 
-
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {
                 super.onRefresh(refreshLayout);
@@ -1085,7 +1082,6 @@ public class HomeFragment extends Fragment {
      */
     private void checkHaveTopTag(ArrayList<NewsListBean.DataBean.RowsBean> elem) {
 
-
         for (int i = 0; i < elem.size(); i++) {
             if (elem.get(i).isBIsDeleted()) {
                 elem.remove(i);
@@ -1097,7 +1093,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void getList(final boolean isLoadMore) {
-
 
         Call<NewsListBean> call = RetrofitService.createMyAPI().GetImageTextList(keyWord, pageSize, pageNum);
         call.enqueue(new Callback<NewsListBean>() {
@@ -1160,7 +1155,6 @@ public class HomeFragment extends Fragment {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<NewsListBean> call, Throwable t) {
                 refresh.finishRefreshing();
@@ -1168,6 +1162,4 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-
-
 }

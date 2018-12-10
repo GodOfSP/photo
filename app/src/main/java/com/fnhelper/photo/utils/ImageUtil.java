@@ -1,13 +1,11 @@
 package com.fnhelper.photo.utils;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,8 +15,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.util.Base64;
 import android.widget.Toast;
 
@@ -30,12 +26,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
-import com.fnhelper.photo.base.BaseActivity;
-import com.fnhelper.photo.interfaces.Constants;
-import com.fnhelper.photo.mine.MyCodeAc;
-import com.tbruyelle.rxpermissions2.Permission;
-import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,8 +36,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by little fly on 2018-11-1.
@@ -239,8 +227,6 @@ public class ImageUtil {
 
     //return file or null
     public static File getCachedImageOnDisk(Uri loadUri, Context context) {
-
-
 
         File localFile = null;
         if (loadUri != null) {

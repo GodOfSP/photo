@@ -36,8 +36,6 @@ public class CommonInterceptor implements Interceptor {
                     .host(oldRequest.url().host());
         }
 
-
-
         // 新的请求
         Request newRequest = oldRequest.newBuilder()
                 .method(oldRequest.method(), oldRequest.body())

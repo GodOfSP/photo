@@ -36,6 +36,7 @@ import com.fnhelper.photo.beans.UpdateVdieoBean;
 import com.fnhelper.photo.diyviews.ClearEditText;
 import com.fnhelper.photo.interfaces.Constants;
 import com.fnhelper.photo.interfaces.RetrofitService;
+import com.fnhelper.photo.utils.FnFileUtil;
 import com.fnhelper.photo.utils.FullyGridLayoutManager;
 import com.fnhelper.photo.utils.GridImageAdapter;
 import com.fnhelper.photo.utils.ImageUtil;
@@ -47,7 +48,6 @@ import com.luck.picture.lib.config.PictureMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.luck.picture.lib.tools.PictureFileUtils;
-import com.tencent.mm.opensdk.utils.Log;
 import com.zyyoona7.popup.EasyPopup;
 import com.zyyoona7.popup.XGravity;
 import com.zyyoona7.popup.YGravity;
@@ -260,7 +260,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                             break;
                         case 2:
                             // 预览视频
-                            PictureSelector.create(AddNewPhotoWordActivity.this).externalPictureVideo(media.getPath());
+                            PictureSelector.create(AddNewPhotoWordActivity.this).externalPictureVideo(media.getCompressPath());
                             break;
                         case 3:
                             // 预览音频
@@ -846,11 +846,11 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 .isCamera(true)// 是否显示拍照按钮
                 .isZoomAnim(true)// 图片列表点击 缩放效果 默认true
                 //.imageFormat(PictureMimeType.PNG)// 拍照保存图片格式后缀,默认jpeg
-                //.setOutputCameraPath("/CustomPath")// 自定义拍照保存路径
+                .setOutputCameraPath(FnFileUtil.getPath())// 自定义拍照保存路径
                 .enableCrop(false)// 是否裁剪
-                .compress(false)// 是否压缩
+                .compress(true)// 是否压缩
                 .synOrAsy(true)//同步true或异步false 压缩 默认同步
-                //   .compressSavePath(FnFileUtil.getPath())//压缩图片保存地址
+                .compressSavePath(FnFileUtil.getPath())//压缩图片保存地址
                 .sizeMultiplier(0.5f)// glide 加载图片大小 0~1之间 如设置 .glideOverride()无效
                 .glideOverride(160, 160)// glide 加载宽高，越小图片列表越流畅，但会影响列表图片浏览的清晰度
                 .withAspectRatio(16, 9)// 裁剪比例 如16:9 3:2 3:4 1:1 可自定义
@@ -863,17 +863,17 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                 .openClickSound(true)// 是否开启点击声音
                 .selectionMedia(selectList)// 是否传入已选图片
                 //.isDragFrame(false)// 是否可拖动裁剪框(固定)
-//                        .videoMaxSecond(15)
-//                        .videoMinSecond(10)
+                       .videoMaxSecond(15)
+                       .videoMinSecond(60)
                 .previewEggs(true)// 预览图片时 是否增强左右滑动图片体验(图片滑动一半即可看到上一张是否选中)
-                .cropCompressQuality(80)// 裁剪压缩质量 默认100
+                .cropCompressQuality(60)// 裁剪压缩质量 默认100
                 .minimumCompressSize(100)// 小于100kb的图片不压缩
                 //.cropWH()// 裁剪宽高比，设置如果大于图片本身宽高则无效
                 //.rotateEnabled(true) // 裁剪是否可旋转图片
                 //.scaleEnabled(true)// 裁剪是否可放大缩小图片
                 .videoQuality(1)// 视频录制质量 0 or 1
-                //.videoSecond()//显示多少秒以内的视频or音频也可适用
-                .recordVideoSecond(20)//录制视频秒数 默认60s
+               // .videoSecond(10)//显示多少秒以内的视频or音频也可适用
+                .recordVideoSecond(10)//录制视频秒数 默认60s
                 .forResult(PictureConfig.CHOOSE_REQUEST);//结果回调onActivityResult code
     }
 
@@ -901,9 +901,6 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
                     // 2.media.getCutPath();为裁剪后path，需判断media.isCut();是否为true
                     // 3.media.getCompressPath();为压缩后path，需判断media.isCompressed();是否为true
                     // 如果裁剪并压缩了，已取压缩路径为准，因为是先裁剪后压缩的
-                    for (LocalMedia media : selectList) {
-                        Log.i("图片-----》", media.getPath());
-                    }
                     adapter.setList(selectList);
                     adapter.notifyDataSetChanged();
                     break;
@@ -1152,7 +1149,7 @@ public class AddNewPhotoWordActivity extends BaseActivity implements View.OnClic
             StringBuffer stringBuffer = new StringBuffer();
             ArrayList<File> files = new ArrayList<>();
             for (int i = 0; i < selectList.size(); i++) {
-                stringBuffer.append(ImageUtil.getBase64(selectList.get(i).getPath()));
+                stringBuffer.append(ImageUtil.getBase64(selectList.get(i).getCompressPath()));
                 files.add(new File(selectList.get(i).getPath()));
                 if (i != selectList.size() - 1) {
                     stringBuffer.append(",");
