@@ -275,6 +275,8 @@ public class ImageUtil {
     }
 
 
+
+
     //文件拷贝
     //要复制的目录下的所有非子目录(文件夹)文件拷贝
     public static int CopySdcardFile(String fromFile, String toFile) {

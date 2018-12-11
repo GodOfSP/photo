@@ -6,10 +6,9 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
-import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 import com.fnhelper.photo.index.TestImageLoader;
 import com.fnhelper.photo.interfaces.Constants;
+import com.fnhelper.photo.utils.ImagePipelineConfigFactory;
 import com.previewlibrary.ZoomMediaLoader;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
@@ -41,12 +40,12 @@ public class MyApplication extends MultiDexApplication {
         packageName = this.getPackageName();
         initStoken();
         // 初始化fresco
-        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(getContext())
+ /*       ImagePipelineConfig config = ImagePipelineConfig.newBuilder(getContext())
                 .setDownsampleEnabled(true)
                 .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())
-                .build();
+                .build();*/
 
-        Fresco.initialize(this, config);
+        Fresco.initialize(this, ImagePipelineConfigFactory.getImagePipelineConfig(instance));
 
 
         //初始化zxing

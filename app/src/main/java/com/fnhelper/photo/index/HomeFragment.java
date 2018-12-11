@@ -32,6 +32,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.fnhelper.photo.ModifyPhotoWordActivity;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.recyclerviewadapter.BaseAdapterHelper;
@@ -225,10 +231,10 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                    if (TextUtils.isEmpty(s.toString())){
-                        keyWord = "";
-                        getList(false);
-                    }
+                if (TextUtils.isEmpty(s.toString())) {
+                    keyWord = "";
+                    getList(false);
+                }
             }
         });
     }
@@ -259,8 +265,8 @@ public class HomeFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             //NewsDeatilAc
-                            Intent intent = new Intent(getContext(),NewsDeatilAc.class);
-                            intent.putExtra("id",item.getSSourceId());
+                            Intent intent = new Intent(getContext(), NewsDeatilAc.class);
+                            intent.putExtra("id", item.getSSourceId());
                             startActivity(intent);
                         }
                     });
@@ -274,7 +280,7 @@ public class HomeFragment extends Fragment {
                     helper.setVisible(R.id.share_time, false);
                 } else {
                     helper.setVisible(R.id.share_time, true);
-                    helper.setText(R.id.share_time, TimeFormatUtils.formatTime(item.getDShareTime())+"分享过");
+                    helper.setText(R.id.share_time, TimeFormatUtils.formatTime(item.getDShareTime()) + "分享过");
                 }
                 //货号
                 if (item.getSGoodsNo() == null || TextUtils.isEmpty(item.getSGoodsNo())) {
@@ -318,12 +324,12 @@ public class HomeFragment extends Fragment {
 
                 if (helper.getTextView(R.id.get_price).getVisibility() == View.GONE && helper.getTextView(R.id.sale_price).getVisibility() == View.GONE) {
                     helper.setVisible(R.id.first_tag, false);
-                }else {
+                } else {
                     helper.setVisible(R.id.first_tag, true);
                 }
                 if (helper.getTextView(R.id.pf_price).getVisibility() == View.GONE && helper.getTextView(R.id.pack_price).getVisibility() == View.GONE) {
                     helper.setVisible(R.id.second_tag, false);
-                }else {
+                } else {
                     helper.setVisible(R.id.second_tag, true);
                 }
                 //备注
@@ -358,7 +364,17 @@ public class HomeFragment extends Fragment {
                         @Override
                         protected void convert(BaseAdapterHelper helper, final PreviewItemBean item, final int position) {
 
-                            helper.setFrescoImageResource(R.id.pic, item.getUrl());
+                         //   Bitmap b = ImageUtil.returnBitmap(Uri.parse(item.getUrl()));
+                            SimpleDraweeView draweeView =(SimpleDraweeView) helper.getView(R.id.pic);
+                            ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getUrl())).setResizeOptions(new ResizeOptions(200,200)).build();
+                            DraweeController controller = Fresco.newDraweeControllerBuilder().
+                                    setUri(Uri.parse(item.getUrl())).
+                                    setImageRequest(imageRequest).
+                                    setOldController(draweeView.getController())
+                                    .setAutoPlayAnimations(true)
+                                    .build();
+
+                            draweeView.setController(controller);
 
                             helper.getConvertView().setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -441,9 +457,9 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
-                if (item.isBIsTop()){
+                if (item.isBIsTop()) {
                     //如果已经置顶
-                    helper.setText(R.id.toTop,"取消置顶");
+                    helper.setText(R.id.toTop, "取消置顶");
                     //取消置顶
                     helper.setOnClickListener(R.id.toTop, new View.OnClickListener() {
                         @Override
@@ -451,9 +467,9 @@ public class HomeFragment extends Fragment {
                             cancelToTop(item.getID());
                         }
                     });
-                }else {
+                } else {
                     //不是置顶信息
-                    helper.setText(R.id.toTop,"置顶");
+                    helper.setText(R.id.toTop, "置顶");
                     //置顶
                     helper.setOnClickListener(R.id.toTop, new View.OnClickListener() {
                         @Override
@@ -493,7 +509,7 @@ public class HomeFragment extends Fragment {
                         } else {
                             nowWhich = 1;
                         }
-                      checkCanShare(item.getID());
+                        checkCanShare(item.getID());
                     }
                 });
 
@@ -512,7 +528,6 @@ public class HomeFragment extends Fragment {
         };
         recyclerView.setAdapter(adapter);
     }
-
 
 
     /**
@@ -560,27 +575,27 @@ public class HomeFragment extends Fragment {
     /**
      * 看能不能分享
      */
-    private void checkCanShare(String id){
+    private void checkCanShare(String id) {
 
 
         Call<CanShareBean> call = RetrofitService.createMyAPI().IsCanShare(id);
         call.enqueue(new Callback<CanShareBean>() {
             @Override
             public void onResponse(Call<CanShareBean> call, Response<CanShareBean> response) {
-                if (response!=null){
-                    if (response.body()!=null){
+                if (response != null) {
+                    if (response.body() != null) {
                         if (response.body().getCode() == CODE_SUCCESS) {
                             //成功
-                            if (response.body().getData()!=null){
-                                if (response.body().getData().isIsCanShare()){
+                            if (response.body().getData() != null) {
+                                if (response.body().getData().isIsCanShare()) {
                                     showSharePop();
-                                }else {
+                                } else {
                                     DialogUtils.showAlertDialog(getContext(), "会员提示", "目前暂不能分享,是否去开通会员？确认？", new DialogUtils.OnCommitListener() {
                                         @Override
                                         public void onCommit() {
                                             startActivity(new Intent(getContext(), VipMealAc.class));
                                         }
-                                    },null);
+                                    }, null);
                                 }
 
                             }
@@ -696,6 +711,7 @@ public class HomeFragment extends Fragment {
         });
 
     }
+
     /**
      * 置顶动态
      */
@@ -854,7 +870,7 @@ public class HomeFragment extends Fragment {
 
                                             try {
                                                 for (int i = 0; i < nowItem.getSImagesUrl().split(",").length; i++) {
-                                                    if (i == 0 || t){
+                                                    if (i == 0 || t) {
                                                         files.add(ImageUtil.saveImageToSdCard(getContext(), nowItem.getSImagesUrl().split(",")[i]));
                                                     }
                                                 }
@@ -882,8 +898,7 @@ public class HomeFragment extends Fragment {
                                                 intent.setComponent(comp);
 
 
-
-                                                startActivity(Intent.createChooser(intent,"分享图片"));
+                                                startActivity(Intent.createChooser(intent, "分享图片"));
 
                                             } catch (Exception e) {
                                                 e.printStackTrace();
@@ -979,7 +994,7 @@ public class HomeFragment extends Fragment {
                         if (!appDir.exists()) {
                             appDir.mkdirs();
                         }
-                        String fileName = System.currentTimeMillis() +data.substring(data.lastIndexOf("."), data.length());
+                        String fileName = System.currentTimeMillis() + data.substring(data.lastIndexOf("."), data.length());
                         File file = new File(appDir, fileName);
                         try {
                             FileOutputStream fos = new FileOutputStream(file);
@@ -1155,6 +1170,7 @@ public class HomeFragment extends Fragment {
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<NewsListBean> call, Throwable t) {
                 refresh.finishRefreshing();

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,10 +7,9 @@
     tools:context=".index.NewsDeatilAc">
 
 
-<android.support.constraint.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
->
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
         <com.facebook.drawee.view.SimpleDraweeView
@@ -92,8 +90,6 @@
             app:layout_constraintTop_toBottomOf="@+id/content" />
 
 
-
-
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@id/video"
             android:layout_width="100dp"
@@ -105,17 +101,17 @@
             app:failureImage="@drawable/ic_video_play"
             app:layout_constraintLeft_toLeftOf="@id/date"
             app:layout_constraintTop_toBottomOf="@+id/content" />
+
         <ImageView
             android:id="@+id/play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:src="@drawable/ic_video_play"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/video"
             app:layout_constraintLeft_toLeftOf="@+id/video"
             app:layout_constraintRight_toRightOf="@+id/video"
-            app:layout_constraintTop_toTopOf="@+id/video"
-            app:layout_constraintBottom_toBottomOf="@+id/video"
-            />
+            app:layout_constraintTop_toTopOf="@+id/video" />
 
         <View
             android:id="@+id/div_l"
@@ -314,7 +310,7 @@
             android:layout_height="wrap_content"
             android:text="2分钟前分想过"
             android:textColor="@color/text_gray_dark"
-            app:layout_constraintBottom_toBottomOf="@id/delete"
+            app:layout_constraintBottom_toBottomOf="@id/download"
             app:layout_constraintRight_toRightOf="@id/div_2"
             app:layout_constraintTop_toTopOf="@+id/delete" />
 

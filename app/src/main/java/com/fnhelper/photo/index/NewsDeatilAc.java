@@ -22,7 +22,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.fnhelper.photo.ModifyPhotoWordDetailActivity;
 import com.fnhelper.photo.R;
 import com.fnhelper.photo.base.BaseActivity;
@@ -280,7 +285,16 @@ initSharePop();
                 @Override
                 protected void convert(BaseAdapterHelper helper, final IThumbViewInfo item, final int position) {
 
-                    helper.setFrescoImageResource(R.id.pic, item.getUrl());
+                    SimpleDraweeView draweeView =(SimpleDraweeView) helper.getView(R.id.pic);
+                    ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getUrl())).setResizeOptions(new ResizeOptions(200,200)).build();
+                    DraweeController controller = Fresco.newDraweeControllerBuilder().
+                            setUri(Uri.parse(item.getUrl())).
+                            setImageRequest(imageRequest).
+                            setOldController(draweeView.getController())
+                            .setAutoPlayAnimations(true)
+                            .build();
+
+                    draweeView.setController(controller);
 
                     helper.getConvertView().setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -610,7 +624,6 @@ initSharePop();
 
                                         try {
 
-
                                             ArrayList<File> files = new ArrayList<>();
 
                                             try {
@@ -740,7 +753,7 @@ initSharePop();
                         File file = new File(appDir, fileName);
                         try {
                             FileOutputStream fos = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                             fos.flush();
                             fos.close();
                         } catch (FileNotFoundException e) {

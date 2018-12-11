@@ -111,6 +111,17 @@ public class BaseAdapterHelper extends RecyclerView.ViewHolder {
         view.setImageURI(url);
         return this;
     }
+    /**
+     * Will set the image of an ImageView from a resource id.
+     *
+     * @param viewId The view id.
+     * @return The BaseAdapterHelper for chaining.
+     */
+    public BaseAdapterHelper setFrescoImageBitamap(int viewId, Bitmap bitmap) {
+        SimpleDraweeView view = retrieveView(viewId);
+        view.setImageBitmap(bitmap);
+        return this;
+    }
 
     /**
      * Will set background color of a view.
