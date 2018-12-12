@@ -104,7 +104,6 @@ public class PersonalFreagmentAll extends Fragment {
     private String keyWord = "";
 
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 

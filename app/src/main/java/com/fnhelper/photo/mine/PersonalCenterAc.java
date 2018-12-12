@@ -1,9 +1,7 @@
 package com.fnhelper.photo.mine;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -107,9 +105,7 @@ public class PersonalCenterAc extends BaseActivity {
 
     @Override
     protected void initUI() {
-
         comRight.setImageResource(R.drawable.more_btn);
-
     }
 
     @Override
@@ -142,7 +138,6 @@ public class PersonalCenterAc extends BaseActivity {
             }
         });
 
-
     }
 
 
@@ -156,22 +151,13 @@ public class PersonalCenterAc extends BaseActivity {
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
 
     public class MyPagerAdapter extends FragmentPagerAdapter {
-        private Context context;
         private List<Fragment> fragmentList;
         private List<String> list_Title;
 
-        public MyPagerAdapter(FragmentManager fm, Context context, List<Fragment> fragmentList, List<String> list_Title) {
+        public MyPagerAdapter(FragmentManager fm, List<Fragment> fragmentList, List<String> list_Title) {
             super(fm);
-            this.context = context;
             this.fragmentList = fragmentList;
             this.list_Title = list_Title;
         }
@@ -415,7 +401,7 @@ public class PersonalCenterAc extends BaseActivity {
                             fragmentList.add(PersonalFreagmentAll2);
                             fragmentList.add(PersonalFreagmentAll3);
 
-                            viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), PersonalCenterAc.this, fragmentList, list_Title));
+                            viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), fragmentList, list_Title));
                             tablayout.setupWithViewPager(viewPager);//此方法就是让tablayout和ViewPager联动
                         } else if (response.body().getCode() == CODE_ERROR) {
                             //失败

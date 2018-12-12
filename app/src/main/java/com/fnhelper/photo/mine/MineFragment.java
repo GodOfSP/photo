@@ -74,7 +74,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.goto_album_info)
     View gotoAlbumInfo;
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 

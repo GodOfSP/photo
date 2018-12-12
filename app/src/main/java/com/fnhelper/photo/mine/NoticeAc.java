@@ -1,7 +1,6 @@
 package com.fnhelper.photo.mine;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -210,12 +209,5 @@ public class NoticeAc extends BaseActivity {
     protected void onStart() {
         super.onStart();
         refresh.startRefresh();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 }
