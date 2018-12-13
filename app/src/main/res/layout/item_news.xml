@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
 
@@ -169,7 +169,6 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_full_white_green"
         android:gravity="center"
-        android:text="拿货价: 213213"
         android:textColor="@color/text_gray_dark"
         android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="@id/div_l"
@@ -182,7 +181,7 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_full_white_green"
         android:gravity="center"
-        android:text="拿货价: 213213"
+        android:visibility="gone"
         android:textColor="@color/text_gray_dark"
         app:layout_constraintLeft_toLeftOf="@id/div_l"
         app:layout_constraintTop_toBottomOf="@+id/good_num_title" />
@@ -194,7 +193,7 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_full_white_green"
         android:gravity="center"
-        android:text="零售价: 213213"
+        android:visibility="gone"
         android:textColor="@color/text_gray_dark"
         app:layout_constraintRight_toRightOf="@id/div_2"
         app:layout_constraintTop_toBottomOf="@+id/good_num_title" />
@@ -207,7 +206,7 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_full_white_green"
         android:gravity="center"
-        android:text="批发价: 213213"
+        android:visibility="gone"
         android:textColor="@color/text_gray_dark"
         app:layout_constraintLeft_toLeftOf="@id/div_l"
         app:layout_constraintTop_toBottomOf="@+id/first_tag" />
@@ -219,7 +218,6 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_full_white_green"
         android:gravity="center"
-        android:text="批发价: 213213"
         android:textColor="@color/text_gray_dark"
         android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="@id/div_l"
@@ -232,7 +230,7 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/bg_full_white_green"
         android:gravity="center"
-        android:text="包装价: 213213"
+        android:visibility="gone"
         android:textColor="@color/text_gray_dark"
         app:layout_constraintRight_toRightOf="@id/div_2"
         app:layout_constraintTop_toBottomOf="@+id/first_tag" />

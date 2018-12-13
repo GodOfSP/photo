@@ -291,45 +291,60 @@ public class HomeFragment extends Fragment {
                     helper.setVisible(R.id.good_num_title, true);
                     helper.setText(R.id.good_num, item.getSGoodsNo());
                 }
+                boolean b1 = false;
+                boolean b2 = false;
+                boolean b3 = false;
+                boolean b4 = false;
                 //拿货价
                 if (item.getDCommodityPrices() == null || TextUtils.isEmpty(item.getDCommodityPrices()) || "1".equals(item.getICommodityPricesPrivate())) {
                     helper.setVisible(R.id.get_price, false);
+                    b1 = false;
                 } else {
                     helper.setVisible(R.id.get_price, true);
                     helper.setText(R.id.get_price, "拿货价:" + item.getDCommodityPrices());
+                    b1 = true;
                 }
                 //零售
                 if (item.getDRetailprices() == null || TextUtils.isEmpty(item.getDRetailprices()) || "1".equals(item.getIRetailpricesPrivate())) {
                     helper.setVisible(R.id.sale_price, false);
+                    b2 = false;
                 } else {
                     helper.setVisible(R.id.sale_price, true);
                     helper.setText(R.id.sale_price, "零售价:" + item.getDRetailprices());
+                    b2 = true;
                 }
                 //批发价
                 if (item.getDTradePrices() == null || TextUtils.isEmpty(item.getDTradePrices()) || "1".equals(item.getITradePricesPrivate())) {
                     helper.setVisible(R.id.pf_price, false);
+                    b3 = false;
                 } else {
                     helper.setVisible(R.id.pf_price, true);
                     helper.setText(R.id.pf_price, "批发价:" + item.getDTradePrices());
+                    b3 = true;
                 }
                 //打包价
                 if (item.getDPackPrices() == null || TextUtils.isEmpty(item.getDPackPrices()) || "1".equals(item.getIPackPricesPrivate())) {
                     helper.setVisible(R.id.pack_price, false);
+                    b4 = false;
                 } else {
                     helper.setVisible(R.id.pack_price, true);
                     helper.setText(R.id.pack_price, "打包价:" + item.getDPackPrices());
+                    b4 = true;
                 }
 
 
-                if (helper.getTextView(R.id.get_price).getVisibility() == View.GONE && helper.getTextView(R.id.sale_price).getVisibility() == View.GONE) {
-                    helper.setVisible(R.id.first_tag, false);
+                /**
+                 * 慎用  个getVis()
+                 */
+                if (!b1 && !b2) {
+                    helper.getView(R.id.first_tag).setVisibility(View.GONE);
                 } else {
-                    helper.setVisible(R.id.first_tag, true);
+                    helper.getView(R.id.first_tag).setVisibility(View.INVISIBLE);
                 }
-                if (helper.getTextView(R.id.pf_price).getVisibility() == View.GONE && helper.getTextView(R.id.pack_price).getVisibility() == View.GONE) {
-                    helper.setVisible(R.id.second_tag, false);
+                if (!b3 && !b4) {
+                    helper.getView(R.id.second_tag).setVisibility(View.GONE);
                 } else {
-                    helper.setVisible(R.id.second_tag, true);
+                    helper.getView(R.id.second_tag).setVisibility(View.INVISIBLE);
                 }
                 //备注
                 if (item.getSRemark() == null || TextUtils.isEmpty(item.getSRemark())) {
@@ -363,9 +378,9 @@ public class HomeFragment extends Fragment {
                         @Override
                         protected void convert(BaseAdapterHelper helper, final PreviewItemBean item, final int position) {
 
-                         //   Bitmap b = ImageUtil.returnBitmap(Uri.parse(item.getUrl()));
-                            SimpleDraweeView draweeView =(SimpleDraweeView) helper.getView(R.id.pic);
-                            ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getUrl())).setResizeOptions(new ResizeOptions(200,200)).build();
+                            //   Bitmap b = ImageUtil.returnBitmap(Uri.parse(item.getUrl()));
+                            SimpleDraweeView draweeView = (SimpleDraweeView) helper.getView(R.id.pic);
+                            ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getUrl())).setResizeOptions(new ResizeOptions(200, 200)).build();
                             DraweeController controller = Fresco.newDraweeControllerBuilder().
                                     setUri(Uri.parse(item.getUrl())).
                                     setImageRequest(imageRequest).
