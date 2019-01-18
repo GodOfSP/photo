@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".mine.SystemSettingAc">
 
 
@@ -20,6 +21,7 @@
         android:id="@+id/bd_tel"
         android:layout_width="match_parent"
         android:layout_height="46dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/head_view"
         android:background="@drawable/selector_full_white_r0"
         android:gravity="center_vertical">
@@ -45,6 +47,7 @@
         android:id="@+id/system_setting"
         android:layout_width="match_parent"
         android:layout_height="46dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/head_view"
         android:background="@drawable/selector_full_white_r0"
         android:gravity="center_vertical">

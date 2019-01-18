@@ -299,7 +299,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="48dp"
                 android:layout_marginStart="48dp"
-                android:text="关于蜂鸟微商相册" />
+                android:text="关于虫虫相册" />
 
             <ImageView
                 android:layout_width="16dp"
