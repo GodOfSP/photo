@@ -1,6 +1,5 @@
 package com.fnhelper.photo.mine;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,12 +31,10 @@ import static com.fnhelper.photo.interfaces.Constants.CODE_SERIVCE_LOSE;
 import static com.fnhelper.photo.interfaces.Constants.CODE_SUCCESS;
 import static com.fnhelper.photo.interfaces.Constants.CODE_TOKEN;
 
-
 /**
  * 我的
  */
 public class MineFragment extends Fragment implements View.OnClickListener {
-
 
     @BindView(R.id.head_pic)
     SimpleDraweeView headPic;
@@ -66,21 +63,16 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.system_setting)
     RelativeLayout systemSetting;
 
-
     Unbinder unbinder;
-
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     @BindView(R.id.goto_album_info)
     View gotoAlbumInfo;
-
     private String mParam1;
     private String mParam2;
-
     public MineFragment() {
         // Required empty public constructor
     }
-
 
     public static MineFragment newInstance(String param1, String param2) {
         MineFragment fragment = new MineFragment();
@@ -98,7 +90,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
@@ -119,7 +110,6 @@ public class MineFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initClick() {
-
         moreDetail.setOnClickListener(this);
         presentAndMaid.setOnClickListener(this);
         bindPhone.setOnClickListener(this);
@@ -130,28 +120,21 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         systemSetting.setOnClickListener(this);
         gotoAlbumInfo.setOnClickListener(this);
 
-
     }
-
     @Override
     public void onStart() {
         super.onStart();
         getMyVipInfo();
     }
-
     @Override
     public void onStop() {
         super.onStop();
-
     }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

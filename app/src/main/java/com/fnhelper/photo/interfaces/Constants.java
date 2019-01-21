@@ -1,10 +1,8 @@
 package com.fnhelper.photo.interfaces;
-
 /**
  * 常量类
  */
 public class Constants {
-
     //请求马  100-成功，200-失败，300登录过期，400-帐号冻结，500--服务异常
     public static int CODE_SERIVCE_LOSE = 500;
     public static int CODE_SUCCESS = 100;
@@ -15,11 +13,11 @@ public class Constants {
     public static String WECHAT_APPID="wx04ff3ceebc3fc690";
     public static String WECHAT_SECRET="661c716beceb8f6fd9cde7cff3b456d9";
     // 服务器根地址
-    public static final String ROOT_PATH = "http://photo.ccy100.com/open/";
+  //  public static final String ROOT_PATH = "http://photo.ccy100.com/open/";
+    public static final String ROOT_PATH = "http://192.168.1.4/open/";
     //sp name
     public static String sp_name ="fn_sp";
     public static String code ="code";
-
     //用户信息
     public  static String ID ="";
     public  static String shareLink ="";
@@ -33,14 +31,10 @@ public class Constants {
     public  static String album_name ="";
     public  static String vip_exi_time ="";
     public  static boolean isVIP =false;
-
     //分页参数
     public static int pageSize = 15;
-
     // token 操作参数  是否正在检查
     public static  boolean isCheckTokenNow = false;
-
     // 分享操作是否完成
     public static boolean isFinishShare =false;
-
 }

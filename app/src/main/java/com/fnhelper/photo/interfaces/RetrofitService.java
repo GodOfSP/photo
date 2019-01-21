@@ -19,9 +19,7 @@ import static com.fnhelper.photo.interfaces.Constants.ROOT_PATH;
  *     网络请求引引擎类，包含网络拦截器，包含网络缓存策略
  *     <pre/>
  */
-
 public class RetrofitService {
-
 
     //设置 数据的缓存时间，有效期为两天
     protected static final long CACHE_STALE_SEC = 60 * 60 * 24 * 2;
@@ -51,7 +49,6 @@ public class RetrofitService {
         }
         return instance;
     }
-
 
     /**
      * API
