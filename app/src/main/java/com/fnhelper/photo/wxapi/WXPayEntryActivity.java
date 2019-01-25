@@ -70,7 +70,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
         if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
             if (resp.errCode != 0) {
-                    payWord.setText("支付失败:"+resp.errStr);
+                    payWord.setText("支付失败!");
             }
         }
     }

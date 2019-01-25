@@ -13,8 +13,8 @@ public class Constants {
     public static String WECHAT_APPID="wx04ff3ceebc3fc690";
     public static String WECHAT_SECRET="661c716beceb8f6fd9cde7cff3b456d9";
     // 服务器根地址
-  //  public static final String ROOT_PATH = "http://photo.ccy100.com/open/";
-    public static final String ROOT_PATH = "http://192.168.1.4/open/";
+    public static final String ROOT_PATH = "http://photo.ccy100.com/open/";
+  //  public static final String ROOT_PATH = "http://192.168.1.4/open/";
     //sp name
     public static String sp_name ="fn_sp";
     public static String code ="code";

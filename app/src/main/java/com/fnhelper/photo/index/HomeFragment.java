@@ -3,7 +3,6 @@ package com.fnhelper.photo.index;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -63,6 +62,7 @@ import com.lcodecore.tkrefreshlayout.RefreshListenerAdapter;
 import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 import com.luck.picture.lib.permissions.RxPermissions;
 import com.previewlibrary.GPreviewBuilder;
+import com.sch.share.WXShareMultiImageHelper;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.modelmsg.WXVideoObject;
@@ -389,6 +389,7 @@ public class HomeFragment extends Fragment {
                                     .build();
 
                             draweeView.setController(controller);
+
 
                             helper.getConvertView().setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -880,39 +881,22 @@ public class HomeFragment extends Fragment {
 
                                         try {
 
-                                            ArrayList<File> files = new ArrayList<>();
+                                            ArrayList<Uri> imageUris = new ArrayList<Uri>();
 
                                             try {
                                                 for (int i = 0; i < nowItem.getSImagesUrl().split(",").length; i++) {
-                                                    if (i == 0 || t) {
-                                                        files.add(ImageUtil.saveImageToSdCard(getContext(), nowItem.getSImagesUrl().split(",")[i]));
-                                                    }
+                                                    imageUris.add(ImageUtil.getImageContentUri(ImageUtil.saveImageToSdCard(getContext(), nowItem.getSImagesUrl().split(",")[i]), getContext()));
                                                 }
 
-                                                Intent intent = new Intent();
-                                                intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-
-                                                ArrayList<Uri> imageUris = new ArrayList<Uri>();
-                                                for (File f : files) {
-                                                    imageUris.add(ImageUtil.getImageContentUri(f, getContext()));
-                                                }
-
-                                                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-                                                intent.setType("image");
-                                                ComponentName comp;
 
                                                 if (t) {
-                                                    comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareImgUI");
-                                                } else {
-                                                    comp = new ComponentName("com.tencent.mm", "com.tencent.mm.ui.tools.ShareToTimeLineUI");
-                                                    intent.putExtra("Kdescription", "分享朋友圈的图片说明");
+                                                    //朋友
+                                                    WXShareMultiImageHelper.shareToSession(getActivity(),imageUris,"sadsad");
+                                                } else {  //朋友圈
+                                                    WXShareMultiImageHelper.shareToTimeline(getActivity(),imageUris,"asdasdsad",true);
+
                                                 }
-                                                intent.setComponent(comp);
 
-
-                                                startActivity(Intent.createChooser(intent, "分享图片"));
 
                                             } catch (Exception e) {
                                                 e.printStackTrace();
